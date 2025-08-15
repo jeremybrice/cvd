@@ -17,6 +17,17 @@ class AuthManager:
         self.db_path = db_path
         self.setup_session_config()
     
+    def get_client_ip(self):
+        """Get real client IP, handling proxy headers from Railway/other proxies"""
+        # Check for forwarded headers first (Railway, nginx, etc.)
+        if request.environ.get('HTTP_X_FORWARDED_FOR'):
+            # Take the first IP in the chain (original client)
+            return request.environ['HTTP_X_FORWARDED_FOR'].split(',')[0].strip()
+        elif request.environ.get('HTTP_X_REAL_IP'):
+            return request.environ['HTTP_X_REAL_IP']
+        # Fallback to direct connection
+        return request.remote_addr
+    
     def setup_session_config(self):
         """Configure session settings"""
         # Already configured in app.py, but can be overridden here if needed
@@ -45,7 +56,7 @@ class AuthManager:
                                 last_activity, activity_count, device_type)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (session_id, user_id, expires_at, 
-              request.remote_addr, user_agent,
+              self.get_client_ip(), user_agent,
               datetime.now(), 0, device_type))
         
         # Don't commit here, let the caller handle it
@@ -329,6 +340,14 @@ def log_audit_event(user_id, action, resource_type=None, resource_id=None, detai
     import json
     from flask import current_app
     
+    def get_client_ip():
+        """Get real client IP, handling proxy headers"""
+        if request.environ.get('HTTP_X_FORWARDED_FOR'):
+            return request.environ['HTTP_X_FORWARDED_FOR'].split(',')[0].strip()
+        elif request.environ.get('HTTP_X_REAL_IP'):
+            return request.environ['HTTP_X_REAL_IP']
+        return request.remote_addr
+    
     db_path = current_app.config.get('DATABASE', 'cvd.db')
     db = sqlite3.connect(db_path)
     cursor = db.cursor()
@@ -343,7 +362,7 @@ def log_audit_event(user_id, action, resource_type=None, resource_id=None, detai
     cursor.execute('''
         INSERT INTO audit_log (user_id, action, resource_type, resource_id, details, ip_address)
         VALUES (?, ?, ?, ?, ?, ?)
-    ''', (user_id, action, resource_type, resource_id, details, request.remote_addr))
+    ''', (user_id, action, resource_type, resource_id, details, get_client_ip()))
     
     db.commit()
     db.close()

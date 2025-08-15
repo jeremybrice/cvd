@@ -7,6 +7,7 @@ with SQLite database storage.
 
 from flask import Flask, jsonify, request, g, session, send_from_directory
 from flask_cors import CORS
+from werkzeug.middleware.proxy_fix import ProxyFix
 import sqlite3
 from datetime import datetime, timedelta
 import json
@@ -24,22 +25,33 @@ from security_monitor import SecurityMonitor
 from activity_trends_api import init_trends_module
 
 app = Flask(__name__)
+
+# Configure proxy support for Railway
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
 app.config['SECRET_KEY'] = os.environ.get('SESSION_SECRET', secrets.token_hex(32))
-app.config['SESSION_COOKIE_SECURE'] = os.environ.get('FLASK_ENV') == 'production'  # HTTPS only in production
+app.config['SESSION_COOKIE_SECURE'] = os.environ.get('FLASK_ENV') == 'production' or os.environ.get('RAILWAY_ENVIRONMENT')  # HTTPS in production/Railway
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=8)
 
-CORS(app, origins=[
+# CORS configuration with Railway domain support
+railway_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+cors_origins = [
     'http://localhost:8000', 
     'http://127.0.0.1:8000',
     'https://jeremybrice.duckdns.org'
-], 
+]
+if railway_domain:
+    cors_origins.append(f'https://{railway_domain}')
+
+CORS(app, origins=cors_origins, 
      allow_headers=['Content-Type'],
      methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
      supports_credentials=True)
 
-DATABASE = 'cvd.db'
+DATABASE = os.environ.get('DATABASE_PATH', 'cvd.db')
 app.config['DATABASE'] = DATABASE
 app.config['get_db'] = lambda: get_db()
 
