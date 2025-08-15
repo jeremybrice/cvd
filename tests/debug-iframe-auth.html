@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Authentication Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        iframe { border: 2px solid #ccc; margin: 20px 0; }
+        .debug-panel { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Iframe Authentication Debug</h1>
+    
+    <div class="debug-panel">
+        <h2>Parent Window Authentication Test</h2>
+        <div id="parent-auth-results">Testing...</div>
+        <button onclick="testParentAuth()">Retest Parent Auth</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Knowledge Base Iframe</h2>
+        <iframe id="kb-iframe" src="/pages/knowledge-base.html" width="100%" height="400"></iframe>
+    </div>
+    
+    <div class="debug-panel">
+        <h2>Direct Auth Test Iframe</h2>
+        <iframe id="auth-iframe" src="/debug-kb-auth.html" width="100%" height="300"></iframe>
+    </div>
+    
+    <script src="/api.js"></script>
+    <script>
+        async function testParentAuth() {
+            const results = document.getElementById('parent-auth-results');
+            results.innerHTML = 'Testing parent window authentication...';
+            
+            try {
+                // Test 1: Current user check
+                const authResponse = await fetch('/api/auth/current-user', {
+                    credentials: 'include'
+                });
+                
+                if (authResponse.ok) {
+                    const userData = await authResponse.json();
+                    results.innerHTML = `<div class="success">✓ Parent authenticated as: ${userData.user?.username} (${userData.user?.role})</div>`;
+                    
+                    // Test 2: CVD API
+                    const api = new CVDApi();
+                    const kbTest = await api.get('/api/knowledge-base/articles');
+                    
+                    if (kbTest.success) {
+                        results.innerHTML += `<div class="success">✓ Knowledge Base API accessible: ${kbTest.articles?.length || 0} articles found</div>`;
+                    } else {
+                        results.innerHTML += `<div class="error">✗ Knowledge Base API failed: ${kbTest.error}</div>`;
+                    }
+                    
+                } else {
+                    results.innerHTML = `<div class="error">✗ Parent not authenticated: ${authResponse.status}</div>`;
+                }
+                
+                // Test 3: Cookie inspection
+                results.innerHTML += `<div class="info">📋 Document cookies: ${document.cookie}</div>`;
+                
+                // Test 4: Check iframe same-origin policy
+                try {
+                    const iframe = document.getElementById('kb-iframe');
+                    if (iframe.contentWindow) {
+                        results.innerHTML += `<div class="info">📋 Iframe access: Same-origin OK</div>`;
+                        
+                        // Check if iframe can access parent cookies
+                        iframe.onload = function() {
+                            try {
+                                const iframeCookies = iframe.contentDocument?.cookie;
+                                results.innerHTML += `<div class="info">📋 Iframe cookies: ${iframeCookies || 'Not accessible'}</div>`;
+                            } catch (e) {
+                                results.innerHTML += `<div class="error">✗ Cannot access iframe cookies: ${e.message}</div>`;
+                            }
+                        };
+                    }
+                } catch (e) {
+                    results.innerHTML += `<div class="error">✗ Iframe access error: ${e.message}</div>`;
+                }
+                
+            } catch (error) {
+                results.innerHTML = `<div class="error">✗ Auth test failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Listen for iframe messages
+        window.addEventListener('message', function(event) {
+            if (event.origin !== window.location.origin) return;
+            
+            console.log('Received iframe message:', event.data);
+            
+            if (event.data.type === 'KB_ERROR') {
+                results.innerHTML += `<div class="error">📨 Iframe error: ${event.data.message}</div>`;
+            }
+        });
+        
+        // Run test on load
+        document.addEventListener('DOMContentLoaded', testParentAuth);
+    </script>
+</body>
+</html>

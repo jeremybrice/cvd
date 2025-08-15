@@ -1,0 +1,492 @@
+# Cross-Reference System - CVD Documentation
+
+## Overview
+
+This document defines the cross-reference system for CVD documentation, enabling efficient navigation between related documents, tracking dependencies, and maintaining referential integrity across the documentation ecosystem.
+
+## Reference ID Format
+
+### Standard Reference Format
+```
+[CATEGORY-DOCTYPE-SUBJECT-SECTION]
+
+Where:
+- CATEGORY: Two-digit category number (00-09)
+- DOCTYPE: Document type identifier (GUIDE, API, REF, IMPL, ARCH)
+- SUBJECT: Subject matter identifier (AUTH, DEVICE, PLANO, etc.)
+- SECTION: Optional section identifier for deep linking
+
+Examples:
+[04-IMPL-AUTH-SETUP] → Authentication setup implementation
+[07-GUIDE-PLANO-CREATE] → Planogram creation guide
+[05-API-DEVICE-CRUD] → Device CRUD API endpoints
+[03-ARCH-DB-SCHEMA] → Database schema architecture
+```
+
+### Document Type Identifiers
+```yaml
+GUIDE: User guides and tutorials
+API: API documentation and endpoints
+REF: Reference materials and lookups
+IMPL: Implementation documentation
+ARCH: Architecture documentation
+TEST: Testing documentation
+CONFIG: Configuration guides
+TROUBLE: Troubleshooting guides
+EXAMPLE: Code examples and samples
+PATTERN: Design and code patterns
+```
+
+### Subject Matter Identifiers
+```yaml
+Core Features:
+  AUTH: Authentication and authorization
+  DEVICE: Device/cooler management
+  PLANO: Planogram management
+  SERVICE: Service orders
+  DEX: DEX data parsing
+  ANALYTICS: Analytics and reporting
+  ROUTE: Route management
+  USER: User management
+
+Technical Areas:
+  DB: Database
+  FRONTEND: Frontend components
+  BACKEND: Backend services
+  PWA: Progressive Web App
+  API: API general
+  SECURITY: Security features
+  PERF: Performance
+  TEST: Testing
+  SEARCH: Documentation search system
+```
+
+## Internal Link Syntax
+
+### Markdown Link Format
+```markdown
+<!-- Basic cross-reference -->
+See [Authentication Setup][04-IMPL-AUTH-SETUP] for implementation details.
+
+<!-- With section anchor -->
+Refer to [Database Schema][03-ARCH-DB-SCHEMA#users-table] for user table structure.
+
+<!-- Inline with path -->
+Details in [Service Order Workflow](../07-cvd-framework/service-orders/workflow.md) [07-GUIDE-SERVICE-WORKFLOW].
+
+<!-- Multiple references -->
+Related documents:
+- [API Authentication][05-API-AUTH-ENDPOINTS]
+- [User Management Guide][04-GUIDE-USER-MGMT]
+- [Security Architecture][03-ARCH-SECURITY]
+```
+
+### Reference Definition Block
+```markdown
+<!-- At document end -->
+[04-IMPL-AUTH-SETUP]: /documentation/04-implementation/backend/authentication-setup.md
+[03-ARCH-DB-SCHEMA]: /documentation/03-architecture/system/database-schema.md
+[07-GUIDE-SERVICE-WORKFLOW]: /documentation/07-cvd-framework/service-orders/workflow.md
+[05-API-AUTH-ENDPOINTS]: /documentation/05-development/api/endpoints/auth.md
+```
+
+## Related Document Mappings
+
+### Feature-Based Relationships
+
+#### Authentication System
+```yaml
+[04-IMPL-AUTH-SETUP]:
+  implements:
+    - [02-REQ-AUTH-STORIES]: User stories for authentication
+    - [03-ARCH-AUTH-FLOW]: Authentication architecture
+  uses:
+    - [05-API-AUTH-ENDPOINTS]: Authentication API endpoints
+    - [09-REF-AUTH-EXAMPLES]: Authentication code examples
+  related:
+    - [04-IMPL-USER-MGMT]: User management implementation
+    - [06-DESIGN-LOGIN-UI]: Login UI components
+  tested_by:
+    - [05-TEST-AUTH-SUITE]: Authentication test suite
+  troubleshooting:
+    - [05-TROUBLE-AUTH-ISSUES]: Common authentication problems
+```
+
+#### Device Management
+```yaml
+[07-GUIDE-DEVICE-CONFIG]:
+  prerequisites:
+    - [01-CORE-SETUP]: System setup
+    - [04-IMPL-AUTH-SETUP]: Authentication (for access)
+  implements:
+    - [02-REQ-DEVICE-STORIES]: Device management requirements
+  uses:
+    - [05-API-DEVICE-CRUD]: Device CRUD operations
+    - [03-ARCH-DB-SCHEMA#devices]: Device database schema
+  ui_components:
+    - /pages/PCP.html: Device listing page
+    - /pages/INVD.html: Individual device configuration
+  related:
+    - [07-GUIDE-CABINET-CONFIG]: Cabinet configuration
+    - [07-GUIDE-PLANO-CREATE]: Planogram creation
+```
+
+#### Planogram Management
+```yaml
+[07-GUIDE-PLANO-CREATE]:
+  prerequisites:
+    - [07-GUIDE-DEVICE-CONFIG]: Device must be configured
+    - [09-REF-PRODUCT-CATALOG]: Product catalog reference
+  architecture:
+    - [03-ARCH-PLANO-SYSTEM]: Planogram system architecture
+  implementation:
+    - [04-IMPL-PLANO-DRAGDROP]: Drag-and-drop implementation
+    - [04-IMPL-PLANO-OPTIMIZER]: AI optimization implementation
+  api:
+    - [05-API-PLANO-ENDPOINTS]: Planogram API endpoints
+    - [05-API-PRODUCT-ENDPOINTS]: Product API endpoints
+  ui:
+    - /pages/NSPT.html: Planogram creation interface
+  related:
+    - [07-GUIDE-PLANO-OPTIMIZE]: Optimization guide
+    - [07-GUIDE-SERVICE-ORDERS]: Service order generation
+```
+
+#### Service Orders
+```yaml
+[07-GUIDE-SERVICE-WORKFLOW]:
+  dependencies:
+    - [07-GUIDE-DEVICE-CONFIG]: Devices must exist
+    - [07-GUIDE-PLANO-CREATE]: Planograms define products
+    - [04-IMPL-AUTH-SETUP]: User authentication required
+  components:
+    - [07-GUIDE-SERVICE-CREATE]: Order creation
+    - [07-GUIDE-SERVICE-PICKLIST]: Pick list generation
+    - [07-GUIDE-SERVICE-EXECUTE]: Order execution
+  api:
+    - [05-API-SERVICE-ENDPOINTS]: Service order endpoints
+  mobile:
+    - [04-IMPL-PWA-DRIVER]: Driver mobile app
+  database:
+    - [03-ARCH-DB-SCHEMA#service-orders]: Service order tables
+```
+
+## Dependency Tracking
+
+### Core Dependencies Graph
+```yaml
+System Foundation:
+  [01-CORE-SETUP]:
+    required_by: ALL
+    provides: System initialization
+
+Authentication Layer:
+  [04-IMPL-AUTH-SETUP]:
+    requires: [01-CORE-SETUP]
+    required_by:
+      - [04-IMPL-USER-MGMT]
+      - [07-GUIDE-DEVICE-CONFIG]
+      - [07-GUIDE-SERVICE-WORKFLOW]
+    provides: User authentication and authorization
+
+Data Layer:
+  [03-ARCH-DB-SCHEMA]:
+    requires: [01-CORE-SETUP]
+    required_by:
+      - ALL database operations
+    provides: Database structure and relationships
+
+API Layer:
+  [05-API-*]:
+    requires:
+      - [04-IMPL-AUTH-SETUP]
+      - [03-ARCH-DB-SCHEMA]
+    provides: REST API endpoints
+
+Feature Layer:
+  [07-GUIDE-*]:
+    requires:
+      - [04-IMPL-AUTH-SETUP]
+      - [05-API-*] (feature-specific)
+    provides: Business functionality
+```
+
+### Implementation Dependencies
+```yaml
+Frontend Components:
+  Base Requirements:
+    - [04-IMPL-API-CLIENT]: API client (api.js)
+    - [04-IMPL-AUTH-CHECK]: Auth verification
+    - [06-DESIGN-STYLE-GUIDE]: UI standards
+
+  Component Dependencies:
+    Login Page:
+      - [04-IMPL-AUTH-SETUP]
+      - [06-DESIGN-LOGIN-UI]
+    
+    Device Pages (PCP, INVD):
+      - [04-IMPL-API-CLIENT]
+      - [07-GUIDE-DEVICE-CONFIG]
+      - [05-API-DEVICE-CRUD]
+    
+    Planogram Page (NSPT):
+      - [04-IMPL-PLANO-DRAGDROP]
+      - [05-API-PLANO-ENDPOINTS]
+      - [05-API-PRODUCT-ENDPOINTS]
+
+Backend Services:
+  Core Services:
+    - [04-IMPL-AUTH-SETUP]: Required by all
+    - [03-ARCH-DB-SCHEMA]: Database access
+  
+  Feature Services:
+    - service_order_service.py: [07-GUIDE-SERVICE-WORKFLOW]
+    - planogram_optimizer.py: [07-GUIDE-PLANO-OPTIMIZE]
+    - dex_parser.py: [07-GUIDE-DEX-PARSER]
+```
+
+## Validation Approach
+
+### Reference Validation Rules
+
+```yaml
+validation_rules:
+  reference_format:
+    pattern: ^\[(\d{2})-(GUIDE|API|REF|IMPL|ARCH|TEST|CONFIG|TROUBLE|EXAMPLE|PATTERN)-([A-Z]+)(-[A-Z]+)?\]$
+    required: true
+    
+  link_validity:
+    check_file_exists: true
+    check_section_anchors: true
+    allow_external: true
+    
+  bidirectional_references:
+    parent_child: true
+    related_documents: false
+    dependencies: true
+    
+  circular_dependencies:
+    allowed: false
+    detection: automatic
+    resolution: manual_review
+```
+
+### Validation Script Structure
+```python
+# Conceptual validation approach
+def validate_references(doc_path):
+    """Validate all references in a document"""
+    references = extract_references(doc_path)
+    
+    for ref in references:
+        # Check format
+        if not matches_pattern(ref):
+            report_error(f"Invalid format: {ref}")
+        
+        # Check target exists
+        target = resolve_reference(ref)
+        if not file_exists(target):
+            report_error(f"Target not found: {ref} -> {target}")
+        
+        # Check bidirectional
+        if requires_bidirectional(ref):
+            if not has_backlink(target, doc_path):
+                report_warning(f"Missing backlink: {ref}")
+    
+    return validation_report
+```
+
+## Cross-Reference Matrix
+
+### Feature Cross-References
+
+| Feature | Requirements | Architecture | Implementation | API | Testing | UI/UX |
+|---------|--------------|--------------|----------------|-----|---------|--------|
+| Authentication | [02-REQ-AUTH] | [03-ARCH-AUTH] | [04-IMPL-AUTH] | [05-API-AUTH] | [05-TEST-AUTH] | [06-DESIGN-LOGIN] |
+| Devices | [02-REQ-DEVICE] | [03-ARCH-DEVICE] | [04-IMPL-DEVICE] | [05-API-DEVICE] | [05-TEST-DEVICE] | [06-DESIGN-DEVICE] |
+| Planograms | [02-REQ-PLANO] | [03-ARCH-PLANO] | [04-IMPL-PLANO] | [05-API-PLANO] | [05-TEST-PLANO] | [06-DESIGN-PLANO] |
+| Service Orders | [02-REQ-SERVICE] | [03-ARCH-SERVICE] | [04-IMPL-SERVICE] | [05-API-SERVICE] | [05-TEST-SERVICE] | [06-DESIGN-SERVICE] |
+| DEX Parser | [02-REQ-DEX] | [03-ARCH-DEX] | [04-IMPL-DEX] | [05-API-DEX] | [05-TEST-DEX] | [06-DESIGN-DEX] |
+| Analytics | [02-REQ-ANALYTICS] | [03-ARCH-ANALYTICS] | [04-IMPL-ANALYTICS] | [05-API-METRICS] | [05-TEST-ANALYTICS] | [06-DESIGN-DASHBOARD] |
+
+### Technical Cross-References
+
+| Component | Database | Backend | Frontend | API | Configuration |
+|-----------|----------|---------|----------|-----|---------------|
+| User System | [03-ARCH-DB-USERS] | [04-IMPL-AUTH] | [04-IMPL-USER-UI] | [05-API-USERS] | [09-REF-USER-CONFIG] |
+| Session Mgmt | [03-ARCH-DB-SESSIONS] | [04-IMPL-SESSION] | [04-IMPL-AUTH-CHECK] | [05-API-AUTH] | [09-REF-SESSION-CONFIG] |
+| Data Access | [03-ARCH-DB-SCHEMA] | [04-IMPL-DB-ACCESS] | [04-IMPL-API-CLIENT] | [05-API-DATA] | [09-REF-DB-CONFIG] |
+| File Upload | [03-ARCH-STORAGE] | [04-IMPL-UPLOAD] | [04-IMPL-FILE-UI] | [05-API-UPLOAD] | [09-REF-STORAGE-CONFIG] |
+
+## Usage Examples
+
+### Example 1: Creating a New Feature Document
+
+```markdown
+---
+title: "New Feature Implementation Guide"
+references:
+  prerequisites:
+    - [01-CORE-SETUP]
+    - [04-IMPL-AUTH-SETUP]
+  implements:
+    - [02-REQ-FEATURE-001]
+  architecture:
+    - [03-ARCH-FEATURE-DESIGN]
+  related:
+    - [07-GUIDE-SIMILAR-FEATURE]
+---
+
+# New Feature Implementation Guide
+
+## Prerequisites
+Before implementing this feature, ensure you have completed:
+- [System Setup][01-CORE-SETUP]
+- [Authentication Setup][04-IMPL-AUTH-SETUP]
+
+## Implementation
+This guide implements the requirements defined in [Feature Requirements][02-REQ-FEATURE-001]
+following the architecture outlined in [Feature Design][03-ARCH-FEATURE-DESIGN].
+
+## Related Documentation
+For similar functionality, see [Similar Feature Guide][07-GUIDE-SIMILAR-FEATURE].
+
+<!-- Reference definitions -->
+[01-CORE-SETUP]: /documentation/01-project-core/setup.md
+[04-IMPL-AUTH-SETUP]: /documentation/04-implementation/backend/authentication-setup.md
+[02-REQ-FEATURE-001]: /documentation/02-requirements/features/feature-001.md
+[03-ARCH-FEATURE-DESIGN]: /documentation/03-architecture/features/feature-design.md
+[07-GUIDE-SIMILAR-FEATURE]: /documentation/07-cvd-framework/similar-feature.md
+```
+
+### Example 2: Cross-Referencing in API Documentation
+
+```markdown
+## POST /api/devices
+
+Creates a new vending device.
+
+**Implementation**: See [Device Creation Implementation][04-IMPL-DEVICE-CREATE]  
+**Architecture**: Based on [Device Management Architecture][03-ARCH-DEVICE]  
+**UI Component**: Used by [Device Configuration Page][06-DESIGN-DEVICE-CONFIG]  
+**Testing**: Covered in [Device API Tests][05-TEST-DEVICE-API]  
+
+### Related Endpoints
+- [GET /api/devices][05-API-DEVICE-LIST] - List all devices
+- [PUT /api/devices/{id}][05-API-DEVICE-UPDATE] - Update device
+- [DELETE /api/devices/{id}][05-API-DEVICE-DELETE] - Delete device
+```
+
+## Maintenance Guidelines
+
+### Adding New References
+1. Follow the standard reference ID format
+2. Ensure bidirectional links where appropriate
+3. Update the cross-reference matrix
+4. Validate references before committing
+
+### Updating Existing References
+1. Search for all occurrences of the reference ID
+2. Update all links to maintain consistency
+3. Check for broken dependencies
+4. Update the validation timestamp
+
+### Removing References
+1. Check for dependent documents
+2. Remove or update all referring links
+3. Archive the reference in history
+4. Document the removal reason
+
+## Reference History and Changelog
+
+### Version 1.0 (2025-08-12)
+- Initial cross-reference system implementation
+- Defined reference ID format
+- Created validation approach
+- Established cross-reference matrices
+
+### Version 1.1 (2025-08-12)  
+- Added documentation search system references
+- Updated technical areas to include SEARCH
+- Added search-related cross-references:
+  - [00-REF-SEARCH-INDEX]: SEARCH_INDEX.json
+  - [00-GUIDE-SEARCH]: SEARCH_GUIDE.md  
+  - [00-IMPL-SEARCH]: scripts/search.py
+
+---
+
+*This cross-reference system ensures documentation consistency and navigability. All documents should follow these patterns to maintain referential integrity across the CVD documentation ecosystem.*
+
+**System Metadata**:
+- Created: 2025-08-12
+- Version: 1.0
+- Validation Status: Active
+- Next Review: 2025-09-12
+## Migration Update - August 13, 2025
+
+### Newly Added Cross-References from /docs/ Migration
+
+#### Security Documentation
+- **Primary**: `/03-architecture/security/SECURITY_IMPLEMENTATION.md`
+- **Related**:
+  - `/03-architecture/SECURITY.md` (merge candidate)
+  - `/03-architecture/security/COMPLIANCE_ADDENDUM.md`
+  - `/03-architecture/patterns/SECURITY_PATTERNS.md`
+
+#### API Documentation
+- **Primary**: `/05-development/api/specifications/API_SPEC.yaml`
+- **Related**:
+  - `/05-development/api/OVERVIEW.md`
+  - `/05-development/api/endpoints/*.md`
+  - `/09-reference/cheat-sheets/DEVELOPER_COMMANDS.md`
+
+#### Deployment Documentation
+- **Backend**: `/05-development/deployment/plans/BACKEND_DEPLOYMENT.md`
+- **Frontend**: `/05-development/deployment/plans/FRONTEND_DEPLOYMENT.md`
+- **Related**:
+  - `/05-development/deployment/GUIDE.md`
+  - `/05-development/deployment/MONITORING.md`
+  - `/05-development/deployment/runbooks/DEPLOYMENT_RUNBOOK.md`
+
+#### Service Orders
+- **Specification**: `/07-cvd-framework/service-orders/examples/service-orders-spec.md`
+- **Mockup**: `/07-cvd-framework/service-orders/examples/service-orders-mockup.html`
+- **Related**:
+  - `/07-cvd-framework/service-orders/OVERVIEW.md`
+  - `/07-cvd-framework/service-orders/WORKFLOW_STATES.md`
+
+#### Database Documentation
+- **Schema SQL**: `/09-reference/database/cvd-database-schema.sql`
+- **Schema JSON**: `/09-reference/database/cvd-database-schema.json`
+- **Explanation**: `/09-reference/database/cvd-database-explained.txt`
+- **Related**:
+  - `/03-architecture/system/DATABASE_SCHEMA.md`
+  - `/09-reference/cheat-sheets/DATABASE_QUERIES.md`
+
+#### Legacy Architecture
+- **Original**: `/03-architecture/LEGACY_ARCHITECTURE.md`
+- **Current**: `/03-architecture/system/ARCHITECTURE_OVERVIEW.md`
+- **Action**: Review and merge relevant content
+
+#### Style Guidelines
+- **Legacy**: `/05-development/LEGACY_STYLE_GUIDE.md`
+- **Current**: `/05-development/CODING_STANDARDS.md`
+- **Action**: Merge unique content from legacy guide
+
+### Files Requiring Merge Actions
+
+1. **Security Documentation**
+   - Merge `/03-architecture/security/SECURITY_IMPLEMENTATION.md` into `/03-architecture/SECURITY.md`
+   
+2. **Architecture Documentation**
+   - Compare `/03-architecture/LEGACY_ARCHITECTURE.md` with `/03-architecture/system/ARCHITECTURE_OVERVIEW.md`
+   - Extract any unique content and merge
+
+3. **Style Guidelines**
+   - Review `/05-development/LEGACY_STYLE_GUIDE.md`
+   - Merge unique guidelines into `/05-development/CODING_STANDARDS.md`
+
+### Deprecated References to Remove
+- Any references to `/docs/` path should be updated to `/documentation/`
+- References to deleted duplicate files should be updated to their canonical locations
+

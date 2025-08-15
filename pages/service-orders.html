@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Orders Management - CVD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .auto-refresh-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* KPI Cards */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #006dfe;
+            margin-bottom: 5px;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .filter-bar button {
+            padding: 8px 16px;
+            background: #006dfe;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .filter-bar button:hover {
+            background: #0056d3;
+        }
+
+        /* Order List */
+        .orders-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .order-item {
+            border-bottom: 1px solid #e5e5e5;
+            transition: background 0.2s;
+        }
+
+        .order-item:hover {
+            background: #f8f9fa;
+        }
+
+        .order-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .order-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .order-number {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in_progress {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        /* Order Details */
+        .order-details {
+            display: none;
+            padding: 0 20px 20px;
+            background: #f8f9fa;
+        }
+
+        .order-details.expanded {
+            display: block;
+        }
+
+        .cabinet-section {
+            background: white;
+            border-radius: 6px;
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .cabinet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .cabinet-info {
+            flex: 1;
+        }
+
+        .cabinet-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .cabinet-metrics {
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .fill-rate {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .fill-rate-high { color: #28a745; }
+        .fill-rate-medium { color: #ffc107; }
+        .fill-rate-low { color: #dc3545; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #006dfe;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056d3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Edit Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .modal-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .modal-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .chevron {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #666;
+            margin-left: 10px;
+            transition: transform 0.2s;
+        }
+
+        .expanded .chevron {
+            transform: rotate(180deg);
+        }
+
+        .delivered-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .loading {
+            padding: 40px;
+            text-align: center;
+            color: #666;
+        }
+
+        .error {
+            padding: 20px;
+            background: #f8d7da;
+            color: #721c24;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Products Table */
+        .products-table {
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        .products-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .products-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .product-category {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #e9ecef;
+            border-radius: 3px;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="header-title">Service Orders</h1>
+            <div class="header-meta">
+                <div class="auto-refresh-indicator">
+                    <span class="refresh-dot"></span>
+                    <span>Auto-refresh active</span>
+                </div>
+                <span id="last-updated">Last updated: --</span>
+            </div>
+        </div>
+
+        <!-- KPI Section -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpi-pending">0</div>
+                <div class="kpi-label">Pending</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpi-in-progress">0</div>
+                <div class="kpi-label">In Progress</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpi-units">0</div>
+                <div class="kpi-label">Units to Deliver</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value" id="kpi-fill-rate">0%</div>
+                <div class="kpi-label">Avg Fill Rate</div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <select id="status-filter">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+            </select>
+            <select id="route-filter">
+                <option value="">All Routes</option>
+            </select>
+            <input type="date" id="date-from">
+            <input type="date" id="date-to">
+            <button onclick="applyFilters()">Apply Filters</button>
+            <button onclick="resetFilters()" style="background: #6c757d;">Reset</button>
+        </div>
+
+        <!-- Orders Container -->
+        <div class="orders-container" id="orders-container">
+            <div class="loading">Loading service orders...</div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Edit Cabinet Delivery</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/api.js"></script>
+    <script src="/auth-check.js"></script>
+    <script>
+        // Initialize API client
+        const api = new CVDApi();
+        
+        // State
+        let orders = [];
+        let routes = [];
+        let currentUser = null;
+        let avgFillRate = 0;
+        let filters = {
+            status: '',
+            routeId: '',
+            dateFrom: '',
+            dateTo: ''
+        };
+        let autoRefreshInterval = null;
+
+        // Initialize
+        async function init() {
+            try {
+                await loadCurrentUser();
+                await loadRoutes();
+                await loadOrders();
+                setupAutoRefresh();
+                setupEventListeners();
+                updateLastUpdated();
+            } catch (error) {
+                console.error('Failed to initialize:', error);
+                showError('Failed to load service orders');
+            }
+        }
+        
+        // Load current user
+        async function loadCurrentUser() {
+            try {
+                const response = await api.makeRequest('GET', '/auth/current-user');
+                currentUser = response.user;
+                console.log('Current user loaded:', currentUser.username);
+            } catch (error) {
+                console.error('Failed to load current user:', error);
+                // Fallback to userId: 1 for backwards compatibility
+                currentUser = { id: 1 };
+            }
+        }
+
+        // Load routes for filter
+        async function loadRoutes() {
+            try {
+                routes = await api.makeRequest('GET', '/routes');
+                const routeFilter = document.getElementById('route-filter');
+                
+                routes.forEach(route => {
+                    const option = document.createElement('option');
+                    option.value = route.id;
+                    option.textContent = route.name;
+                    routeFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load routes:', error);
+            }
+        }
+
+        // Load orders
+        async function loadOrders() {
+            try {
+                const params = new URLSearchParams();
+                if (filters.status) params.append('status', filters.status);
+                if (filters.routeId) params.append('routeId', filters.routeId);
+                if (filters.dateFrom) params.append('dateFrom', filters.dateFrom);
+                if (filters.dateTo) params.append('dateTo', filters.dateTo);
+                
+                const url = `/service-orders${params.toString() ? '?' + params.toString() : ''}`;
+                const response = await api.makeRequest('GET', url);
+                
+                // Handle both old array format and new object format
+                if (Array.isArray(response)) {
+                    orders = response;
+                } else {
+                    orders = response.orders || [];
+                    avgFillRate = response.avgFillRate || 0;
+                }
+                
+                renderOrders();
+                updateKPIs();
+                updateLastUpdated();
+            } catch (error) {
+                console.error('Failed to load orders:', error);
+                showError('Failed to load service orders');
+            }
+        }
+
+        // Render orders
+        function renderOrders() {
+            const container = document.getElementById('orders-container');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No Service Orders Found</h3>
+                        <p>Create service orders from the Route Schedule page</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-item" data-order-id="${order.id}">
+                    <div class="order-header" onclick="toggleOrderDetails(${order.id})">
+                        <div class="order-info">
+                            <span class="order-number">Order #${order.id}</span>
+                            <span class="order-meta">Route: ${order.routeName || 'N/A'}</span>
+                            <span class="order-meta">Driver: ${order.driverName || 'Unassigned'}</span>
+                            <span class="order-meta">Created: ${formatDateTime(order.createdAt)}</span>
+                            <span class="order-meta">By: ${order.createdBy || 'System'}</span>
+                        </div>
+                        <div>
+                            <span class="order-status status-${order.status}">${order.status.replace('_', ' ')}</span>
+                            <span style="margin-left: 15px;">Units: ${order.totalUnits || 0}</span>
+                            <span class="chevron"></span>
+                        </div>
+                    </div>
+                    <div class="order-details" id="order-details-${order.id}">
+                        <!-- Details loaded on demand -->
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toggle order details
+        async function toggleOrderDetails(orderId) {
+            const detailsDiv = document.getElementById(`order-details-${orderId}`);
+            const orderDiv = detailsDiv.closest('.order-item');
+            
+            if (detailsDiv.classList.contains('expanded')) {
+                detailsDiv.classList.remove('expanded');
+                orderDiv.classList.remove('expanded');
+            } else {
+                // Load order details
+                try {
+                    const orderDetails = await api.makeRequest('GET', `/service-orders/${orderId}`);
+                    renderOrderDetails(orderId, orderDetails);
+                    detailsDiv.classList.add('expanded');
+                    orderDiv.classList.add('expanded');
+                } catch (error) {
+                    console.error('Failed to load order details:', error);
+                    alert('Failed to load order details');
+                }
+            }
+        }
+
+        // Render order details
+        function renderOrderDetails(orderId, details) {
+            const detailsDiv = document.getElementById(`order-details-${orderId}`);
+            
+            // Store details in order object for later reference
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].fullDetails = details;
+            }
+            
+            if (!details.cabinets || details.cabinets.length === 0) {
+                detailsDiv.innerHTML = '<p>No cabinet details available</p>';
+                return;
+            }
+
+            // Group cabinets by device
+            const deviceGroups = {};
+            details.cabinets.forEach(cabinet => {
+                if (!deviceGroups[cabinet.deviceId]) {
+                    deviceGroups[cabinet.deviceId] = {
+                        asset: cabinet.asset,
+                        cooler: cabinet.cooler,
+                        location: cabinet.location,
+                        cabinets: []
+                    };
+                }
+                deviceGroups[cabinet.deviceId].cabinets.push(cabinet);
+            });
+
+            detailsDiv.innerHTML = Object.entries(deviceGroups).map(([deviceId, device]) => `
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin: 15px 0 10px;">Device ${device.asset} - ${device.cooler} (${device.location})</h4>
+                    ${device.cabinets.map(cabinet => renderCabinet(cabinet, details.status)).join('')}
+                </div>
+            `).join('');
+        }
+
+        // Render cabinet
+        function renderCabinet(cabinet, orderStatus) {
+            const totalUnits = cabinet.products.reduce((sum, p) => sum + p.quantityNeeded, 0);
+            const fillRate = calculateFillRate(cabinet);
+            
+            return `
+                <div class="cabinet-section">
+                    <div class="cabinet-header">
+                        <div class="cabinet-info">
+                            <div class="cabinet-name">
+                                Cabinet ${cabinet.cabinetIndex + 1} - ${cabinet.cabinetType}
+                                ${cabinet.isExecuted ? '<span class="delivered-badge">✓ Delivered</span>' : ''}
+                            </div>
+                            <div class="cabinet-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Products</span>
+                                    <span class="metric-value">${cabinet.products.length}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Units Needed</span>
+                                    <span class="metric-value">${totalUnits}</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Fill Rate</span>
+                                    <span class="metric-value fill-rate-${getFillRateClass(fillRate)}">${fillRate}%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            ${renderCabinetActions(cabinet, orderStatus)}
+                        </div>
+                    </div>
+                    ${cabinet.products.length > 0 ? renderProductsTable(cabinet) : ''}
+                </div>
+            `;
+        }
+
+        // Render cabinet actions
+        function renderCabinetActions(cabinet, orderStatus) {
+            if (orderStatus === 'completed') {
+                return '<span style="color: #666; font-size: 14px;">Order Completed</span>';
+            }
+
+            if (cabinet.isExecuted) {
+                return `<button class="btn btn-danger btn-sm" onclick="rollbackCabinet(${cabinet.cabinetOrderId})">Rollback</button>`;
+            }
+
+            return `
+                <button class="btn btn-primary btn-sm" onclick="quickExecuteCabinet(${cabinet.cabinetOrderId})">Quick Execute</button>
+                <button class="btn btn-secondary btn-sm" onclick="editAndExecuteCabinet(${cabinet.cabinetOrderId})">Edit & Execute</button>
+            `;
+        }
+
+        // Render products table
+        function renderProductsTable(cabinet) {
+            return `
+                <div class="products-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Quantity Needed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${cabinet.products.map(product => `
+                                <tr>
+                                    <td>${product.productName}</td>
+                                    <td><span class="product-category">${product.category || 'Other'}</span></td>
+                                    <td>${product.quantityNeeded}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Quick execute cabinet
+        async function quickExecuteCabinet(cabinetOrderId) {
+            if (!confirm('Execute this cabinet with the ordered quantities?')) {
+                return;
+            }
+
+            try {
+                // Get cabinet details to build delivered items
+                const cabinet = findCabinetById(cabinetOrderId);
+                if (!cabinet) {
+                    throw new Error('Cabinet not found');
+                }
+
+                const deliveredItems = cabinet.products.map(product => ({
+                    productId: product.productId,
+                    quantityFilled: product.quantityNeeded
+                }));
+
+                const result = await api.makeRequest('POST', `/service-orders/cabinets/${cabinetOrderId}/execute`, {
+                    deliveredItems: deliveredItems,
+                    userId: currentUser?.id || 1
+                });
+
+                alert('Cabinet executed successfully!');
+                await loadOrders(); // Refresh
+            } catch (error) {
+                console.error('Failed to execute cabinet:', error);
+                alert('Failed to execute cabinet: ' + error.message);
+            }
+        }
+
+        // Edit and execute cabinet
+        async function editAndExecuteCabinet(cabinetOrderId) {
+            const cabinet = findCabinetById(cabinetOrderId);
+            if (!cabinet) {
+                alert('Cabinet not found');
+                return;
+            }
+
+            // Show modal with editable quantities
+            const modal = document.getElementById('editModal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = `Edit Cabinet ${cabinet.cabinetIndex + 1} - ${cabinet.cabinetType}`;
+            
+            modalBody.innerHTML = `
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 30px; font-size: 14px;">
+                        <div>
+                            <span style="color: #666;">Device:</span>
+                            <strong>${cabinet.asset} - ${cabinet.cooler}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #666;">Location:</span>
+                            <strong>${cabinet.location}</strong>
+                        </div>
+                    </div>
+                </div>
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Ordered</th>
+                            <th>Delivered</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cabinet.products.map(product => `
+                            <tr>
+                                <td>${product.productName}</td>
+                                <td>${product.category || 'Other'}</td>
+                                <td>${product.quantityNeeded}</td>
+                                <td>
+                                    <input type="number" 
+                                           class="quantity-input" 
+                                           value="${product.quantityNeeded}" 
+                                           min="0" 
+                                           data-product-id="${product.productId}">
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="executeWithEdits(${cabinetOrderId})">Execute Delivery</button>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        // Execute with edits
+        async function executeWithEdits(cabinetOrderId) {
+            const inputs = document.querySelectorAll('.quantity-input');
+            const deliveredItems = [];
+
+            inputs.forEach(input => {
+                const quantity = parseInt(input.value) || 0;
+                if (quantity > 0) {
+                    deliveredItems.push({
+                        productId: parseInt(input.dataset.productId),
+                        quantityFilled: quantity
+                    });
+                }
+            });
+
+            if (deliveredItems.length === 0) {
+                alert('Please enter at least one quantity');
+                return;
+            }
+
+            try {
+                await api.makeRequest('POST', `/service-orders/cabinets/${cabinetOrderId}/execute`, {
+                    deliveredItems: deliveredItems,
+                    userId: currentUser?.id || 1
+                });
+
+                alert('Cabinet executed successfully!');
+                closeModal();
+                await loadOrders(); // Refresh
+            } catch (error) {
+                console.error('Failed to execute cabinet:', error);
+                alert('Failed to execute cabinet: ' + error.message);
+            }
+        }
+
+        // Rollback cabinet
+        async function rollbackCabinet(cabinetOrderId) {
+            if (!confirm('Rollback this cabinet delivery? This will reverse the inventory update.')) {
+                return;
+            }
+
+            try {
+                await api.makeRequest('POST', `/service-orders/cabinets/${cabinetOrderId}/rollback`);
+                alert('Cabinet rolled back successfully!');
+                await loadOrders(); // Refresh
+            } catch (error) {
+                console.error('Failed to rollback cabinet:', error);
+                alert('Failed to rollback cabinet: ' + error.message);
+            }
+        }
+
+        // Find cabinet by ID
+        function findCabinetById(cabinetOrderId) {
+            // Search through all loaded order details
+            for (const order of orders) {
+                // Check if we have full details loaded
+                if (order.fullDetails && order.fullDetails.cabinets) {
+                    const cabinet = order.fullDetails.cabinets.find(
+                        c => c.cabinetOrderId === cabinetOrderId
+                    );
+                    if (cabinet) return cabinet;
+                }
+                
+                // Fallback to basic cabinet data if available
+                if (order.cabinets) {
+                    const cabinet = order.cabinets.find(
+                        c => c.cabinetOrderId === cabinetOrderId
+                    );
+                    if (cabinet) return cabinet;
+                }
+            }
+            
+            console.warn(`Cabinet with ID ${cabinetOrderId} not found in loaded data`);
+            return null;
+        }
+
+        // Calculate fill rate
+        function calculateFillRate(cabinet) {
+            return cabinet.fillRate || 0;  // Use backend-calculated rate
+        }
+
+        // Get fill rate class
+        function getFillRateClass(fillRate) {
+            if (fillRate >= 90) return 'high';
+            if (fillRate >= 70) return 'medium';
+            return 'low';
+        }
+
+        // Update KPIs
+        function updateKPIs() {
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const inProgress = orders.filter(o => o.status === 'in_progress').length;
+            const totalUnits = orders.reduce((sum, o) => sum + (o.totalUnits || 0), 0);
+            
+            document.getElementById('kpi-pending').textContent = pending;
+            document.getElementById('kpi-in-progress').textContent = inProgress;
+            document.getElementById('kpi-units').textContent = totalUnits;
+            document.getElementById('kpi-fill-rate').textContent = avgFillRate + '%';
+        }
+
+        // Apply filters
+        function applyFilters() {
+            filters.status = document.getElementById('status-filter').value;
+            filters.routeId = document.getElementById('route-filter').value;
+            filters.dateFrom = document.getElementById('date-from').value;
+            filters.dateTo = document.getElementById('date-to').value;
+            
+            loadOrders();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('status-filter').value = '';
+            document.getElementById('route-filter').value = '';
+            document.getElementById('date-from').value = '';
+            document.getElementById('date-to').value = '';
+            
+            filters = {
+                status: '',
+                routeId: '',
+                dateFrom: '',
+                dateTo: ''
+            };
+            
+            loadOrders();
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        // Setup auto refresh
+        function setupAutoRefresh() {
+            autoRefreshInterval = setInterval(() => {
+                loadOrders();
+            }, 30000); // Refresh every 30 seconds
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Close modal on click outside
+            document.getElementById('editModal').addEventListener('click', (e) => {
+                if (e.target.id === 'editModal') {
+                    closeModal();
+                }
+            });
+
+            // Set default dates
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('date-from').value = weekAgo.toISOString().split('T')[0];
+            document.getElementById('date-to').value = today.toISOString().split('T')[0];
+        }
+
+        // Update last updated time
+        function updateLastUpdated() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            document.getElementById('last-updated').textContent = `Last updated: ${timeStr}`;
+        }
+
+        // Format date time
+        function formatDateTime(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // Show error
+        function showError(message) {
+            const container = document.getElementById('orders-container');
+            container.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Cleanup on unload
+        window.addEventListener('beforeunload', () => {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>

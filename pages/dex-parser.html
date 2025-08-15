@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEX Data Parser</title>
+    <style>
+        /* CVD Design System Variables */
+        :root {
+            --cvd-primary: #006dfe;
+            --cvd-primary-hover: #0056d3;
+            --cvd-background: #f5f5f5;
+            --cvd-card-bg: white;
+            --cvd-text-primary: #1a1a1a;
+            --cvd-text-secondary: #64748b;
+            --cvd-success: #28a745;
+            --cvd-error: #dc3545;
+            --cvd-border: #e2e8f0;
+            --cvd-hover-bg: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--cvd-background);
+            color: var(--cvd-text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .main-content {
+            padding: 20px 0;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        /* CVD Header Pattern */
+        .page-header {
+            background: var(--cvd-card-bg);
+            border-bottom: 1px solid var(--cvd-border);
+            padding: 20px 0;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .breadcrumb-item {
+            color: var(--cvd-primary);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+            color: var(--cvd-text-secondary);
+        }
+
+        .breadcrumb-current {
+            color: var(--cvd-text-secondary);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid var(--cvd-primary);
+            display: inline-block;
+        }
+
+        .page-subtitle {
+            color: var(--cvd-text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Typography Hierarchy */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .section-description {
+            color: var(--cvd-text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .body-text {
+            font-size: 14px;
+            color: var(--cvd-text-primary);
+            line-height: 1.5;
+        }
+
+        .label-text {
+            font-size: 12px;
+            color: var(--cvd-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        /* CVD Button System */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 32px;
+            text-decoration: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--cvd-primary);
+            color: white;
+            border: 1px solid var(--cvd-primary);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--cvd-primary-hover);
+            border-color: var(--cvd-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--cvd-card-bg);
+            color: var(--cvd-text-primary);
+            border: 1px solid var(--cvd-border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--cvd-hover-bg);
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* CVD Upload Section */
+        .upload-section {
+            background: var(--cvd-card-bg);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--cvd-border);
+        }
+
+        .section-header-with-icon {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--cvd-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .upload-header-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .drag-drop-zone {
+            border: 2px dashed var(--cvd-primary);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.2s ease;
+            background: var(--cvd-hover-bg);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .drag-drop-zone:hover {
+            border-color: var(--cvd-primary-hover);
+            background: #f0f7ff;
+        }
+
+        .drag-drop-zone.drag-over {
+            border-color: var(--cvd-success);
+            background: #f0fff4;
+        }
+
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--cvd-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: white;
+        }
+
+        .upload-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .upload-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .upload-description {
+            color: var(--cvd-text-secondary);
+            font-size: 14px;
+            margin: 0 0 20px 0;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1f3f4;
+            border-radius: 8px;
+            border-left: 4px solid #006dfe;
+            display: none;
+        }
+
+        .file-info h4 {
+            color: #006dfe;
+            margin-bottom: 5px;
+        }
+
+        .file-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* CVD Processing States */
+        .processing-section {
+            background: var(--cvd-card-bg);
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--cvd-border);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .loading-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--cvd-border);
+            border-top: 4px solid var(--cvd-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .processing-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .status-message {
+            color: var(--cvd-text-secondary);
+            font-size: 14px;
+            margin: 0 0 24px 0;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--cvd-border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cvd-primary), var(--cvd-primary-hover));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--cvd-text-secondary);
+        }
+
+        /* CVD Results Section */
+        .results-section {
+            background: var(--cvd-card-bg);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--cvd-border);
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--cvd-border);
+        }
+
+        .success-indicator {
+            width: 48px;
+            height: 48px;
+            background: var(--cvd-success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .success-indicator svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .results-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .results-subtitle {
+            color: var(--cvd-text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            background: var(--cvd-hover-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid var(--cvd-primary);
+            transition: transform 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-1px);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            color: var(--cvd-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--cvd-text-primary);
+        }
+
+        .data-section {
+            margin-top: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin: 0;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .table-container {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--cvd-card-bg);
+        }
+
+        .data-table th {
+            background: var(--cvd-hover-bg);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--cvd-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--cvd-border);
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--cvd-border);
+            font-size: 14px;
+            color: var(--cvd-text-primary);
+        }
+
+        .data-table tr:hover {
+            background: var(--cvd-hover-bg);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .record-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .record-type-pa { background: #e3f2fd; color: #1976d2; }
+        .record-type-va { background: #e8f5e8; color: #388e3c; }
+        .record-type-ca { background: #fff3e0; color: #f57c00; }
+        .record-type-da { background: #ffebee; color: #d32f2f; }
+        .record-type-dxs { background: #f3e5f5; color: #7b1fa2; }
+        .record-type-dxe { background: #f3e5f5; color: #7b1fa2; }
+        .record-type-other { background: #f5f5f5; color: #666; }
+
+        /* CVD Error States */
+        .error-section {
+            background: var(--cvd-card-bg);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--cvd-border);
+            border-left: 4px solid var(--cvd-error);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .error-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--cvd-error);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+
+        .error-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .error-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--cvd-text-primary);
+            margin: 0 0 8px 0;
+        }
+
+        .error-subtitle {
+            color: var(--cvd-text-secondary);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .error-details {
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 16px;
+            border-left: 3px solid var(--cvd-error);
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-size: 13px;
+            color: var(--cvd-text-primary);
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+
+        .pa-grid-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .pa-grid-header {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .pa-grid-header h3 {
+            color: #006dfe;
+            margin-bottom: 5px;
+        }
+
+        .pa-grid-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .pa-grid-table th,
+        .pa-grid-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e8;
+        }
+
+        .pa-grid-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .pa-grid-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .selection-number {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #006dfe;
+        }
+
+        .price-cents {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .units-sold {
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .header-content,
+            .container {
+                padding: 0 16px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .upload-section,
+            .processing-section,
+            .results-section,
+            .error-section {
+                padding: 20px 16px;
+            }
+
+            .drag-drop-zone {
+                padding: 32px 16px;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 12px;
+            }
+
+            .kpi-card {
+                padding: 16px;
+            }
+
+            .kpi-value {
+                font-size: 20px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .section-actions {
+                width: 100%;
+            }
+
+            .btn {
+                min-height: 44px; /* Touch target size */
+            }
+
+            .data-table {
+                font-size: 12px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header,
+            .error-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .success-indicator,
+            .error-icon {
+                margin: 0 auto 16px;
+            }
+        }
+
+        /* Focus States and Accessibility */
+        .btn:focus,
+        .drag-drop-zone:focus,
+        input[type="file"]:focus + .drag-drop-zone {
+            outline: 2px solid var(--cvd-primary);
+            outline-offset: 2px;
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .drag-drop-zone {
+                border-width: 3px;
+            }
+            
+            .kpi-card {
+                border: 1px solid var(--cvd-border);
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .loading-spinner {
+                animation: none;
+            }
+            
+            .btn,
+            .drag-drop-zone,
+            .kpi-card {
+                transition: none;
+            }
+        }
+
+        /* Screen reader only content */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- CVD Header Pattern -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="breadcrumb">
+                <a href="#home" class="breadcrumb-item">Home</a>
+                <span class="breadcrumb-separator">›</span>
+                <span class="breadcrumb-current">DEX Parser</span>
+            </div>
+            <h1 class="page-title">DEX File Parser</h1>
+            <p class="page-subtitle">Upload and analyze DEX transaction files from vending machines</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+
+        <!-- File Upload Section -->
+        <div class="upload-section">
+            <div class="section-header-with-icon">
+                <div class="section-icon">
+                    <svg class="upload-header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17,8 12,3 7,8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="section-title">Upload DEX File</h2>
+                    <p class="section-description">Select a DEX file to parse transaction records and extract insights</p>
+                </div>
+            </div>
+
+            <div class="drag-drop-zone" id="dragDropZone" onclick="document.getElementById('fileInput').click();">
+                <div class="upload-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                    </svg>
+                </div>
+                <h3 class="upload-title">Drop DEX file here</h3>
+                <p class="upload-description">or click to browse and select a file</p>
+                <button class="btn btn-primary" type="button" id="browseButton" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7,10 12,15 17,10"/>
+                        <path d="M12,15 L12,3"/>
+                    </svg>
+                    Choose File
+                </button>
+                <input type="file" id="fileInput" accept=".txt,.dex" style="display: none;">
+            </div>
+            <div class="file-info" id="fileInfo">
+                <h4>Selected Files:</h4>
+                <div id="fileList"></div>
+            </div>
+        </div>
+
+        <!-- Processing Status Section -->
+        <div class="processing-section" id="processingSection" style="display: none;">
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <h3 class="processing-title">Processing DEX File</h3>
+                <p class="status-message" id="statusMessage">Analyzing file structure...</p>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressPercent">0%</span>
+                        <span id="progressEta">Calculating time remaining...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Results Section -->
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <div class="success-indicator">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20,6 9,17 4,12"/>
+                    </svg>
+                </div>
+                <div class="results-info">
+                    <h2 class="results-title">DEX File Processed Successfully</h2>
+                    <p class="results-subtitle" id="resultsSubtitle">Found X records in Y seconds</p>
+                </div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Machine Serial</div>
+                    <div class="kpi-value" id="machineSerial">-</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Manufacturer</div>
+                    <div class="kpi-value" id="manufacturer">-</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Records</div>
+                    <div class="kpi-value" id="totalRecords">-</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">PA Records</div>
+                    <div class="kpi-value" id="paRecordsCount">-</div>
+                </div>
+            </div>
+
+            <div class="section-actions">
+                <button class="btn btn-primary" id="showPAGridButton">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                    </svg>
+                    View PA Selection Grid
+                </button>
+                <button class="btn btn-secondary" id="showAllRecordsButton">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10,9 9,9 8,9"/>
+                    </svg>
+                    View All Records
+                </button>
+                <button class="btn btn-secondary" id="newFileButton">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                    </svg>
+                    Parse Another File
+                </button>
+            </div>
+        </div>
+
+        <!-- PA Selection Grid Section -->
+        <div class="pa-grid-section" id="paGridSection">
+            <div class="pa-grid-header">
+                <h3>PA Selection Grid</h3>
+                <p>Product audit data organized by selection number</p>
+            </div>
+            <table class="pa-grid-table" id="paGridTable">
+                <thead>
+                    <tr>
+                        <th>Selection</th>
+                        <th>Price</th>
+                        <th>Capacity</th>
+                        <th>Units Sold</th>
+                        <th>Revenue</th>
+                        <th>Cash Sales</th>
+                        <th>Cashless Sales</th>
+                        <th>Record Type</th>
+                    </tr>
+                </thead>
+                <tbody id="paGridTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Error Section -->
+        <div class="error-section" id="errorSection" style="display: none;">
+            <div class="error-header">
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                </div>
+                <div class="error-info">
+                    <h2 class="error-title">Processing Failed</h2>
+                    <p class="error-subtitle" id="errorSubtitle">There was an error processing your DEX file</p>
+                </div>
+            </div>
+
+            <div class="error-details" id="errorDetails">
+                <!-- Error details will be populated by JavaScript -->
+            </div>
+
+            <div class="error-actions">
+                <button class="btn btn-primary" id="retryButton">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                    </svg>
+                    Try Again
+                </button>
+            </div>
+        </div>
+        </div> <!-- End main-content -->
+    </div>
+
+    <script src="/api.js"></script>
+    <script src="/auth-check.js"></script>
+    <script>
+        // Global state for DEX parser
+        let currentDexReadId = null;
+        let dexParserApi = null;
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize API after DOM is loaded
+            if (typeof CVDApi !== 'undefined') {
+                dexParserApi = new CVDApi();
+            } else {
+                console.error('CVDApi not loaded - check if /api.js is accessible');
+            }
+            initializeDEXParser();
+        });
+
+        function initializeDEXParser() {
+            
+            // Get DOM elements with error checking
+            const dragDropZone = document.getElementById('dragDropZone');
+            const fileInput = document.getElementById('fileInput');
+            const browseButton = document.getElementById('browseButton');
+            const fileInfo = document.getElementById('fileInfo');
+            const fileList = document.getElementById('fileList');
+            
+            // Verify all required elements exist
+            if (!dragDropZone || !fileInput || !browseButton) {
+                console.error('DEX Parser: Required DOM elements not found', {
+                    dragDropZone: !!dragDropZone,
+                    fileInput: !!fileInput, 
+                    browseButton: !!browseButton
+                });
+                return;
+            }
+            
+            // Setup event listeners with error handling
+            try {
+                // File input change handler
+                fileInput.addEventListener('change', handleFileSelect);
+                
+                // Drag and drop handlers
+                dragDropZone.addEventListener('dragover', handleDragOver);
+                dragDropZone.addEventListener('dragleave', handleDragLeave);
+                dragDropZone.addEventListener('drop', handleDrop);
+                
+                // Prevent default drag behaviors on document
+                document.addEventListener('dragover', (e) => e.preventDefault());
+                document.addEventListener('drop', (e) => e.preventDefault());
+                
+            } catch (error) {
+                console.error('DEX Parser: Error setting up file upload listeners:', error);
+            }
+            
+            console.log('DEX Parser: File upload handlers initialized successfully');
+            
+            // Action button events with existence checks
+            const showPAGridButton = document.getElementById('showPAGridButton');
+            const showAllRecordsButton = document.getElementById('showAllRecordsButton');
+            const newFileButton = document.getElementById('newFileButton');
+            const retryButton = document.getElementById('retryButton');
+            
+            if (showPAGridButton) showPAGridButton.addEventListener('click', showPAGrid);
+            if (showAllRecordsButton) showAllRecordsButton.addEventListener('click', showAllRecords);
+            if (newFileButton) newFileButton.addEventListener('click', resetForNewFile);
+            if (retryButton) retryButton.addEventListener('click', resetForNewFile);
+            
+            console.log('DEX Parser: Initialization complete');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('dragDropZone').classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('dragDropZone').classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('dragDropZone').classList.remove('drag-over');
+            
+            const files = Array.from(e.dataTransfer.files);
+            const txtFiles = files.filter(file => file.name.endsWith('.txt'));
+            
+            if (txtFiles.length === 0) {
+                showError({
+                    message: 'Please drop .txt files only',
+                    line: 0,
+                    field: 0
+                });
+                return;
+            }
+            
+            handleFiles(txtFiles);
+        }
+
+        function handleFileSelect(e) {
+            console.log('DEX Parser: File input change event triggered');
+            try {
+                const files = Array.from(e.target.files);
+                console.log('DEX Parser: Selected files:', files.map(f => f.name));
+                handleFiles(files);
+            } catch (error) {
+                console.error('DEX Parser: Error handling file selection:', error);
+                showError({
+                    message: `Error selecting files: ${error.message}`,
+                    line: 0,
+                    field: 0
+                });
+            }
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            // For now, process only the first file
+            const file = files[0];
+            
+            if (!file.name.endsWith('.txt')) {
+                showError({
+                    message: 'File must be a .txt file',
+                    line: 0,
+                    field: 0
+                });
+                return;
+            }
+            
+            showFileInfo([file]);
+            processFile(file);
+        }
+
+        function showFileInfo(files) {
+            const fileInfo = document.getElementById('fileInfo');
+            const fileList = document.getElementById('fileList');
+            
+            fileList.innerHTML = files.map(file => 
+                `<p>${file.name} (${(file.size / 1024).toFixed(1)} KB)</p>`
+            ).join('');
+            
+            fileInfo.style.display = 'block';
+        }
+
+        async function processFile(file) {
+            showProcessingStatus();
+            
+            // Check if API is available
+            if (!dexParserApi) {
+                showError({
+                    message: 'API not initialized. Please refresh the page.',
+                    line: 0,
+                    field: 0
+                });
+                hideProcessingStatus();
+                return;
+            }
+            
+            try {
+                // Create FormData for file upload
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                // Update progress
+                updateProgress(25, 'Uploading file...');
+                
+                // Make API request to Flask backend
+                const result = await dexParserApi.parseDexFile(formData);
+                
+                updateProgress(75, 'Processing DEX records...');
+                
+                updateProgress(100, 'Complete!');
+                
+                setTimeout(() => {
+                    hideProcessingStatus();
+                    
+                    if (result.success) {
+                        showResults(result);
+                    } else {
+                        showError(result.error);
+                    }
+                }, 500);
+                
+            } catch (error) {
+                hideProcessingStatus();
+                showError({
+                    message: `Network error: ${error.message}`,
+                    line: 0,
+                    field: 0
+                });
+            }
+        }
+
+        function showProcessingStatus() {
+            document.getElementById('processingSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'none';
+            document.getElementById('paGridSection').style.display = 'none';
+        }
+
+        function hideProcessingStatus() {
+            document.getElementById('processingSection').style.display = 'none';
+        }
+
+        function updateProgress(percentage, message) {
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressPercent').textContent = percentage + '%';
+            document.getElementById('statusMessage').textContent = message;
+        }
+
+        function showResults(result) {
+            currentDexReadId = result.dex_read_id;
+            
+            // Update metrics
+            document.getElementById('machineSerial').textContent = 
+                result.machine_info.machine_serial || 'Unknown';
+            document.getElementById('manufacturer').textContent = 
+                result.machine_info.manufacturer || 'Unknown';
+            document.getElementById('totalRecords').textContent = 
+                result.total_records || 0;
+            document.getElementById('paRecordsCount').textContent = 
+                result.pa_records_count || 0;
+            
+            // Update success message
+            document.getElementById('resultsSubtitle').textContent = result.message || `Found ${result.total_records || 0} records processed successfully`;
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('errorSection').style.display = 'none';
+        }
+
+        function showError(error) {
+            // Update error message
+            document.getElementById('errorSubtitle').textContent = error.message;
+            
+            // Build error details
+            let errorText = '';
+            if (error.line > 0) {
+                errorText += `Line: ${error.line}\n`;
+            }
+            if (error.field > 0) {
+                errorText += `Field: ${error.field}\n`;
+            }
+            if (error.record) {
+                errorText += `Record: ${error.record}\n`;
+            }
+            if (error.expected) {
+                errorText += `Expected: ${error.expected}\n`;
+            }
+            if (error.actual) {
+                errorText += `Actual: ${error.actual}\n`;
+            }
+            
+            document.getElementById('errorDetails').textContent = errorText;
+            
+            // Show error section
+            document.getElementById('errorSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        async function showPAGrid() {
+            if (!currentDexReadId) return;
+            
+            if (!dexParserApi) {
+                showError({
+                    message: 'API not initialized. Please refresh the page.',
+                    line: 0,
+                    field: 0
+                });
+                return;
+            }
+            
+            try {
+                const result = await dexParserApi.getDexPARecords(currentDexReadId);
+                
+                if (result.success) {
+                    renderPAGrid(result.pa_records);
+                    document.getElementById('paGridSection').style.display = 'block';
+                } else {
+                    showError(result.error);
+                }
+            } catch (error) {
+                showError({
+                    message: `Failed to load PA records: ${error.message}`,
+                    line: 0,
+                    field: 0
+                });
+            }
+        }
+
+        function renderPAGrid(paRecords) {
+            const tbody = document.getElementById('paGridTableBody');
+            tbody.innerHTML = '';
+            
+            // Group records by selection number
+            const selectionMap = new Map();
+            
+            paRecords.forEach(record => {
+                const selection = record.selection_number || 'Unknown';
+                if (!selectionMap.has(selection)) {
+                    selectionMap.set(selection, {
+                        selection_number: selection,
+                        price_cents: 0,
+                        capacity: 0,
+                        units_sold: 0,
+                        revenue_cents: 0,
+                        cash_sales: 0,
+                        cashless_sales: 0,
+                        record_types: []
+                    });
+                }
+                
+                const data = selectionMap.get(selection);
+                
+                // Merge data from different PA record types
+                if (record.price_cents) data.price_cents = record.price_cents;
+                if (record.capacity) data.capacity = record.capacity;
+                if (record.units_sold) data.units_sold = record.units_sold;
+                if (record.revenue_cents) data.revenue_cents = record.revenue_cents;
+                if (record.cash_sales) data.cash_sales = record.cash_sales;
+                if (record.cashless_sales) data.cashless_sales = record.cashless_sales;
+                
+                data.record_types.push(record.record_subtype);
+            });
+            
+            // Sort by selection number
+            const sortedSelections = Array.from(selectionMap.values()).sort((a, b) => {
+                const aNum = parseInt(a.selection_number) || 0;
+                const bNum = parseInt(b.selection_number) || 0;
+                return aNum - bNum;
+            });
+            
+            // Render rows
+            sortedSelections.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="selection-number">${data.selection_number}</span></td>
+                    <td><span class="price-cents">$${(data.price_cents / 100).toFixed(2)}</span></td>
+                    <td>${data.capacity || '-'}</td>
+                    <td><span class="units-sold">${data.units_sold || 0}</span></td>
+                    <td><span class="price-cents">$${(data.revenue_cents / 100).toFixed(2)}</span></td>
+                    <td>${data.cash_sales || 0}</td>
+                    <td>${data.cashless_sales || 0}</td>
+                    <td>${data.record_types.join(', ')}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function showAllRecords() {
+            if (!currentDexReadId) return;
+            
+            // For now, show a placeholder message
+            alert('All records view will be implemented in the next phase. This would show a detailed table of all parsed DEX records.');
+        }
+
+        function resetForNewFile() {
+            // Hide all sections except upload
+            document.getElementById('processingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('errorSection').style.display = 'none';
+            document.getElementById('paGridSection').style.display = 'none';
+            document.getElementById('fileInfo').style.display = 'none';
+            
+            // Reset form
+            document.getElementById('fileInput').value = '';
+            currentDexReadId = null;
+        }
+
+        // Utility function to get record type CSS class
+        function getRecordTypeClass(recordType) {
+            if (recordType.startsWith('PA')) return 'record-type-pa';
+            if (recordType.startsWith('VA')) return 'record-type-va';
+            if (recordType.startsWith('CA')) return 'record-type-ca';
+            if (recordType.startsWith('DA')) return 'record-type-da';
+            if (recordType === 'DXS') return 'record-type-dxs';
+            if (recordType === 'DXE') return 'record-type-dxe';
+            return 'record-type-other';
+        }
+    </script>
+</body>
+</html>

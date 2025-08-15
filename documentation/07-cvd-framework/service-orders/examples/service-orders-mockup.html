@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Orders Management - CVD Mockup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Section */
+        .page-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .auto-refresh-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* KPI Cards */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .kpi-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #006dfe;
+            margin-bottom: 5px;
+        }
+
+        .kpi-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .filter-bar button {
+            padding: 8px 16px;
+            background: #006dfe;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .filter-bar button:hover {
+            background: #0056d3;
+        }
+
+        /* Order List */
+        .orders-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .order-item {
+            border-bottom: 1px solid #e5e5e5;
+            transition: background 0.2s;
+        }
+
+        .order-item:hover {
+            background: #f8f9fa;
+        }
+
+        .order-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .order-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .order-number {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-meta {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-in_progress {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Order Details */
+        .order-details {
+            display: none;
+            padding: 0 20px 20px;
+            background: #f8f9fa;
+        }
+
+        .order-details.expanded {
+            display: block;
+        }
+
+        .device-section {
+            background: white;
+            border-radius: 6px;
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .device-metrics {
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .cabinet-section {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e5e5e5;
+        }
+
+        .cabinet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cabinet-info {
+            flex: 1;
+        }
+
+        .cabinet-name {
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .cabinet-metrics {
+            display: flex;
+            gap: 25px;
+            font-size: 13px;
+        }
+
+        .fill-rate {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .fill-rate-high { color: #28a745; }
+        .fill-rate-medium { color: #ffc107; }
+        .fill-rate-low { color: #dc3545; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: #006dfe;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056d3;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 13px;
+        }
+
+        /* Edit Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .modal-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #dee2e6;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .modal-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .chevron {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #666;
+            margin-left: 10px;
+            transition: transform 0.2s;
+        }
+
+        .expanded .chevron {
+            transform: rotate(180deg);
+        }
+
+        .delivered-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="header-title">Service Orders</h1>
+            <div class="header-meta">
+                <div class="auto-refresh-indicator">
+                    <span class="refresh-dot"></span>
+                    <span>Auto-refresh active</span>
+                </div>
+                <span>Last updated: 2:35 PM</span>
+            </div>
+        </div>
+
+        <!-- KPI Section -->
+        <div class="kpi-section">
+            <div class="kpi-card">
+                <div class="kpi-value">3</div>
+                <div class="kpi-label">Pending</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">2</div>
+                <div class="kpi-label">In Progress</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">487</div>
+                <div class="kpi-label">Units to Deliver</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">72%</div>
+                <div class="kpi-label">Avg Fill Rate</div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <select>
+                <option>All Statuses</option>
+                <option>Pending</option>
+                <option>In Progress</option>
+            </select>
+            <select>
+                <option>All Routes</option>
+                <option>Route 1 - North District</option>
+                <option>Route 2 - South District</option>
+                <option>Route 3 - East District</option>
+            </select>
+            <input type="date" value="2025-07-22">
+            <input type="date" value="2025-07-22">
+            <button>Apply Filters</button>
+            <button style="background: #6c757d;">Reset</button>
+        </div>
+
+        <!-- Orders Container -->
+        <div class="orders-container">
+            <!-- Order 1 - Pending -->
+            <div class="order-item">
+                <div class="order-header">
+                    <div class="order-info">
+                        <span class="order-number">Order #1247</span>
+                        <span class="order-meta">Route: North District</span>
+                        <span class="order-meta">Driver: John Smith</span>
+                        <span class="order-meta">Jul 22, 08:00 AM</span>
+                    </div>
+                    <div>
+                        <span class="order-status status-pending">pending</span>
+                        <span style="margin-left: 15px;">Fill Rate: 0%</span>
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order 2 - In Progress (Expanded) -->
+            <div class="order-item">
+                <div class="order-header">
+                    <div class="order-info">
+                        <span class="order-number">Order #1246</span>
+                        <span class="order-meta">Route: South District</span>
+                        <span class="order-meta">Driver: Mary Johnson</span>
+                        <span class="order-meta">Jul 22, 07:30 AM</span>
+                    </div>
+                    <div>
+                        <span class="order-status status-in_progress">in progress</span>
+                        <span style="margin-left: 15px;">Fill Rate: 62%</span>
+                        <span class="chevron" style="transform: rotate(180deg);"></span>
+                    </div>
+                </div>
+                <div class="order-details expanded">
+                    <!-- Device 1 -->
+                    <div class="device-section">
+                        <div class="device-header">
+                            <div class="device-info">
+                                <div class="device-name">Device 111 - Walmart Store #4521</div>
+                                <div class="device-metrics">
+                                    <div class="metric-item">
+                                        <span class="metric-label">Current</span>
+                                        <span class="metric-value">38</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Ordered</span>
+                                        <span class="metric-value">70</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Delivered</span>
+                                        <span class="metric-value">35</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">After</span>
+                                        <span class="metric-value">73</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Par</span>
+                                        <span class="metric-value">100</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Fill Rate</span>
+                                        <span class="metric-value fill-rate-medium">73%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm">Execute All</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Cabinet 1 - Already Delivered -->
+                        <div class="cabinet-section">
+                            <div class="cabinet-header">
+                                <div class="cabinet-info">
+                                    <div class="cabinet-name">
+                                        Cabinet 1 - Cooler
+                                        <span class="delivered-badge">✓ Delivered</span>
+                                    </div>
+                                    <div class="cabinet-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">Current</span>
+                                            <span class="metric-value">18</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Ordered</span>
+                                            <span class="metric-value">35</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Delivered</span>
+                                            <span class="metric-value">35</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">After</span>
+                                            <span class="metric-value">53</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Par</span>
+                                            <span class="metric-value">57</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Fill Rate</span>
+                                            <span class="metric-value fill-rate-high">93%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="btn btn-danger btn-sm">Rollback</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cabinet 2 - Pending -->
+                        <div class="cabinet-section">
+                            <div class="cabinet-header">
+                                <div class="cabinet-info">
+                                    <div class="cabinet-name">Cabinet 2 - Ambient</div>
+                                    <div class="cabinet-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">Current</span>
+                                            <span class="metric-value">20</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Ordered</span>
+                                            <span class="metric-value">35</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Delivered</span>
+                                            <span class="metric-value">-</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">After</span>
+                                            <span class="metric-value">55</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Par</span>
+                                            <span class="metric-value">53</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Fill Rate</span>
+                                            <span class="metric-value fill-rate-high">104%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary btn-sm">Quick Execute</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('editModal').classList.add('active')">Edit & Execute</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Device 2 -->
+                    <div class="device-section">
+                        <div class="device-header">
+                            <div class="device-info">
+                                <div class="device-name">Device 222 - Target Store #1123</div>
+                                <div class="device-metrics">
+                                    <div class="metric-item">
+                                        <span class="metric-label">Current</span>
+                                        <span class="metric-value">12</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Ordered</span>
+                                        <span class="metric-value">20</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Delivered</span>
+                                        <span class="metric-value">0</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">After</span>
+                                        <span class="metric-value">32</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Par</span>
+                                        <span class="metric-value">35</span>
+                                    </div>
+                                    <div class="metric-item">
+                                        <span class="metric-label">Fill Rate</span>
+                                        <span class="metric-value fill-rate-high">91%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm">Execute All</button>
+                            </div>
+                        </div>
+                        
+                        <div class="cabinet-section">
+                            <div class="cabinet-header">
+                                <div class="cabinet-info">
+                                    <div class="cabinet-name">Cabinet 1 - Cooler</div>
+                                    <div class="cabinet-metrics">
+                                        <div class="metric-item">
+                                            <span class="metric-label">Current</span>
+                                            <span class="metric-value">12</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Ordered</span>
+                                            <span class="metric-value">20</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Delivered</span>
+                                            <span class="metric-value">-</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">After</span>
+                                            <span class="metric-value">32</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Par</span>
+                                            <span class="metric-value">35</span>
+                                        </div>
+                                        <div class="metric-item">
+                                            <span class="metric-label">Fill Rate</span>
+                                            <span class="metric-value fill-rate-high">91%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary btn-sm">Quick Execute</button>
+                                    <button class="btn btn-secondary btn-sm">Edit & Execute</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order 3 - Pending -->
+            <div class="order-item">
+                <div class="order-header">
+                    <div class="order-info">
+                        <span class="order-number">Order #1248</span>
+                        <span class="order-meta">Route: East District</span>
+                        <span class="order-meta">Driver: Robert Davis</span>
+                        <span class="order-meta">Jul 22, 09:00 AM</span>
+                    </div>
+                    <div>
+                        <span class="order-status status-pending">pending</span>
+                        <span style="margin-left: 15px;">Fill Rate: 0%</span>
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order 4 - In Progress -->
+            <div class="order-item">
+                <div class="order-header">
+                    <div class="order-info">
+                        <span class="order-number">Order #1244</span>
+                        <span class="order-meta">Route: West District</span>
+                        <span class="order-meta">Driver: Sarah Wilson</span>
+                        <span class="order-meta">Jul 22, 06:30 AM</span>
+                    </div>
+                    <div>
+                        <span class="order-status status-in_progress">in progress</span>
+                        <span style="margin-left: 15px;">Fill Rate: 45%</span>
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal active" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Cabinet 2 - Ambient</h2>
+                <button class="close-modal" onclick="document.getElementById('editModal').classList.remove('active')">&times;</button>
+            </div>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                <div style="display: flex; gap: 30px; font-size: 14px;">
+                    <div>
+                        <span style="color: #666;">Device:</span>
+                        <strong>111 - Walmart Store #4521</strong>
+                    </div>
+                    <div>
+                        <span style="color: #666;">Current Fill:</span>
+                        <strong>38%</strong>
+                    </div>
+                    <div>
+                        <span style="color: #666;">After Delivery:</span>
+                        <strong class="fill-rate-high">104%</strong>
+                    </div>
+                </div>
+            </div>
+            <table class="modal-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Current</th>
+                        <th>Ordered</th>
+                        <th>Delivered</th>
+                        <th>After</th>
+                        <th>Par</th>
+                        <th>Fill Rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lay's Chips</td>
+                        <td>2</td>
+                        <td>18</td>
+                        <td><input type="number" class="quantity-input" value="18" min="0"></td>
+                        <td>20</td>
+                        <td>20</td>
+                        <td class="fill-rate-high">100%</td>
+                    </tr>
+                    <tr>
+                        <td>Doritos</td>
+                        <td>0</td>
+                        <td>15</td>
+                        <td><input type="number" class="quantity-input" value="15" min="0"></td>
+                        <td>15</td>
+                        <td>15</td>
+                        <td class="fill-rate-high">100%</td>
+                    </tr>
+                    <tr>
+                        <td>Snickers</td>
+                        <td>5</td>
+                        <td>10</td>
+                        <td><input type="number" class="quantity-input" value="10" min="0"></td>
+                        <td>15</td>
+                        <td>18</td>
+                        <td class="fill-rate-high">83%</td>
+                    </tr>
+                    <tr>
+                        <td>M&M's</td>
+                        <td>8</td>
+                        <td>7</td>
+                        <td><input type="number" class="quantity-input" value="7" min="0"></td>
+                        <td>15</td>
+                        <td>15</td>
+                        <td class="fill-rate-high">100%</td>
+                    </tr>
+                    <tr>
+                        <td>Reese's</td>
+                        <td>5</td>
+                        <td>5</td>
+                        <td><input type="number" class="quantity-input" value="5" min="0"></td>
+                        <td>10</td>
+                        <td>10</td>
+                        <td class="fill-rate-high">100%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="modal-footer" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e5e5; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="document.getElementById('editModal').classList.remove('active')">Cancel</button>
+                <button class="btn btn-primary">Execute Delivery</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

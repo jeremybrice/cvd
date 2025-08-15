@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create PNG Icons</title>
+</head>
+<body>
+    <h1>PNG Icon Generator for PWA</h1>
+    <p>Click each button to generate and download the PNG icon:</p>
+    
+    <div id="buttons"></div>
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const buttonsDiv = document.getElementById('buttons');
+        
+        // Create download buttons
+        sizes.forEach(size => {
+            const btn = document.createElement('button');
+            btn.textContent = `Generate ${size}x${size} PNG`;
+            btn.onclick = () => generateIcon(size);
+            btn.style.margin = '5px';
+            btn.style.padding = '10px';
+            buttonsDiv.appendChild(btn);
+        });
+        
+        function generateIcon(size) {
+            const canvas = document.getElementById('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Draw rounded rectangle background
+            const radius = size * 0.1;
+            ctx.fillStyle = '#006dfe';
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw emoji
+            ctx.fillStyle = 'white';
+            ctx.font = `${size * 0.5}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🚚', size / 2, size / 2);
+            
+            // Convert to blob and download
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `icon-${size}x${size}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+        
+        // Also create a simple 192x192 base64 icon for immediate use
+        function createBase64Icon() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 192;
+            canvas.height = 192;
+            const ctx = canvas.getContext('2d');
+            
+            // Blue background
+            ctx.fillStyle = '#006dfe';
+            ctx.fillRect(0, 0, 192, 192);
+            
+            // White text
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 96px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('CVD', 96, 96);
+            
+            return canvas.toDataURL('image/png');
+        }
+        
+        // Log the base64 icon
+        console.log('Base64 192x192 icon:', createBase64Icon());
+    </script>
+    
+    <hr>
+    <h2>Manual Instructions:</h2>
+    <ol>
+        <li>Click each button above to generate and download the PNG files</li>
+        <li>Move the downloaded files to the /icons directory</li>
+        <li>Or use the SVG files with an online converter</li>
+    </ol>
+</body>
+</html>

@@ -1,0 +1,893 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CVD Database Schema",
+  "description": "JSON Schema for CVD (Vision Device Configuration) SQLite database structure",
+  "type": "object",
+  "properties": {
+    "devices": {
+      "type": "object",
+      "description": "Device metadata with soft delete support",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "asset": {
+          "type": "string",
+          "description": "Unique asset identifier"
+        },
+        "cooler": {
+          "type": "string",
+          "description": "Cooler identifier"
+        },
+        "location_id": {
+          "type": ["integer", "null"],
+          "description": "Foreign key reference to locations table"
+        },
+        "model": {
+          "type": "string",
+          "description": "Device model"
+        },
+        "device_type_id": {
+          "type": "integer",
+          "description": "Foreign key reference to device_types table"
+        },
+        "route_id": {
+          "type": ["integer", "null"],
+          "description": "Foreign key reference to routes table"
+        },
+        "deleted_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when device was soft deleted"
+        },
+        "deleted_by": {
+          "type": ["string", "null"],
+          "description": "User who performed soft delete"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Device creation timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "asset", "cooler", "model", "device_type_id", "created_at", "updated_at"]
+    },
+    "cabinet_configurations": {
+      "type": "object",
+      "description": "Cabinet details with camelCase properties",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "device_id": {
+          "type": "integer",
+          "description": "Foreign key reference to devices table"
+        },
+        "cabinet_type_id": {
+          "type": "integer",
+          "description": "Foreign key reference to cabinet_types table"
+        },
+        "model_name": {
+          "type": ["string", "null"],
+          "description": "Cabinet model name"
+        },
+        "is_parent": {
+          "type": "boolean",
+          "description": "Whether this is the parent cabinet"
+        },
+        "cabinet_index": {
+          "type": "integer",
+          "description": "Index of cabinet within device"
+        },
+        "rows": {
+          "type": "integer",
+          "description": "Number of rows in cabinet"
+        },
+        "columns": {
+          "type": "integer",
+          "description": "Number of columns in cabinet"
+        }
+      },
+      "required": ["id", "device_id", "cabinet_type_id", "cabinet_index", "rows", "columns"]
+    },
+    "planograms": {
+      "type": "object",
+      "description": "Planogram layouts",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "cabinet_id": {
+          "type": "integer",
+          "description": "Foreign key reference to cabinet_configurations table"
+        },
+        "planogram_key": {
+          "type": "string",
+          "description": "Unique planogram identifier"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "cabinet_id", "planogram_key", "updated_at"]
+    },
+    "planogram_slots": {
+      "type": "object",
+      "description": "Planogram slot assignments",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "planogram_id": {
+          "type": "integer",
+          "description": "Foreign key reference to planograms table"
+        },
+        "slot_position": {
+          "type": "string",
+          "description": "Position identifier (e.g., A1, B2)"
+        },
+        "product_id": {
+          "type": ["integer", "null"],
+          "description": "Foreign key reference to products table"
+        },
+        "product_name": {
+          "type": ["string", "null"],
+          "description": "Product name (legacy field)"
+        },
+        "quantity": {
+          "type": "integer",
+          "default": 0,
+          "description": "Current quantity in slot"
+        },
+        "capacity": {
+          "type": "integer",
+          "default": 0,
+          "description": "Maximum capacity of slot"
+        },
+        "par_level": {
+          "type": "integer",
+          "default": 0,
+          "description": "Par level for restocking"
+        },
+        "price": {
+          "type": ["number", "null"],
+          "description": "Product price (decimal)"
+        },
+        "cleared_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When slot was cleared"
+        },
+        "cleared_by": {
+          "type": ["string", "null"],
+          "description": "User who cleared slot"
+        },
+        "previous_product_id": {
+          "type": ["integer", "null"],
+          "description": "Previous product ID before clearing"
+        }
+      },
+      "required": ["id", "planogram_id", "slot_position"]
+    },
+    "products": {
+      "type": "object",
+      "description": "Product catalog with integer primary keys",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "name": {
+          "type": "string",
+          "description": "Product name"
+        },
+        "category": {
+          "type": "string",
+          "description": "Product category"
+        },
+        "price": {
+          "type": "number",
+          "description": "Product price (decimal)"
+        },
+        "image": {
+          "type": ["string", "null"],
+          "description": "Product image URL or path"
+        },
+        "is_system": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this is a system product"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Product creation timestamp"
+        }
+      },
+      "required": ["id", "name", "category", "price", "created_at"]
+    },
+    "device_types": {
+      "type": "object",
+      "description": "Device type definitions",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "name": {
+          "type": "string",
+          "description": "Device type name (unique)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Device type description"
+        },
+        "allows_additional_cabinets": {
+          "type": "boolean",
+          "description": "Whether additional cabinets are allowed"
+        }
+      },
+      "required": ["id", "name", "description", "allows_additional_cabinets"]
+    },
+    "cabinet_types": {
+      "type": "object",
+      "description": "Cabinet type definitions",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "name": {
+          "type": "string",
+          "description": "Cabinet type name (unique)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Cabinet type description"
+        },
+        "rows": {
+          "type": "integer",
+          "description": "Number of rows"
+        },
+        "cols": {
+          "type": "integer",
+          "description": "Number of columns"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon identifier"
+        }
+      },
+      "required": ["id", "name", "description", "rows", "cols", "icon"]
+    },
+    "sales": {
+      "type": "object",
+      "description": "Sales transaction data",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "device_id": {
+          "type": "integer",
+          "description": "Foreign key reference to devices table"
+        },
+        "product_id": {
+          "type": "integer",
+          "description": "Foreign key reference to products table"
+        },
+        "sale_units": {
+          "type": "integer",
+          "description": "Number of units sold"
+        },
+        "sale_cash": {
+          "type": "number",
+          "description": "Cash amount (decimal)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Sale timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "device_id", "product_id", "sale_units", "sale_cash", "created_at", "updated_at"]
+    },
+    "locations": {
+      "type": "object",
+      "description": "Device location definitions",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "name": {
+          "type": "string",
+          "description": "Location name"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "name", "created_at", "updated_at"]
+    },
+    "routes": {
+      "type": "object",
+      "description": "Delivery/service route definitions",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "name": {
+          "type": "string",
+          "description": "Route name"
+        },
+        "route_number": {
+          "type": ["string", "null"],
+          "description": "Route number identifier"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["id", "name", "created_at", "updated_at"]
+    },
+    "device_routes": {
+      "type": "object",
+      "description": "Many-to-many relationship between devices and routes",
+      "properties": {
+        "device_id": {
+          "type": "integer",
+          "description": "Foreign key reference to devices table"
+        },
+        "route_id": {
+          "type": "integer",
+          "description": "Foreign key reference to routes table"
+        }
+      },
+      "required": ["device_id", "route_id"]
+    },
+    "service_visits": {
+      "type": "object",
+      "description": "Device service history tracking",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "device_id": {
+          "type": "integer",
+          "description": "Foreign key reference to devices table"
+        },
+        "route_id": {
+          "type": ["integer", "null"],
+          "description": "Foreign key reference to routes table"
+        },
+        "service_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Service visit timestamp"
+        },
+        "units_restocked": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of units restocked"
+        },
+        "service_type": {
+          "type": "string",
+          "enum": ["routine", "emergency", "maintenance"],
+          "description": "Type of service visit"
+        },
+        "technician_id": {
+          "type": ["integer", "null"],
+          "description": "Technician identifier"
+        },
+        "duration_minutes": {
+          "type": ["integer", "null"],
+          "description": "Duration of service visit in minutes"
+        },
+        "notes": {
+          "type": ["string", "null"],
+          "description": "Service notes"
+        }
+      },
+      "required": ["id", "device_id", "service_date"]
+    },
+    "device_metrics": {
+      "type": "object",
+      "description": "Cached calculated metrics for devices",
+      "properties": {
+        "device_id": {
+          "type": "integer",
+          "description": "Primary key, foreign key reference to devices table"
+        },
+        "sold_out_count": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of sold out slots"
+        },
+        "days_remaining_inventory": {
+          "type": ["number", "null"],
+          "description": "Days remaining inventory (real number)"
+        },
+        "data_collection_rate": {
+          "type": "number",
+          "default": 100.0,
+          "description": "Data collection rate percentage"
+        },
+        "product_level_percent": {
+          "type": ["number", "null"],
+          "description": "Product level percentage"
+        },
+        "units_to_par": {
+          "type": "integer",
+          "default": 0,
+          "description": "Units needed to reach par level"
+        },
+        "last_calculated": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When metrics were last calculated"
+        }
+      },
+      "required": ["device_id"]
+    },
+    "route_planning_config": {
+      "type": "object",
+      "description": "Configuration settings for route planning",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "critical_dri_threshold": {
+          "type": "integer",
+          "default": 1,
+          "description": "Critical days remaining inventory threshold"
+        },
+        "warning_dri_threshold": {
+          "type": "integer",
+          "default": 3,
+          "description": "Warning days remaining inventory threshold"
+        },
+        "ok_dri_threshold": {
+          "type": "integer",
+          "default": 7,
+          "description": "OK days remaining inventory threshold"
+        },
+        "auto_select_critical": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-select critical devices"
+        },
+        "metrics_cache_ttl_minutes": {
+          "type": "integer",
+          "default": 15,
+          "description": "Metrics cache TTL in minutes"
+        }
+      },
+      "required": ["id"]
+    },
+    "service_orders": {
+      "type": "object",
+      "description": "Service order management",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "route_id": {
+          "type": ["integer", "null"],
+          "description": "Foreign key reference to routes table"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "created_by": {
+          "type": ["string", "null"],
+          "description": "User who created the order"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in_progress", "completed", "cancelled"],
+          "default": "pending",
+          "description": "Order status"
+        },
+        "total_units": {
+          "type": ["integer", "null"],
+          "description": "Total units in order"
+        },
+        "estimated_duration_minutes": {
+          "type": ["integer", "null"],
+          "description": "Estimated duration in minutes"
+        }
+      },
+      "required": ["id", "created_at"]
+    },
+    "service_order_items": {
+      "type": "object",
+      "description": "Individual items within service orders",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "service_order_id": {
+          "type": "integer",
+          "description": "Foreign key reference to service_orders table"
+        },
+        "device_id": {
+          "type": "integer",
+          "description": "Foreign key reference to devices table"
+        },
+        "cabinet_index": {
+          "type": ["integer", "null"],
+          "description": "Cabinet index within device"
+        },
+        "product_id": {
+          "type": ["integer", "null"],
+          "description": "Foreign key reference to products table"
+        },
+        "quantity_needed": {
+          "type": ["integer", "null"],
+          "description": "Quantity needed for restocking"
+        }
+      },
+      "required": ["id", "service_order_id", "device_id"]
+    },
+    "slot_metrics": {
+      "type": "object",
+      "description": "Individual slot-level metrics",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "planogram_slot_id": {
+          "type": "integer",
+          "description": "Foreign key reference to planogram_slots table (unique)"
+        },
+        "is_sold_out": {
+          "type": "integer",
+          "default": 0,
+          "description": "Whether slot is sold out (0/1)"
+        },
+        "days_remaining_inventory": {
+          "type": ["integer", "null"],
+          "description": "Days remaining inventory for slot"
+        },
+        "product_level_percent": {
+          "type": ["integer", "null"],
+          "description": "Product level percentage"
+        },
+        "units_to_par": {
+          "type": ["integer", "null"],
+          "description": "Units to par level"
+        },
+        "sales_28_day": {
+          "type": "integer",
+          "default": 0,
+          "description": "Sales in last 28 days"
+        },
+        "sales_all_time": {
+          "type": "integer",
+          "default": 0,
+          "description": "Total sales all time"
+        },
+        "days_with_sales": {
+          "type": "integer",
+          "default": 0,
+          "description": "Number of days with sales"
+        },
+        "daily_velocity": {
+          "type": "number",
+          "default": 0.0,
+          "description": "Daily sales velocity (real number)"
+        },
+        "last_calculated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When metrics were last calculated"
+        },
+        "calculation_version": {
+          "type": "integer",
+          "default": 1,
+          "description": "Calculation version"
+        }
+      },
+      "required": ["id", "planogram_slot_id", "last_calculated"]
+    },
+    "dex_reads": {
+      "type": "object",
+      "description": "DEX file upload tracking",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "filename": {
+          "type": "string",
+          "description": "DEX filename"
+        },
+        "machine_serial": {
+          "type": ["string", "null"],
+          "description": "Machine serial number"
+        },
+        "manufacturer": {
+          "type": ["string", "null"],
+          "description": "Manufacturer code (max 10 chars)"
+        },
+        "dex_version": {
+          "type": ["string", "null"],
+          "description": "DEX version (max 20 chars)"
+        },
+        "upload_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Upload timestamp"
+        },
+        "raw_content": {
+          "type": "string",
+          "description": "Raw DEX file content"
+        },
+        "total_records": {
+          "type": ["integer", "null"],
+          "description": "Total number of records parsed"
+        },
+        "parsed_successfully": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether parsing was successful"
+        },
+        "error_message": {
+          "type": ["string", "null"],
+          "description": "Error message if parsing failed"
+        },
+        "error_line": {
+          "type": ["integer", "null"],
+          "description": "Line number where error occurred"
+        },
+        "error_field": {
+          "type": ["integer", "null"],
+          "description": "Field number where error occurred"
+        }
+      },
+      "required": ["id", "filename", "raw_content", "upload_timestamp"]
+    },
+    "dex_records": {
+      "type": "object",
+      "description": "Individual DEX records",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "dex_read_id": {
+          "type": "integer",
+          "description": "Foreign key reference to dex_reads table"
+        },
+        "record_type": {
+          "type": "string",
+          "description": "DEX record type (max 10 chars)"
+        },
+        "record_subtype": {
+          "type": ["string", "null"],
+          "description": "DEX record subtype (max 10 chars)"
+        },
+        "line_number": {
+          "type": "integer",
+          "description": "Line number in original file"
+        },
+        "raw_record": {
+          "type": "string",
+          "description": "Raw record content"
+        },
+        "parsed_data": {
+          "type": ["string", "null"],
+          "description": "Parsed data (JSON format)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Record creation timestamp"
+        }
+      },
+      "required": ["id", "dex_read_id", "record_type", "line_number", "raw_record", "created_at"]
+    },
+    "dex_pa_records": {
+      "type": "object",
+      "description": "Consolidated PA (Product Audit) records with grid analysis",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key, auto-increment"
+        },
+        "dex_read_id": {
+          "type": "integer",
+          "description": "Foreign key reference to dex_reads table"
+        },
+        "record_subtype": {
+          "type": "string",
+          "description": "PA record subtype (max 10 chars)"
+        },
+        "selection_number": {
+          "type": ["string", "null"],
+          "description": "Selection number (max 10 chars)"
+        },
+        "price_cents": {
+          "type": ["integer", "null"],
+          "description": "Price in cents"
+        },
+        "capacity": {
+          "type": ["integer", "null"],
+          "description": "Slot capacity"
+        },
+        "units_sold": {
+          "type": ["integer", "null"],
+          "description": "Units sold"
+        },
+        "revenue_cents": {
+          "type": ["integer", "null"],
+          "description": "Revenue in cents"
+        },
+        "test_vends": {
+          "type": ["integer", "null"],
+          "description": "Test vends"
+        },
+        "free_vends": {
+          "type": ["integer", "null"],
+          "description": "Free vends"
+        },
+        "cash_sales": {
+          "type": ["integer", "null"],
+          "description": "Cash sales count"
+        },
+        "cash_sales_cents": {
+          "type": ["integer", "null"],
+          "description": "Cash sales in cents"
+        },
+        "cashless_sales": {
+          "type": ["integer", "null"],
+          "description": "Cashless sales count"
+        },
+        "cashless_sales_cents": {
+          "type": ["integer", "null"],
+          "description": "Cashless sales in cents"
+        },
+        "discount_sales": {
+          "type": ["integer", "null"],
+          "description": "Discount sales count"
+        },
+        "discount_sales_cents": {
+          "type": ["integer", "null"],
+          "description": "Discount sales in cents"
+        },
+        "line_number": {
+          "type": "integer",
+          "description": "Line number in original file"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Record creation timestamp"
+        }
+      },
+      "required": ["id", "dex_read_id", "record_subtype", "line_number", "created_at"]
+    }
+  },
+  "indexes": [
+    "idx_devices_asset",
+    "idx_cabinets_device", 
+    "idx_planograms_key",
+    "idx_products_category",
+    "idx_slots_product",
+    "idx_sales_device",
+    "idx_sales_product", 
+    "idx_sales_created",
+    "idx_device_routes_route",
+    "idx_service_visits_device",
+    "idx_service_visits_date",
+    "idx_device_metrics_calculated",
+    "idx_sales_device_date",
+    "idx_devices_deleted",
+    "idx_service_orders_route",
+    "idx_service_order_items_order",
+    "idx_slot_metrics_planogram_slot",
+    "idx_slot_metrics_last_calc",
+    "idx_dex_reads_machine_serial",
+    "idx_dex_reads_timestamp", 
+    "idx_dex_records_read_id",
+    "idx_dex_records_type",
+    "idx_dex_pa_records_read_id",
+    "idx_dex_pa_records_selection"
+  ],
+  "foreign_keys": {
+    "devices": [
+      "location_id -> locations.id",
+      "device_type_id -> device_types.id", 
+      "route_id -> routes.id"
+    ],
+    "cabinet_configurations": [
+      "device_id -> devices.id",
+      "cabinet_type_id -> cabinet_types.id"
+    ],
+    "planograms": [
+      "cabinet_id -> cabinet_configurations.id"
+    ],
+    "planogram_slots": [
+      "planogram_id -> planograms.id",
+      "product_id -> products.id",
+      "previous_product_id -> products.id"
+    ],
+    "sales": [
+      "device_id -> devices.id",
+      "product_id -> products.id"
+    ],
+    "service_visits": [
+      "device_id -> devices.id",
+      "route_id -> routes.id"
+    ],
+    "device_metrics": [
+      "device_id -> devices.id"
+    ],
+    "service_orders": [
+      "route_id -> routes.id"
+    ],
+    "service_order_items": [
+      "service_order_id -> service_orders.id",
+      "device_id -> devices.id",
+      "product_id -> products.id"
+    ],
+    "slot_metrics": [
+      "planogram_slot_id -> planogram_slots.id"
+    ],
+    "device_routes": [
+      "device_id -> devices.id",
+      "route_id -> routes.id"
+    ],
+    "dex_records": [
+      "dex_read_id -> dex_reads.id"
+    ],
+    "dex_pa_records": [
+      "dex_read_id -> dex_reads.id"
+    ]
+  },
+  "notes": {
+    "soft_deletes": "Devices support soft deletion via deleted_at timestamp",
+    "camelCase_api": "Backend API serves camelCase properties for frontend compatibility", 
+    "grid_analysis": "DEX PA records include row/column fields populated by automatic pattern analysis",
+    "product_migration": "Products migrated from hard-coded JavaScript to database with integer IDs"
+  }
+}

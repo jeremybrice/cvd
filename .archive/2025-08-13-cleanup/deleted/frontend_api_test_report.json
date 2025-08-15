@@ -1,0 +1,95 @@
+{
+  "test_run": {
+    "timestamp": "2025-08-12T08:19:32.365977",
+    "total_tests": 12,
+    "passed_tests": 12,
+    "failed_tests": 0,
+    "success_rate": 100.0
+  },
+  "results": [
+    {
+      "test_name": "Frontend Auth",
+      "success": true,
+      "message": "Admin authentication successful",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.339831"
+    },
+    {
+      "test_name": "Frontend User List",
+      "success": true,
+      "message": "User list API returns 7 users (admin hidden)",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.342629"
+    },
+    {
+      "test_name": "Frontend Pagination",
+      "success": true,
+      "message": "Pagination shows 7 total users (admin excluded)",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.342638"
+    },
+    {
+      "test_name": "Frontend Search",
+      "success": true,
+      "message": "Search for 'admin' returns 0 results (admin hidden)",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.345029"
+    },
+    {
+      "test_name": "Frontend Role Filter",
+      "success": true,
+      "message": "Admin role filter returns 2 users (admin hidden)",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.347652"
+    },
+    {
+      "test_name": "Frontend Status Filter",
+      "success": true,
+      "message": "Active status filter returns 5 users (admin hidden)",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.350145"
+    },
+    {
+      "test_name": "Frontend Pagination",
+      "success": true,
+      "message": "Paginated results hide admin user (page 1)",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.352746"
+    },
+    {
+      "test_name": "Frontend Create Admin",
+      "success": true,
+      "message": "Frontend correctly prevents 'admin' username creation",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.354951"
+    },
+    {
+      "test_name": "Frontend Create Admin Case",
+      "success": true,
+      "message": "Frontend correctly prevents 'ADMIN' username creation",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.357029"
+    },
+    {
+      "test_name": "Frontend Get Admin User",
+      "success": true,
+      "message": "Frontend cannot fetch admin user details",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.361412"
+    },
+    {
+      "test_name": "Frontend Update Admin",
+      "success": true,
+      "message": "Frontend cannot update admin user",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.363794"
+    },
+    {
+      "test_name": "Frontend Delete Admin",
+      "success": true,
+      "message": "Frontend cannot delete admin user",
+      "details": {},
+      "timestamp": "2025-08-12T08:19:32.365948"
+    }
+  ]
+}

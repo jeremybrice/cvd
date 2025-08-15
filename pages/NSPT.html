@@ -1,0 +1,3032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New SPT Planogram Tool</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Fixed Toolbar */
+        .toolbar {
+            background-color: white;
+            border-bottom: 1px solid #e1e5e8;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: 60px;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .toolbar-left {
+            flex: 1;
+            justify-content: flex-start;
+        }
+        
+        .toolbar-center {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .toolbar-right {
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            height: 100%;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .tab:hover {
+            color: #2c3e50;
+            background: #f8f9fa;
+        }
+
+        .tab.active {
+            color: #006dfe;
+            border-bottom-color: #006dfe;
+            background: transparent;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border: 1px solid #ddd;
+            color: #2c3e50;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background-color: #006dfe;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056cc;
+        }
+
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+        }
+        
+
+        .btn-success:hover {
+            background-color: #229954;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Asset Selector */
+        .asset-selector {
+            position: relative;
+        }
+        
+        .asset-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: auto;
+            justify-content: space-between;
+            background-color: #95a5a6;
+            color: white;
+            border: none;
+        }
+        
+        .asset-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .dropdown-arrow {
+            font-size: 10px;
+            color: currentColor;
+            transition: transform 0.2s;
+        }
+        
+        .asset-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 4px;
+            background: white;
+            border: 1px solid #e1e5e8;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 300px;
+            max-height: 400px;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .asset-dropdown.show {
+            display: block;
+        }
+        
+        .asset-search {
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            border-bottom: 1px solid #e1e5e8;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .asset-search:focus {
+            border-bottom-color: #006dfe;
+        }
+        
+        .asset-list {
+            max-height: 340px;
+            overflow-y: auto;
+        }
+        
+        .asset-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .asset-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .asset-item.selected {
+            background-color: rgba(0, 109, 254, 0.1);
+            color: #006dfe;
+        }
+        
+        .asset-name {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .asset-number {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Panels */
+        .left-panel, .center-panel, .right-panel {
+            background-color: white;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .left-panel {
+            width: 320px;
+            border-right: 1px solid #e1e5e8;
+            padding: 20px;
+            overflow-y: hidden;
+        }
+
+        .center-panel {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-color: #f5f7fa;
+        }
+
+        .right-panel {
+            width: 320px;
+            border-left: 1px solid #e1e5e8;
+            padding: 20px;
+            overflow-y: hidden;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #006dfe;
+        }
+
+        /* Accordion Styles */
+        .accordion-section {
+            margin-bottom: 20px;
+            border: 1px solid #e1e5e8;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .accordion-header {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e8;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: #e9ecef;
+        }
+
+        .accordion-title {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .accordion-icon {
+            font-size: 12px;
+            transition: transform 0.2s;
+            color: #006dfe;
+        }
+
+        .accordion-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+
+        .accordion-content.expanded {
+            max-height: 500px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        /* Item List Styles */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-list-entry {
+            padding: 10px 12px;
+            border: 1px solid #e1e5e8;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            font-size: 14px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .item-list-entry:hover {
+            background: #f8f9fa;
+            border-color: #006dfe;
+        }
+
+        .item-list-entry.selected {
+            background: #e3f2fd;
+            border-color: #006dfe;
+            color: #006dfe;
+            font-weight: 500;
+        }
+
+        .item-icon {
+            font-size: 12px;
+            color: #ffc107;
+        }
+
+        .item-text {
+            flex: 1;
+        }
+
+        /* Search and Filter */
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #006dfe;
+            box-shadow: 0 0 0 3px rgba(0, 109, 254, 0.1);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            gap: 12px;
+        }
+        
+        /* Product Library specific height override */
+        #products-content.expanded {
+            max-height: 1050px;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Sticky controls container */
+        .product-controls {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e1e5e8;
+            margin-bottom: 12px;
+        }
+        
+        /* Scrollable product grid container */
+        .product-grid-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 2px; /* Prevents top border clipping on first product */
+            /* Hide scrollbar for webkit browsers (Chrome, Safari, Edge) */
+            -webkit-scrollbar: none;
+            /* Hide scrollbar for IE and Edge */
+            -ms-overflow-style: none;
+            /* Hide scrollbar for Firefox */
+            scrollbar-width: none;
+        }
+
+        .product-card {
+            border: 1px solid #e1e5e8;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: move;
+            background: #f8f9fa;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #3498db;
+            transform: translateY(-1px);
+            background: white;
+        }
+
+        .product-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+
+        .slot.dragging {
+            opacity: 0.5;
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            font-size: 16px;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        /* Planogram Container */
+        .planogram-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 24px;
+            flex: 1;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Grid */
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin: 23px auto 0 auto;
+            align-self: center;
+        }
+
+        .grid-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .row-label {
+            width: 35px;
+            height: 98px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            position: relative;
+            user-select: none;
+        }
+
+        .row-label:hover {
+            background-color: #e3f2fd;
+            color: #2196f3;
+        }
+
+        .row-label.selected {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        /* Tooltip for row labels */
+        .row-label::after {
+            content: "Click to Select All Slots in Row";
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-left: 10px;
+            background-color: #333;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: normal;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .row-label:hover::after {
+            opacity: 1;
+        }
+
+        .slot {
+            width: 98px;
+            height: 98px;
+            border: 2px solid #e1e5e8;
+            border-radius: 9px;
+            padding: 9px;
+            cursor: pointer;
+            transition: all 0.2s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #fafbfc;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .slot[draggable="true"] {
+            cursor: move;
+        }
+
+        .slot:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Prevent hover effects on already selected slots */
+        .slot.multi-selected:hover {
+            border-color: #2196f3;
+            border-width: 2px;
+        }
+
+        .slot.filled {
+            background: white;
+        }
+
+        .slot.selected {
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+            border-color: #3498db;
+        }
+
+        .slot.drag-over {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            border-style: dashed;
+        }
+
+        .slot-image {
+            max-height: 46px;
+            max-width: 100%;
+            height: 46px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .slot-name {
+            font-size: 10px;
+            text-align: center;
+            line-height: 1.1;
+            color: #2c3e50;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .slot-price {
+            font-size: 13px;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .slot-id {
+            position: absolute;
+            top: 2px;
+            right: 5px;
+            font-size: 10px;
+            color: #bdc3c7;
+            font-weight: 500;
+        }
+
+        .empty-slot {
+            color: #bdc3c7;
+            font-size: 14px;
+        }
+
+        /* Multi-selection states */
+        .slot.multi-selected {
+            border-color: #2196f3;
+            border-width: 2px;
+            box-shadow: 
+                inset 0 0 0 2px rgba(255, 255, 255, 0.8),  /* White inner border */
+                0 0 0 3px #2196f3,                          /* Colored outer border */
+                0 4px 12px rgba(33, 150, 243, 0.4),        /* Colored glow */
+                0 2px 4px rgba(0, 0, 0, 0.1);              /* Subtle elevation shadow */
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Optional: Add subtle pulse animation for selected slots */
+        @keyframes selection-pulse {
+            0% {
+                box-shadow: 
+                    inset 0 0 0 2px rgba(255, 255, 255, 0.8),
+                    0 0 0 3px #2196f3,
+                    0 4px 12px rgba(33, 150, 243, 0.4),
+                    0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    inset 0 0 0 2px rgba(255, 255, 255, 0.9),
+                    0 0 0 3px #2196f3,
+                    0 4px 16px rgba(33, 150, 243, 0.6),
+                    0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            100% {
+                box-shadow: 
+                    inset 0 0 0 2px rgba(255, 255, 255, 0.8),
+                    0 0 0 3px #2196f3,
+                    0 4px 12px rgba(33, 150, 243, 0.4),
+                    0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+        }
+        
+        /* Pulse animation for selected slots */
+        .slot.multi-selected {
+            animation: selection-pulse 2s ease-in-out infinite;
+        }
+
+        .slot.drag-over-valid {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            border-style: dashed;
+        }
+
+        .slot.drag-over-invalid {
+            background: rgba(231, 76, 60, 0.1);
+            border-color: #e74c3c;
+            border-style: dashed;
+        }
+
+        /* Slot Details */
+        .slot-details {
+            border: 1px solid #e1e5e8;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .detail-input {
+            width: 120px;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .detail-input:focus {
+            outline: none;
+            border-color: #006dfe;
+            box-shadow: 0 0 0 3px rgba(0, 109, 254, 0.1);
+        }
+
+        .product-display {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .product-display-image {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+
+        .product-display-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            color: #95a5a6;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+
+        /* Center Screen Toast Notification */
+        .save-indicator {
+            position: fixed;
+            top: 90%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(20px);
+            padding: 16px 24px;
+            background: #27ae60;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 240px;
+            justify-content: center;
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) translateY(0);
+        }
+
+        .save-indicator::before {
+            content: "✓";
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+
+        /* Bulk edit note */
+        .note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+
+        .note strong {
+            color: #1565c0;
+        }
+
+        /* Undo/Redo buttons */
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Force save button to be interactive */
+        #saveBtn {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
+
+        #saveBtn:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Unsaved changes indicator on save button */
+        .btn-success.has-changes {
+            background-color: #f39c12;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Cabinet Tabs - Pill Style */
+        .cabinet-tabs {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: #f5f7fa;
+            border-radius: 10px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #ddd #f5f7fa;
+            justify-content: center;
+            min-height: 52px;
+        }
+        
+        .asset-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            white-space: nowrap;
+            flex-shrink: 0;
+            padding: 8px 0;
+            line-height: 20px;
+        }
+        
+        /* Only show border when tabs are present */
+        .cabinet-tabs:has(.cabinet-tab-group) .asset-title {
+            padding-right: 12px;
+            border-right: 2px solid #e1e5e8;
+            margin-right: 8px;
+        }
+        
+        .cabinet-tab-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .cabinet-tabs::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .cabinet-tabs::-webkit-scrollbar-track {
+            background: #f5f7fa;
+            border-radius: 3px;
+        }
+
+        .cabinet-tabs::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+
+        .cabinet-tabs::-webkit-scrollbar-thumb:hover {
+            background: #ccc;
+        }
+
+        .cabinet-tab {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+            transition: all 0.2s;
+            white-space: nowrap;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cabinet-tab:hover {
+            background: rgba(0, 109, 254, 0.1);
+            color: #006dfe;
+        }
+
+        .cabinet-tab.active {
+            background: #006dfe;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 109, 254, 0.3);
+        }
+
+        .cabinet-tab .star-icon {
+            color: currentColor;
+            margin-right: 4px;
+            font-size: 12px;
+        }
+
+        .cabinet-tab.active .star-icon {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Fixed Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-group toolbar-left">
+                <div class="asset-selector" id="assetSelector">
+                    <button class="btn asset-btn" id="assetBtn">
+                        <span id="assetText">Assets</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="asset-dropdown" id="assetDropdown">
+                        <input type="text" class="asset-search" placeholder="Search assets..." id="assetSearch">
+                        <div class="asset-list" id="assetDropdownList"></div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary">Settings</button>
+                <button class="btn btn-secondary">Edit Layout</button>
+            </div>
+            <div class="toolbar-group toolbar-center">
+                <!-- Tabs removed -->
+            </div>
+            <div class="toolbar-group toolbar-right">
+                <button class="btn btn-secondary" id="undoBtn" disabled>↶ Undo</button>
+                <button class="btn btn-secondary" id="redoBtn" disabled>↷ Redo</button>
+                <button class="btn btn-secondary" id="clearAllBtn">Clear All</button>
+                <button class="btn btn-success" id="saveBtn">Save</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel: Asset, Cabinets, and Product Library -->
+            <aside class="left-panel">
+
+                <!-- Product Library Section -->
+                <div class="accordion-section">
+                    <div class="accordion-header" onclick="toggleAccordion('products')">
+                        <h3 class="accordion-title">
+                            <span class="accordion-icon" id="products-icon">▼</span>
+                            Product Library
+                        </h3>
+                    </div>
+                    <div class="accordion-content expanded" id="products-content">
+                        <div class="product-controls">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   placeholder="Search products..." 
+                                   class="search-input">
+                            
+                            <select id="categoryFilter" class="filter-select">
+                                <option value="all">All Categories</option>
+                            </select>
+                        </div>
+                        
+                        <div class="product-grid-container">
+                            <div id="productGrid" class="product-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: Planogram Grid -->
+            <section class="center-panel">
+                <div class="planogram-container">
+                    <div class="cabinet-tabs" id="cabinetTabs"></div>
+                    <div id="planogramGrid" class="grid-container"></div>
+                    <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-top: 20px;">
+                        Drag products from the library or between slots to arrange
+                    </p>
+                </div>
+            </section>
+
+            <!-- Right Panel: Details -->
+            <aside class="right-panel">
+                <div id="rightPanelContent">
+                    <h2 class="panel-title">SLOT DETAILS</h2>
+                    <div class="empty-state">
+                        Select a slot to view details
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Center Screen Toast Notification -->
+    <div class="save-indicator" id="saveIndicator">Planogram saved successfully</div>
+    
+
+    <!-- Include API module -->
+    <script src="/api.js"></script>
+    <script src="/auth-check.js"></script>
+    <script src="/pages/ai-feedback-panel.js"></script>
+    
+    <script>
+        // Sentinel product constants
+        const EMPTY_SLOT_ID = 1;
+        const EMPTY_SLOT_NAME = 'EMPTY_SLOT';
+
+        // Helper functions for sentinel product
+        function isSlotEmpty(slot) {
+            return !slot || !slot.productId || slot.productId === EMPTY_SLOT_ID;
+        }
+
+        function createEmptySlot() {
+            return {
+                productId: EMPTY_SLOT_ID,
+                productName: EMPTY_SLOT_NAME,
+                quantity: 0,
+                capacity: 0,
+                parLevel: 0,
+                price: 0.00
+            };
+        }
+
+        // State Management
+        const state = {
+            history: [],                          // Current planogram history
+            historyIndex: -1,                     // Current planogram history index
+            planogram: {},                        // Current active planogram
+            selectedSlots: new Set(),
+            draggedProduct: null,
+            draggedSlot: null,
+            hasUnsavedChanges: false,
+            
+            // AI Optimization State
+            aiRecommendations: null,
+            aiPanelVisible: false,
+            aiLoading: false,
+            
+            // REMOVED: Multi-planogram caching - always load fresh from database
+            // planograms: {},                   // REMOVED - no caching
+            // planogramHistories: {},           // REMOVED - no history caching
+            // planogramHistoryIndexes: {},      // REMOVED - no index caching
+            
+            // NEW: Asset/cabinet tracking
+            assets: [],                          // Loaded savedDevices
+            currentAsset: null,                  // Selected asset object  
+            currentCabinet: null,                // Selected cabinet with index info
+            machineLayout: [],                   // Generated from cabinet rows/cols
+            
+            // NEW: Location tracking
+            allDevices: [],                      // All devices before filtering
+            locations: [],                       // Available locations
+            currentLocation: null                // Currently selected location
+        };
+
+        // Products will be loaded from API
+        let products = [];
+        let productCategories = [];
+
+        // Product Loading Functions
+        async function loadProducts() {
+            try {
+                products = await cvdApi.getProducts();
+                console.log(`Loaded ${products.length} products from API`);
+                
+                // Load categories
+                productCategories = await cvdApi.getProductCategories();
+                console.log(`Loaded categories:`, productCategories);
+                
+                return products;
+            } catch (error) {
+                console.error('Failed to load products from API:', error);
+                products = [];
+                productCategories = [];
+                throw error;
+            }
+        }
+
+        async function loadProductsByCategory(category) {
+            try {
+                if (category === 'all') {
+                    products = await cvdApi.getProducts();
+                } else {
+                    products = await cvdApi.getProducts({ category });
+                }
+                return products;
+            } catch (error) {
+                console.error('Failed to load products by category:', error);
+                return [];
+            }
+        }
+
+        function populateCategoryFilter() {
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (!categoryFilter) return;
+            
+            // Clear existing options except "All Categories"
+            categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+            
+            // Add category options
+            productCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Cabinet type definitions for layout generation
+        // Dynamic cabinet types loaded from API
+        let cabinetTypes = [];
+        
+        // Load cabinet types from API
+        async function loadCabinetTypes() {
+            try {
+                const types = await cvdApi.getCabinetTypes();
+                // Convert API format to match existing code expectations
+                cabinetTypes = types.map(type => ({
+                    id: type.name.toLowerCase().replace('+', 'plus'),
+                    name: type.name,
+                    rows: type.rows,
+                    cols: type.cols
+                }));
+                console.log('Loaded cabinet types:', cabinetTypes);
+            } catch (error) {
+                console.error('Failed to load cabinet types:', error);
+                cabinetTypes = [];
+                // Show error message to user
+                showErrorMessage('Failed to load cabinet types. Please check your database connection.');
+            }
+        }
+
+        // Location Management Functions
+        function extractLocations(devices) {
+            // Extract unique locations from devices
+            const locationSet = new Set();
+            devices.forEach(device => {
+                if (device.location && device.location.trim() !== '') {
+                    locationSet.add(device.location.trim());
+                }
+            });
+            
+            // Convert to array and sort alphabetically
+            const locations = Array.from(locationSet).sort((a, b) => 
+                a.toLowerCase().localeCompare(b.toLowerCase())
+            );
+            
+            return locations;
+        }
+        
+        function renderAssetDropdown() {
+            const assetText = document.getElementById('assetText');
+            const dropdownList = document.getElementById('assetDropdownList');
+            
+            if (!assetText || !dropdownList) return;
+            
+            // Update button text to always show "Assets"
+            assetText.textContent = 'Assets';
+            
+            // Build dropdown items for ALL assets (not filtered by location)
+            const assetHtml = state.allDevices.map(asset => {
+                const isSelected = state.currentAsset && state.currentAsset.asset === asset.asset;
+                return `
+                    <div class="asset-item ${isSelected ? 'selected' : ''}" 
+                         data-asset-id="${asset.asset}"
+                         onclick="selectAssetFromDropdown('${asset.asset}')">
+                        <div class="asset-name">${asset.cooler}</div>
+                        <div class="asset-number">Asset: ${asset.asset}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            dropdownList.innerHTML = assetHtml;
+        }
+        
+        function filterAssetDropdown() {
+            const searchInput = document.getElementById('assetSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const assetItems = document.querySelectorAll('.asset-item');
+            
+            assetItems.forEach(item => {
+                const assetName = item.querySelector('.asset-name').textContent.toLowerCase();
+                const assetNumber = item.querySelector('.asset-number').textContent.toLowerCase();
+                
+                if (assetName.includes(searchTerm) || assetNumber.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        async function selectAssetFromDropdown(assetId) {
+            console.log(`Selecting asset from dropdown: ${assetId}`);
+            
+            // Find the asset from all devices
+            const asset = state.allDevices.find(a => a.asset === assetId);
+            if (!asset) return;
+            
+            // Update the current asset directly
+            await selectAsset(assetId);
+            
+            // Update dropdown display
+            renderAssetDropdown();
+            
+            // Close dropdown
+            document.getElementById('assetDropdown').classList.remove('show');
+        }
+
+        // Asset Loading and Processing Functions
+        async function loadAssets() {
+            let savedDevices = [];
+            
+            try {
+                const devices = await cvdApi.getDevices();
+                
+                savedDevices = devices.map(device => ({
+                    ...device,
+                    deviceType: device.device_type || device.deviceType || 'picovision',
+                    // Ensure backward compatibility
+                    cooler: device.cooler,
+                    location: device.location,
+                    model: device.model,
+                    asset: device.asset
+                }));
+            } catch (error) {
+                console.error('Failed to load devices from API:', error);
+                savedDevices = [];
+            }
+            
+            // Store all devices with cabinet configurations
+            state.allDevices = savedDevices.filter(device => 
+                device.cabinetConfiguration && device.cabinetConfiguration.length > 0
+            );
+            
+            // Set assets to all devices (no location filtering)
+            state.assets = state.allDevices;
+            
+            return state.assets;
+        }
+        
+
+        function generatePlanogramKey(asset, cabinetType, index) {
+            return `${asset.asset}-${cabinetType}-${index}`;
+        }
+
+        function processCabinets(asset) {
+            if (!asset || !asset.cabinetConfiguration) return [];
+            
+            const cabinets = asset.cabinetConfiguration;
+            const parentModel = asset.model;
+            const processedCabinets = [];
+            
+            // Create a map to track original indices
+            const originalIndices = new Map();
+            
+            // Group by cabinet type and add numbering
+            const cabinetGroups = {};
+            cabinets.forEach((cabinet, idx) => {
+                // Store the original array index
+                originalIndices.set(cabinet, idx);
+                
+                // Defensive check for cabinet properties
+                const cabinetType = cabinet.modelName || cabinet.name || cabinet.id || `Cabinet ${idx + 1}`;
+                
+                if (!cabinetGroups[cabinetType]) {
+                    cabinetGroups[cabinetType] = [];
+                }
+                cabinetGroups[cabinetType].push(cabinet);
+            });
+            
+            // Add parent cabinet first with star
+            let isParentAdded = false;
+            for (const [cabinetType, cabinetList] of Object.entries(cabinetGroups)) {
+                cabinetList.forEach((cabinet, index) => {
+                    const isParent = cabinet.modelName === parentModel && !isParentAdded;
+                    const displayName = cabinetList.length > 1 ? `${cabinetType} ${index + 1}` : cabinetType;
+                    
+                    // Ensure cabinetType is a valid string before calling toLowerCase
+                    const safeType = String(cabinetType || 'unknown');
+                    
+                    // Use original array index for planogram key to match backend
+                    const originalIndex = originalIndices.get(cabinet);
+                    
+                    processedCabinets.push({
+                        ...cabinet,
+                        isParent: isParent,
+                        displayName: isParent ? cabinetType : displayName,
+                        index: originalIndex,  // Use original index for planogram key
+                        cabinetType: cabinetType,
+                        planogramKey: generatePlanogramKey(asset, safeType, originalIndex)
+                    });
+                    
+                    if (isParent) isParentAdded = true;
+                });
+            }
+            
+            // Sort to put parent first
+            processedCabinets.sort((a, b) => {
+                if (a.isParent) return -1;
+                if (b.isParent) return 1;
+                return 0;
+            });
+            
+            return processedCabinets;
+        }
+
+        function generateMachineLayout(rows, cols) {
+            const rowLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+            const layout = [];
+            
+            for (let r = 0; r < rows; r++) {
+                const row = [];
+                for (let c = 1; c <= cols; c++) {
+                    row.push(`${rowLabels[r]}${c}`);
+                }
+                layout.push(row);
+            }
+            return layout;
+        }
+
+        // UI Rendering Functions
+        // Render cabinet tabs above the planogram
+        function renderCabinetTabs() {
+            const cabinetTabs = document.getElementById('cabinetTabs');
+            if (!cabinetTabs) return;
+            
+            if (!state.currentAsset) {
+                cabinetTabs.innerHTML = '';
+                return;
+            }
+            
+            const cabinets = processCabinets(state.currentAsset);
+            
+            if (cabinets.length === 0) {
+                cabinetTabs.innerHTML = '';
+                return;
+            }
+            
+            // Get the asset name with asset number
+            const assetName = state.currentAsset.cooler && state.currentAsset.asset 
+                ? `${state.currentAsset.cooler} (${state.currentAsset.asset})`
+                : 'Unknown Asset';
+            
+            // Build the HTML structure with asset title
+            let html = `<div class="asset-title">${assetName}</div>`;
+            
+            // Only show tabs if there are 2 or more cabinets
+            if (cabinets.length > 1) {
+                const tabsHtml = cabinets.map(cabinet => {
+                    const isSelected = state.currentCabinet && state.currentCabinet.planogramKey === cabinet.planogramKey;
+                    const starIcon = cabinet.isParent ? '<span class="star-icon">⭐</span>' : '';
+                    const displayName = cabinet.displayName || cabinet.name || cabinet.modelName || 'Unknown Cabinet';
+                    const planogramKey = cabinet.planogramKey || 'unknown-key';
+                    
+                    return `
+                        <button class="cabinet-tab ${isSelected ? 'active' : ''}" 
+                                data-planogram-key="${planogramKey}" 
+                                onclick="handleCabinetTabClick('${planogramKey}')">
+                            ${starIcon}${displayName}
+                        </button>
+                    `;
+                }).join('');
+                
+                html += `<div class="cabinet-tab-group">${tabsHtml}</div>`;
+            }
+            
+            cabinetTabs.innerHTML = html;
+        }
+
+        function renderAssetList() {
+            const assetList = document.getElementById('assetList');
+            if (!assetList) return;
+            
+            if (state.assets.length === 0) {
+                assetList.innerHTML = '<div class="empty-state">No assets with cabinet configurations found</div>';
+                return;
+            }
+            
+            const assetHtml = state.assets.map(asset => {
+                const isSelected = state.currentAsset && state.currentAsset.asset === asset.asset;
+                const displayName = `${asset.cooler} (${asset.asset})`;
+                
+                return `
+                    <div class="item-list-entry ${isSelected ? 'selected' : ''}" 
+                         data-asset-id="${asset.asset}" 
+                         onclick="selectAsset('${asset.asset}')">
+                        <span class="item-text">${displayName}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            assetList.innerHTML = assetHtml;
+        }
+
+        // Handle cabinet tab clicks
+        window.handleCabinetTabClick = async function(planogramKey) {
+            if (state.currentCabinet && state.currentCabinet.planogramKey === planogramKey) {
+                // Already selected, do nothing
+                return;
+            }
+            
+            await selectCabinet(planogramKey);
+        };
+        
+        // Make selectAssetFromDropdown available globally
+        window.selectAssetFromDropdown = selectAssetFromDropdown;
+
+
+        // Accordion Functionality
+        function toggleAccordion(sectionId) {
+            const content = document.getElementById(`${sectionId}-content`);
+            const icon = document.getElementById(`${sectionId}-icon`);
+            
+            if (!content || !icon) return;
+            
+            const isExpanded = content.classList.contains('expanded');
+            
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                icon.classList.add('collapsed');
+                icon.textContent = '▶';
+            } else {
+                content.classList.add('expanded');
+                icon.classList.remove('collapsed');
+                icon.textContent = '▼';
+            }
+        }
+
+        // Selection Logic Functions
+        async function selectAsset(assetId) {
+            // Find the asset
+            const asset = state.assets.find(a => a.asset === assetId);
+            if (!asset) return;
+            
+            // Save current planogram if switching assets
+            if (state.currentCabinet) {
+                await savePlanogramToState();
+            }
+            
+            // Update current asset
+            state.currentAsset = asset;
+            
+            // Clear current cabinet selection
+            state.currentCabinet = null;
+            
+            // Auto-select parent cabinet
+            const cabinets = processCabinets(asset);
+            const parentCabinet = cabinets.find(c => c.isParent);
+            if (parentCabinet) {
+                selectCabinet(parentCabinet.planogramKey);
+            }
+            
+            // Re-render UI
+            renderAssetList();
+            renderCabinetTabs();
+        }
+
+        async function selectCabinet(planogramKey) {
+            console.log(`📍 selectCabinet called with key: ${planogramKey}`);
+            console.log(`📍 Current asset:`, state.currentAsset);
+            
+            try {
+                // SAVE: Current planogram directly to database (no caching)
+                if (state.currentCabinet) {
+                    const currentKey = state.currentCabinet.planogramKey;
+                    console.log(`💾 Saving current planogram to database: ${currentKey}`);
+                    
+                    // Save directly to database only
+                    await savePlanogramToStorage(currentKey, state.planogram);
+                    console.log(`💾 Save completed`);
+                }
+                
+                // Find the cabinet
+                console.log(`📍 Processing cabinets for asset`);
+                const cabinets = processCabinets(state.currentAsset);
+                console.log(`📍 Available cabinets:`, cabinets.map(c => c.planogramKey));
+                
+                const cabinet = cabinets.find(c => c.planogramKey === planogramKey);
+                if (!cabinet) {
+                    console.warn(`❌ Cabinet not found for key: ${planogramKey}`);
+                    return;
+                }
+                
+                // SWITCH: Update cabinet selection
+                state.currentCabinet = cabinet;
+                console.log(`✅ Switched to cabinet: ${cabinet.displayName}`);
+                
+                // LOAD: Always load fresh planogram from database (no caching)
+                console.log(`📥 Loading planogram from database: ${planogramKey}`);
+                try {
+                    const stored = await loadPlanogramFromStorage(planogramKey);
+                    console.log(`📥 Raw response from loadPlanogramFromStorage:`, stored);
+                    console.log(`📥 Type of stored:`, typeof stored);
+                    console.log(`📥 Is stored null/undefined?`, stored === null || stored === undefined);
+                    
+                    state.planogram = stored || {};
+                    console.log(`📥 state.planogram after assignment:`, state.planogram);
+                    console.log(`📥 Loaded ${Object.keys(state.planogram).length} slots from database`);
+                    
+                    // Log specific slots for debugging
+                    if (Object.keys(state.planogram).length > 0) {
+                        console.log('📥 Sample slot data:', Object.entries(state.planogram).slice(0, 3));
+                    } else {
+                        console.log('📥 WARNING: No slots loaded - state.planogram is empty');
+                    }
+                } catch (error) {
+                    console.error(`📥 Failed to load planogram from database:`, error);
+                    state.planogram = {};
+                }
+                
+                // Reset history for this cabinet (no caching of history)
+                state.history = [];
+                state.historyIndex = -1;
+                
+                // Initialize history if empty
+                if (state.history.length === 0) {
+                    console.log('Initializing history for new cabinet');
+                    saveStateSnapshot();
+                }
+                
+                // Get cabinet dimensions for layout (with defensive checks)
+                let cabinetType = null;
+                
+                // Defensive check for modelName existence
+                if (cabinet.modelName && typeof cabinet.modelName === 'string') {
+                    cabinetType = cabinetTypes.find(ct => ct.name.toLowerCase() === cabinet.modelName.toLowerCase());
+                    
+                    // Fallback: Try without "PicoVision" prefix if not found
+                    if (!cabinetType && cabinet.modelName.toLowerCase().startsWith('picovision ')) {
+                        const cleanName = cabinet.modelName.replace(/^picovision\s+/i, '');
+                        cabinetType = cabinetTypes.find(ct => ct.name.toLowerCase() === cleanName.toLowerCase());
+                        console.log(`Using fallback lookup: "${cabinet.modelName}" → "${cleanName}"`);
+                    }
+                } else {
+                    console.warn(`Cabinet missing modelName property:`, {
+                        displayName: cabinet.displayName,
+                        cabinetType: cabinet.cabinetType,
+                        availableProps: Object.keys(cabinet)
+                    });
+                    
+                    // Try to find type by other properties
+                    const fallbackName = cabinet.name || cabinet.cabinetType || cabinet.id;
+                    if (fallbackName && typeof fallbackName === 'string') {
+                        cabinetType = cabinetTypes.find(ct => 
+                            ct.name.toLowerCase() === fallbackName.toLowerCase() ||
+                            ct.id.toLowerCase() === fallbackName.toLowerCase()
+                        );
+                        console.log(`Using fallback cabinet type lookup with: ${fallbackName}`);
+                    }
+                }
+                if (cabinetType) {
+                    // Generate new machine layout
+                    state.machineLayout = generateMachineLayout(cabinetType.rows, cabinetType.cols);
+                    console.log(`Generated layout: ${cabinetType.rows}x${cabinetType.cols} for cabinet type: ${cabinetType.name}`);
+                    
+                    // Re-render planogram grid
+                    renderPlanogramGrid();
+                } else {
+                    // Try to use dimensions from cabinet object if available
+                    const rows = cabinet.rows || 5;
+                    const cols = cabinet.cols || 8;
+                    
+                    console.warn(`Cabinet type not found for: ${cabinet.modelName || cabinet.name || 'unknown'}`);
+                    console.log(`Using dimensions from cabinet object or defaults: ${rows}x${cols}`);
+                    
+                    // Fallback to cabinet dimensions or default layout
+                    state.machineLayout = generateMachineLayout(rows, cols);
+                    renderPlanogramGrid();
+                }
+                
+                // Clear selected slots when switching cabinets
+                state.selectedSlots.clear();
+                
+                // Re-render cabinet tabs to update selection
+                renderCabinetTabs();
+                
+                // Dispatch cabinet selection event for AI panel
+                document.dispatchEvent(new CustomEvent('cabinet-selected', {
+                    detail: { cabinet: state.currentCabinet, planogramKey: planogramKey }
+                }));
+                
+                console.log('Cabinet selection completed successfully');
+            } catch (e) {
+                console.error('Failed to select cabinet:', e);
+                // Try to recover with basic layout
+                try {
+                    state.machineLayout = generateMachineLayout(5, 8);
+                    renderPlanogramGrid();
+                } catch (recoveryError) {
+                    console.error('Recovery failed:', recoveryError);
+                }
+            }
+        }
+
+        async function savePlanogramToState() {
+            // Save directly to database only (no caching)
+            if (state.currentCabinet) {
+                const key = state.currentCabinet.planogramKey;
+                console.log(`💾 Saving planogram to database: ${key}`);
+                
+                // Save to database only
+                await savePlanogramToStorage(key, state.planogram);
+            }
+        }
+
+        // REMOVED: loadPlanogramFromState function - no longer needed
+        // We now always load fresh from database in selectCabinet()
+        // This eliminates the caching layer and ensures data consistency
+
+        // Check API availability
+        async function checkApiAvailability() {
+            try {
+                const health = await cvdApi.checkHealth();
+                if (!health.available) {
+                    throw new Error('API not available');
+                }
+                console.log('API available, using database');
+                return true;
+            } catch (error) {
+                console.error('API unavailable:', error);
+                showApiError();
+                return false;
+            }
+        }
+        
+        // Show API error message
+        function showApiError() {
+            const planogramSection = document.querySelector('.planogram-section');
+            planogramSection.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 8px;">
+                    <h3 style="color: #dc3545;">Backend Server Not Running</h3>
+                    <p style="color: #666;">Please start the API server to use this application.</p>
+                    <code style="background: #f8f9fa; padding: 8px 12px; border-radius: 4px;">python app.py</code>
+                </div>
+            `;
+        }
+        
+        // Persistence Functions
+        async function savePlanogramToStorage(planogramKey, planogramData) {
+            try {
+                console.log('💾 SAVE - Saving planogram:', planogramKey);
+                console.log('💾 SAVE - Data:', planogramData);
+                console.log('💾 SAVE - Slot count:', Object.keys(planogramData).length);
+                
+                const result = await cvdApi.savePlanogram(planogramKey, planogramData);
+                console.log('💾 SAVE - Result:', result);
+                
+                return result;
+            } catch (error) {
+                console.error('💾 SAVE - Failed to save planogram to API:', error);
+                alert('Failed to save planogram: ' + error.message + '. Please ensure the backend server is running.');
+                throw error;
+            }
+        }
+
+        async function loadPlanogramFromStorage(planogramKey) {
+            console.log(`🔍 loadPlanogramFromStorage called with key: ${planogramKey}`);
+            try {
+                const planogram = await cvdApi.getPlanogram(planogramKey);
+                console.log(`🔍 API response for ${planogramKey}:`, planogram);
+                console.log(`🔍 Response type:`, typeof planogram);
+                console.log(`🔍 Response keys:`, planogram ? Object.keys(planogram) : 'null/undefined');
+                return planogram || {};
+            } catch (error) {
+                console.error(`🔍 Failed to load planogram from API for ${planogramKey}:`, error);
+                return {};
+            }
+        }
+
+        async function initializeAssetSelection() {
+            console.log('Initializing asset selection system...');
+            
+            try {
+                // Load cabinet types first (needed for asset processing)
+                await loadCabinetTypes();
+                console.log('Cabinet types loaded');
+            } catch (e) {
+                console.warn('Failed to load cabinet types:', e);
+            }
+            
+            try {
+                // Load products
+                await loadProducts();
+                console.log(`Loaded ${products.length} products`);
+                
+                // Populate category filter
+                populateCategoryFilter();
+            } catch (e) {
+                console.warn('Failed to load products:', e);
+                products = [];
+            }
+            
+            try {
+                // Load assets
+                await loadAssets();
+                console.log(`Loaded ${state.assets.length} assets for location: ${state.currentLocation}`);
+                console.log(`Total locations available: ${state.locations.length}`);
+            } catch (e) {
+                console.warn('Failed to load assets:', e);
+                state.assets = [];
+            }
+            
+            // Render asset dropdown
+            try {
+                renderAssetDropdown();
+                console.log('Asset dropdown rendered');
+            } catch (e) {
+                console.warn('Failed to render asset dropdown:', e);
+            }
+            
+            // Add mockup data if no assets exist for testing
+            if (state.assets.length === 0) {
+                try {
+                    console.log('No assets found, creating mockup data...');
+                    createMockupData();
+                    loadAssets();
+                    console.log(`Created mockup data, now have ${state.assets.length} assets`);
+                } catch (e) {
+                    console.warn('Failed to create mockup data:', e);
+                }
+            }
+            
+            try {
+                // Render asset list
+                renderAssetList();
+                console.log('Asset list rendered');
+            } catch (e) {
+                console.warn('Failed to render asset list:', e);
+            }
+            
+            // Auto-select first asset and its parent cabinet if available
+            if (state.assets.length > 0) {
+                try {
+                    const firstAsset = state.assets[0];
+                    console.log(`Auto-selecting first asset: ${firstAsset.asset}`);
+                    await selectAsset(firstAsset.asset);
+                } catch (e) {
+                    console.warn('Failed to auto-select asset:', e);
+                    // Fallback to basic layout
+                    state.machineLayout = generateMachineLayout(5, 8);
+                    renderPlanogramGrid();
+                }
+            } else {
+                console.log('No assets available, showing empty states');
+                try {
+                    // Initialize with default layout for demo purposes
+                    state.machineLayout = generateMachineLayout(5, 8);
+                    renderPlanogramGrid();
+                } catch (e) {
+                    console.warn('Failed to render empty states:', e);
+                }
+            }
+        }
+
+
+        // Initialize Application
+        async function init() {
+            console.log('Starting application initialization...');
+            
+            // Check API availability first
+            const apiAvailable = await checkApiAvailability();
+            if (!apiAvailable) {
+                return; // Stop initialization if API is not available
+            }
+            
+            // STEP 1: Initialize state
+            try {
+                loadState();
+                console.log('State initialized successfully');
+            } catch (e) {
+                console.error('State initialization failed:', e);
+                showErrorMessage('Failed to initialize application state.');
+            }
+            
+            // STEP 2: Asset system (independent of legacy state)
+            try {
+                await initializeAssetSelection();
+                console.log('Asset system initialized successfully');
+            } catch (e) {
+                console.warn('Asset initialization failed:', e);
+                // Fallback to default layout
+                try {
+                    state.machineLayout = generateMachineLayout(5, 8);
+                    renderPlanogramGrid();
+                    console.log('Fallback layout initialized');
+                } catch (fallbackError) {
+                    console.error('Fallback layout failed:', fallbackError);
+                }
+            }
+            
+            // STEP 3: Product library (independent)
+            try {
+                renderProductLibrary();
+                console.log('Product library rendered successfully');
+            } catch (e) {
+                console.warn('Product library failed:', e);
+            }
+            
+            // STEP 4: Right panel (independent)
+            try {
+                updateRightPanel();
+                console.log('Right panel updated successfully');
+            } catch (e) {
+                console.warn('Right panel update failed:', e);
+            }
+            
+            // STEP 5: Event listeners (critical)
+            try {
+                setupEventListeners();
+                console.log('Event listeners setup successfully');
+            } catch (e) {
+                console.error('Event listeners setup failed:', e);
+            }
+            
+            console.log('Application initialization completed');
+        }
+
+        // Initialize state - no longer loading from localStorage
+        function loadState() {
+            // Initialize empty state
+            state.planogram = {};
+            
+            // Initialize history
+            saveStateSnapshot();
+        }
+
+        // Save state to localStorage
+        async function saveState() {
+            console.log('🔄 SAVE BUTTON CLICKED - Starting save process...');
+            console.log('🔄 SAVE - Current cabinet:', state.currentCabinet);
+            console.log('🔄 SAVE - Planogram data:', state.planogram);
+            console.log('🔄 SAVE - Has unsaved changes:', state.hasUnsavedChanges);
+            
+            try {
+                // Save current planogram to cabinet-specific key if we have a selected cabinet
+                if (state.currentCabinet) {
+                    console.log('🔄 SAVE - Calling savePlanogramToStorage...');
+                    await savePlanogramToStorage(state.currentCabinet.planogramKey, state.planogram);
+                    console.log('🔄 SAVE - Successfully saved planogram');
+                } else {
+                    console.warn('🔄 SAVE - No cabinet selected, cannot save');
+                    alert('Please select a cabinet before saving.');
+                    return;
+                }
+                
+                // No longer saving to localStorage
+                
+                state.hasUnsavedChanges = false;
+                updateSaveButton();
+                showSaveIndicator();
+                console.log('🔄 SAVE - Save process completed successfully');
+            } catch (error) {
+                console.error('🔄 SAVE - Save process failed:', error);
+                alert('Save failed: ' + error.message);
+            }
+        }
+
+        // Save a snapshot of the current state for undo/redo
+        function saveStateSnapshot() {
+            const snapshot = {
+                planogram: JSON.parse(JSON.stringify(state.planogram))
+            };
+            
+            // Remove any states after current index
+            state.history = state.history.slice(0, state.historyIndex + 1);
+            
+            // Add new state
+            state.history.push(snapshot);
+            state.historyIndex++;
+            
+            // Limit history to 50 states
+            if (state.history.length > 50) {
+                state.history.shift();
+                state.historyIndex--;
+            }
+            
+            updateUndoRedoButtons();
+        }
+
+        // Undo function
+        function undo() {
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                const snapshot = state.history[state.historyIndex];
+                state.planogram = JSON.parse(JSON.stringify(snapshot.planogram));
+                state.selectedSlots.clear();
+                renderPlanogramGrid();
+                updateRightPanel();
+                updateUndoRedoButtons();
+                markUnsavedChanges();
+            }
+        }
+
+        // Redo function
+        function redo() {
+            if (state.historyIndex < state.history.length - 1) {
+                state.historyIndex++;
+                const snapshot = state.history[state.historyIndex];
+                state.planogram = JSON.parse(JSON.stringify(snapshot.planogram));
+                state.selectedSlots.clear();
+                renderPlanogramGrid();
+                updateRightPanel();
+                updateUndoRedoButtons();
+                markUnsavedChanges();
+            }
+        }
+
+        // Update undo/redo button states
+        function updateUndoRedoButtons() {
+            document.getElementById('undoBtn').disabled = state.historyIndex <= 0;
+            document.getElementById('redoBtn').disabled = state.historyIndex >= state.history.length - 1;
+        }
+
+        // Mark that there are unsaved changes
+        function markUnsavedChanges() {
+            state.hasUnsavedChanges = true;
+            updateSaveButton();
+        }
+
+        // Update save button appearance
+        function updateSaveButton() {
+            const saveBtn = document.getElementById('saveBtn');
+            if (state.hasUnsavedChanges) {
+                saveBtn.classList.add('has-changes');
+            } else {
+                saveBtn.classList.remove('has-changes');
+            }
+        }
+
+        // Show center screen toast notification
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2500);
+        }
+        
+
+        // Show error message to user
+        function showErrorMessage(message) {
+            // Create or update error message element
+            let errorDiv = document.getElementById('errorMessage');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'errorMessage';
+                errorDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #dc3545; color: white; padding: 15px 25px; border-radius: 5px; z-index: 10000; font-size: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);';
+                document.body.appendChild(errorDiv);
+            }
+            
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Render product library
+        function renderProductLibrary() {
+            try {
+                console.log('Rendering product library...');
+                
+                // Safe DOM element access with error handling
+                const searchInput = document.getElementById('searchInput');
+                const categoryFilter = document.getElementById('categoryFilter');
+                const productGrid = document.getElementById('productGrid');
+                
+                if (!productGrid) {
+                    console.error('Product grid element not found');
+                    return;
+                }
+                
+                // Safe value extraction with fallbacks
+                const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+                const categoryFilterValue = categoryFilter ? categoryFilter.value : 'all';
+                
+                // Validate products array exists and is valid
+                if (!Array.isArray(products) || products.length === 0) {
+                    console.warn('Products array is empty or invalid');
+                    productGrid.innerHTML = `
+                        <div class="empty-state" style="text-align: center; padding: 40px; color: #95a5a6;">
+                            <p>No products available</p>
+                            <p style="font-size: 12px; margin-top: 8px;">Product library failed to load</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Filter products with enhanced validation
+                const filteredProducts = products.filter(product => {
+                    try {
+                        // Validate product structure
+                        if (!product || typeof product !== 'object') {
+                            console.warn('Invalid product object:', product);
+                            return false;
+                        }
+                        
+                        if (!product.id || !product.name) {
+                            console.warn('Product missing required fields:', product);
+                            return false;
+                        }
+                        
+                        const productName = String(product.name || '').toLowerCase();
+                        const productCategory = String(product.category || '');
+                        
+                        const matchesSearch = productName.includes(searchTerm);
+                        const matchesCategory = categoryFilterValue === 'all' || productCategory === categoryFilterValue;
+                        
+                        return matchesSearch && matchesCategory;
+                    } catch (filterError) {
+                        console.warn('Error filtering product:', product, filterError);
+                        return false;
+                    }
+                });
+
+                // Generate product cards with error handling
+                const productCardsHtml = filteredProducts.map(product => {
+                    try {
+                        // Validate required product properties with fallbacks
+                        const productId = String(product.id || 'unknown');
+                        const productName = String(product.name || 'Unknown Product');
+                        const productPrice = typeof product.price === 'number' ? product.price : 0;
+                        const productImage = String(product.image || '');
+                        
+                        // Generate fallback image if original fails
+                        const imageHtml = productImage 
+                            ? `<img src="${productImage}" 
+                                    alt="${productName}" 
+                                    class="product-image"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                    onload="this.style.display='block'; this.nextElementSibling.style.display='none';">
+                               <div class="product-image-fallback" 
+                                    style="display: none; width: 50px; height: 50px; background: #f0f0f0; border: 1px dashed #ccc; border-radius: 4px; align-items: center; justify-content: center; font-size: 10px; color: #999; text-align: center;">
+                                   No Image
+                               </div>`
+                            : `<div class="product-image-fallback" 
+                                    style="width: 50px; height: 50px; background: #f0f0f0; border: 1px dashed #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999; text-align: center;">
+                                   No Image
+                               </div>`;
+                        
+                        return `
+                            <div class="product-card" draggable="true" data-product-id="${productId}">
+                                ${imageHtml}
+                                <div class="product-info">
+                                    <div class="product-name">${productName}</div>
+                                    <div class="product-price">$${productPrice.toFixed(2)}</div>
+                                </div>
+                            </div>
+                        `;
+                    } catch (cardError) {
+                        console.warn('Error generating product card:', product, cardError);
+                        // Return basic fallback card
+                        return `
+                            <div class="product-card" style="opacity: 0.5;">
+                                <div class="product-image-fallback" 
+                                     style="width: 50px; height: 50px; background: #f0f0f0; border: 1px dashed #ccc; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #999;">
+                                    Error
+                                </div>
+                                <div class="product-info">
+                                    <div class="product-name">Product Error</div>
+                                    <div class="product-price">$0.00</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }).join('');
+
+                // Update grid with error handling for empty results
+                if (filteredProducts.length === 0) {
+                    productGrid.innerHTML = `
+                        <div class="empty-state" style="text-align: center; padding: 40px; color: #95a5a6;">
+                            <p>No products found</p>
+                            <p style="font-size: 12px; margin-top: 8px;">Try adjusting your search or filter</p>
+                        </div>
+                    `;
+                } else {
+                    productGrid.innerHTML = productCardsHtml;
+                }
+
+                // Add drag event listeners with error handling
+                try {
+                    const productCards = productGrid.querySelectorAll('.product-card[data-product-id]');
+                    productCards.forEach(card => {
+                        try {
+                            // Only add listeners to valid cards with product IDs
+                            if (card.dataset.productId && card.dataset.productId !== 'unknown') {
+                                card.addEventListener('dragstart', handleDragStart);
+                                card.addEventListener('dragend', handleDragEnd);
+                            } else {
+                                // Disable dragging for invalid cards
+                                card.draggable = false;
+                                card.style.cursor = 'not-allowed';
+                            }
+                        } catch (listenerError) {
+                            console.warn('Error adding event listeners to card:', card, listenerError);
+                            // Disable dragging if listeners fail
+                            card.draggable = false;
+                        }
+                    });
+                    
+                    console.log(`Product library rendered successfully: ${filteredProducts.length} products displayed`);
+                } catch (listenersError) {
+                    console.warn('Error adding drag event listeners:', listenersError);
+                }
+                
+            } catch (error) {
+                console.error('Critical error in renderProductLibrary:', error);
+                
+                // Fallback rendering to prevent complete failure
+                try {
+                    const productGrid = document.getElementById('productGrid');
+                    if (productGrid) {
+                        productGrid.innerHTML = `
+                            <div class="empty-state" style="text-align: center; padding: 40px; color: #e74c3c;">
+                                <p>Product library failed to load</p>
+                                <p style="font-size: 12px; margin-top: 8px;">System error occurred</p>
+                                <button onclick="renderProductLibrary()" style="margin-top: 12px; padding: 6px 12px; border: 1px solid #e74c3c; background: white; color: #e74c3c; border-radius: 4px; cursor: pointer;">
+                                    Retry
+                                </button>
+                            </div>
+                        `;
+                    }
+                } catch (fallbackError) {
+                    console.error('Failed to render fallback UI:', fallbackError);
+                }
+            }
+        }
+
+        // Render planogram grid
+        function renderPlanogramGrid() {
+            console.log('🎨 renderPlanogramGrid called');
+            console.log('🎨 Current state.planogram:', state.planogram);
+            console.log('🎨 Number of slots in planogram:', Object.keys(state.planogram || {}).length);
+            console.log('🎨 Current state.machineLayout:', state.machineLayout);
+            
+            const grid = document.getElementById('planogramGrid');
+            
+            // Guard check - ensure machineLayout is initialized
+            if (!state.machineLayout || state.machineLayout.length === 0) {
+                console.log('Machine layout not initialized, using default 5x8');
+                state.machineLayout = generateMachineLayout(5, 8);
+            }
+            
+            grid.innerHTML = state.machineLayout.map((row, rowIndex) => {
+                const rowLabel = String.fromCharCode(65 + rowIndex); // A, B, C, etc.
+                
+                // Check if all slots in this row are selected
+                const allSlotsInRowSelected = row.every(slotId => state.selectedSlots.has(slotId));
+                const rowLabelClass = allSlotsInRowSelected ? 'row-label selected' : 'row-label';
+                
+                const slots = row.map(slotId => {
+                    const slotData = state.planogram[slotId];
+                    const isEmpty = isSlotEmpty(slotData);
+                    const product = !isEmpty && slotData ? products.find(p => p.id === slotData.productId) : null;
+                    
+                    let slotClasses = 'slot';
+                    if (!isEmpty && product) slotClasses += ' filled';
+                    if (state.selectedSlots.has(slotId)) slotClasses += ' multi-selected';
+                    
+                    // Make filled slots draggable only if not in multi-select mode
+                    const draggable = !isEmpty && product && state.selectedSlots.size <= 1 ? 'draggable="true"' : '';
+                    
+                    let slotContent = '';
+                    if (!isEmpty && product) {
+                        slotContent = `
+                            <div class="slot-id">${slotId}</div>
+                            <img src="${product.image}" alt="${product.name}" class="slot-image">
+                            <div class="slot-name">${product.name}</div>
+                            <div class="slot-price">${slotData.price.toFixed(2)}</div>
+                        `;
+                    } else {
+                        slotContent = `
+                            <div class="slot-id">${slotId}</div>
+                            <div class="empty-slot">Empty</div>
+                        `;
+                    }
+                    
+                    return `<div class="${slotClasses}" data-slot-id="${slotId}" ${draggable}>${slotContent}</div>`;
+                }).join('');
+                
+                return `
+                    <div class="grid-row">
+                        <div class="${rowLabelClass}" data-row="${rowIndex}">${rowLabel}</div>
+                        ${slots}
+                    </div>
+                `;
+            }).join('');
+
+            // Add event listeners to slots
+            grid.querySelectorAll('.slot').forEach(slot => {
+                slot.addEventListener('click', handleSlotClick);
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('drop', handleDrop);
+                slot.addEventListener('dragleave', handleDragLeave);
+                
+                // Add drag event listeners to filled slots
+                if (slot.draggable) {
+                    slot.addEventListener('dragstart', handleSlotDragStart);
+                    slot.addEventListener('dragend', handleSlotDragEnd);
+                }
+            });
+            
+            // Add event listeners to row labels
+            grid.querySelectorAll('.row-label').forEach(label => {
+                label.addEventListener('click', handleRowClick);
+            });
+        }
+
+        // Update right panel
+        function updateRightPanel() {
+            const rightPanel = document.getElementById('rightPanelContent');
+            
+            if (state.selectedSlots.size === 0) {
+                rightPanel.innerHTML = `
+                    <h2 class="panel-title">SLOT DETAILS</h2>
+                    <div class="empty-state">
+                        Select a slot to view details
+                    </div>
+                `;
+                return;
+            }
+            
+            if (state.selectedSlots.size === 1) {
+                // Single slot selected
+                const selectedSlot = Array.from(state.selectedSlots)[0];
+                const slotData = state.planogram[selectedSlot];
+                const product = slotData ? products.find(p => p.id === slotData.productId) : null;
+                
+                if (product) {
+                    rightPanel.innerHTML = `
+                        <h2 class="panel-title">SLOT DETAILS: ${selectedSlot}</h2>
+                        <div class="slot-details">
+                            <div class="product-display">
+                                <img src="${product.image}" alt="${product.name}" class="product-display-image">
+                                <div class="product-display-name">${product.name}</div>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Price:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       id="priceInput"
+                                       value="${slotData.price.toFixed(2)}" 
+                                       step="0.25" 
+                                       min="0"
+                                       data-field="price">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Quantity:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       id="quantityInput"
+                                       value="${slotData.quantity}" 
+                                       min="0"
+                                       max="${slotData.capacity}"
+                                       data-field="quantity">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Par Level:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       id="parlevelInput"
+                                       value="${slotData.parlevel}" 
+                                       min="0"
+                                       max="${slotData.capacity}"
+                                       data-field="parlevel">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Capacity:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       id="capacityInput"
+                                       value="${slotData.capacity}" 
+                                       min="1"
+                                       max="20"
+                                       data-field="capacity">
+                            </div>
+                            
+                            <button class="btn btn-danger" onclick="removeProduct('${selectedSlot}')" style="width: 100%; margin-top: 16px;">
+                                Remove Product
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Add input change listeners
+                    rightPanel.querySelectorAll('.detail-input').forEach(input => {
+                        input.addEventListener('change', handleDetailChange);
+                    });
+                } else {
+                    rightPanel.innerHTML = `
+                        <h2 class="panel-title">SLOT DETAILS: ${selectedSlot}</h2>
+                        <div class="empty-state">
+                            <p>This slot is empty</p>
+                            <p>Drag a product here to fill it</p>
+                        </div>
+                    `;
+                }
+            } else {
+                // Multiple slots selected - show bulk edit panel
+                rightPanel.innerHTML = `
+                    <h2 class="panel-title">BULK EDIT</h2>
+                    <p style="margin-bottom: 16px;">${state.selectedSlots.size} slots selected</p>
+                    
+                    <div class="note">
+                        <strong>Tip:</strong> Drag a product from the library to any selected slot to apply it to all selected slots.
+                    </div>
+                    
+                    <form id="bulkEditForm">
+                        <div class="slot-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Price:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       name="price"
+                                       placeholder="Leave unchanged" 
+                                       step="0.25"
+                                       min="0">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Capacity:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       name="capacity"
+                                       placeholder="Leave unchanged"
+                                       min="1"
+                                       max="20">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Par Level:</span>
+                                <input type="number" 
+                                       class="detail-input" 
+                                       name="parlevel"
+                                       placeholder="Leave unchanged"
+                                       min="0"
+                                       max="20">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 16px;">
+                                Apply to Selected
+                            </button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('bulkEditForm').addEventListener('submit', handleBulkEdit);
+            }
+        }
+
+        // Event Handlers
+        function handleDragStart(e) {
+            const productId = e.currentTarget.dataset.productId;
+            console.log('🚀 DRAG START - Raw product ID:', productId, 'Type:', typeof productId);
+            
+            // Convert to integer to match database format
+            state.draggedProduct = parseInt(productId);
+            state.draggedSlot = null;
+            e.currentTarget.classList.add('dragging');
+            
+            console.log('🚀 DRAG START - Stored product ID:', state.draggedProduct, 'Type:', typeof state.draggedProduct);
+        }
+
+        function handleDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            state.draggedProduct = null;
+            state.draggedSlot = null;
+        }
+
+        // Handle dragging from a slot
+        function handleSlotDragStart(e) {
+            const slotId = e.currentTarget.dataset.slotId;
+            
+            // Prevent slot-to-slot dragging when in bulk mode
+            if (state.selectedSlots.size > 1) {
+                e.preventDefault();
+                return;
+            }
+            
+            if (state.planogram[slotId]) {  // Only allow dragging if slot has a product
+                state.draggedSlot = slotId;
+                state.draggedProduct = null;
+                e.currentTarget.style.opacity = '0.5';
+                e.dataTransfer.effectAllowed = 'move';
+            } else {
+                e.preventDefault();
+            }
+        }
+
+        function handleSlotDragEnd(e) {
+            e.currentTarget.style.opacity = '';
+            state.draggedSlot = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const slotId = e.currentTarget.dataset.slotId;
+            
+            // Check if we're in bulk mode
+            const isBulkMode = state.selectedSlots.size > 1 && state.selectedSlots.has(slotId);
+            
+            if (isBulkMode && state.draggedProduct) {
+                // In bulk mode, highlight all selected slots
+                state.selectedSlots.forEach(selectedSlotId => {
+                    const slotElement = document.querySelector(`[data-slot-id="${selectedSlotId}"]`);
+                    if (slotElement) {
+                        slotElement.classList.add('drag-over-valid');
+                    }
+                });
+            } else {
+                // Single slot mode
+                e.currentTarget.classList.add('drag-over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const slotId = e.currentTarget.dataset.slotId;
+            const isBulkMode = state.selectedSlots.size > 1 && state.selectedSlots.has(slotId);
+            
+            if (isBulkMode) {
+                // In bulk mode, clear all selected slots
+                state.selectedSlots.forEach(selectedSlotId => {
+                    const slotElement = document.querySelector(`[data-slot-id="${selectedSlotId}"]`);
+                    if (slotElement) {
+                        slotElement.classList.remove('drag-over-valid');
+                    }
+                });
+            } else {
+                // Single slot mode
+                e.currentTarget.classList.remove('drag-over');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            
+            const targetSlotId = e.currentTarget.dataset.slotId;
+            const isBulkMode = state.selectedSlots.size > 1 && state.selectedSlots.has(targetSlotId);
+            
+            // Clear all drag indicators first
+            if (isBulkMode) {
+                state.selectedSlots.forEach(selectedSlotId => {
+                    const slotElement = document.querySelector(`[data-slot-id="${selectedSlotId}"]`);
+                    if (slotElement) {
+                        slotElement.classList.remove('drag-over-valid');
+                    }
+                });
+            } else {
+                e.currentTarget.classList.remove('drag-over');
+            }
+            
+            if (state.draggedProduct) {
+                // Dropping from product library
+                console.log('🎯 DROP - Looking for product ID:', state.draggedProduct, 'Type:', typeof state.draggedProduct);
+                console.log('🎯 DROP - Available products:', products.map(p => `ID: ${p.id} (${typeof p.id}) Name: ${p.name}`));
+                
+                const product = products.find(p => p.id === state.draggedProduct);
+                console.log('🎯 DROP - Found product:', product);
+                
+                if (product) {
+                    if (isBulkMode) {
+                        // Bulk mode - apply to all selected slots
+                        const slotData = {
+                            productId: product.id,
+                            productName: product.name,
+                            price: product.price,
+                            quantity: 10,
+                            parLevel: 8,
+                            capacity: 10
+                        };
+                        
+                        console.log('💾 BULK ASSIGN to slots:', Array.from(state.selectedSlots), 'Data:', slotData);
+                        state.selectedSlots.forEach(slotId => {
+                            state.planogram[slotId] = { ...slotData };
+                        });
+                        
+                        saveStateSnapshot();
+                        markUnsavedChanges();
+                    } else {
+                        // Single slot mode
+                        const slotData = {
+                            productId: product.id,
+                            productName: product.name,
+                            price: product.price,
+                            quantity: 10,
+                            parLevel: 8,
+                            capacity: 10
+                        };
+                        
+                        console.log('💾 ASSIGNING to slot', targetSlotId, ':', slotData);
+                        state.planogram[targetSlotId] = slotData;
+                        
+                        saveStateSnapshot();
+                        markUnsavedChanges();
+                    }
+                    
+                    renderPlanogramGrid();
+                    updateRightPanel();
+                } else {
+                    console.log('❌ DROP - Product not found for ID:', state.draggedProduct);
+                }
+            } else if (state.draggedSlot && state.draggedSlot !== targetSlotId && !isBulkMode) {
+                // Slot to slot swap - only works in single selection mode
+                const sourceSlotData = state.planogram[state.draggedSlot];
+                const targetSlotData = state.planogram[targetSlotId];
+                
+                if (sourceSlotData) {
+                    // Swap the products
+                    if (targetSlotData) {
+                        // Both slots have products - swap them
+                        state.planogram[state.draggedSlot] = targetSlotData;
+                        state.planogram[targetSlotId] = sourceSlotData;
+                    } else {
+                        // Target slot is empty - move product
+                        state.planogram[targetSlotId] = sourceSlotData;
+                        // Set to sentinel product instead of empty object
+                        state.planogram[state.draggedSlot] = createEmptySlot();
+                    }
+                    
+                    saveStateSnapshot();
+                    markUnsavedChanges();
+                    renderPlanogramGrid();
+                    updateRightPanel();
+                }
+            }
+        }
+
+        function handleSlotClick(e) {
+            const slotId = e.currentTarget.dataset.slotId;
+            
+            if (e.ctrlKey || e.metaKey) {
+                // Ctrl/Cmd+Click - toggle selection
+                if (state.selectedSlots.has(slotId)) {
+                    state.selectedSlots.delete(slotId);
+                } else {
+                    state.selectedSlots.add(slotId);
+                }
+            } else {
+                // Regular click - select only this slot
+                state.selectedSlots.clear();
+                state.selectedSlots.add(slotId);
+            }
+            
+            renderPlanogramGrid();
+            updateRightPanel();
+        }
+
+        function handleRowClick(e) {
+            const rowIndex = parseInt(e.currentTarget.dataset.row);
+            
+            // Guard check - ensure machineLayout is initialized
+            if (!state.machineLayout || state.machineLayout.length === 0) {
+                console.log('Machine layout not initialized in handleRowClick');
+                return;
+            }
+            
+            const rowSlots = state.machineLayout[rowIndex];
+            
+            // Check if all slots in this row are already selected
+            const allSlotsInRowSelected = rowSlots.every(slotId => state.selectedSlots.has(slotId));
+            
+            if (e.ctrlKey || e.metaKey) {
+                // Ctrl/Cmd+Click - toggle row selection
+                if (allSlotsInRowSelected) {
+                    // Remove all slots in this row from selection
+                    rowSlots.forEach(slotId => state.selectedSlots.delete(slotId));
+                } else {
+                    // Add all slots in this row to selection
+                    rowSlots.forEach(slotId => state.selectedSlots.add(slotId));
+                }
+            } else {
+                // Regular click - clear all and select only this row
+                state.selectedSlots.clear();
+                rowSlots.forEach(slotId => state.selectedSlots.add(slotId));
+            }
+            
+            renderPlanogramGrid();
+            updateRightPanel();
+        }
+
+        function handleDetailChange(e) {
+            const field = e.target.dataset.field;
+            const value = parseFloat(e.target.value);
+            
+            if (!isNaN(value) && state.selectedSlots.size === 1) {
+                const selectedSlot = Array.from(state.selectedSlots)[0];
+                if (state.planogram[selectedSlot]) {
+                    state.planogram[selectedSlot][field] = value;
+                    
+                    // Update constraints
+                    if (field === 'capacity') {
+                        // Ensure quantity and parlevel don't exceed capacity
+                        const slot = state.planogram[selectedSlot];
+                        if (slot.quantity > value) slot.quantity = value;
+                        if (slot.parlevel > value) slot.parlevel = value;
+                        updateRightPanel();
+                    }
+                    
+                    saveStateSnapshot();
+                    markUnsavedChanges();
+                    renderPlanogramGrid();
+                }
+            }
+        }
+
+        // Handle bulk edit form submission
+        function handleBulkEdit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const updates = {};
+            
+            // Collect non-empty values
+            ['price', 'capacity', 'parlevel'].forEach(field => {
+                const value = parseFloat(form[field].value);
+                if (!isNaN(value)) {
+                    updates[field] = value;
+                }
+            });
+            
+            // Apply updates to all selected slots that have products
+            let changesApplied = false;
+            state.selectedSlots.forEach(slotId => {
+                if (state.planogram[slotId]) {
+                    Object.entries(updates).forEach(([field, value]) => {
+                        state.planogram[slotId][field] = value;
+                        changesApplied = true;
+                    });
+                    
+                    // Update constraints if capacity changed
+                    if (updates.capacity !== undefined) {
+                        const slot = state.planogram[slotId];
+                        if (slot.quantity > updates.capacity) slot.quantity = updates.capacity;
+                        if (slot.parlevel > updates.capacity) slot.parlevel = updates.capacity;
+                    }
+                }
+            });
+            
+            if (changesApplied) {
+                saveStateSnapshot();
+                markUnsavedChanges();
+                renderPlanogramGrid();
+                updateRightPanel();
+            }
+        }
+
+        // Actions
+        window.removeProduct = function(slotId) {
+            // Set to sentinel product instead of empty object
+            state.planogram[slotId] = createEmptySlot();
+            state.selectedSlots.clear();
+            saveStateSnapshot();
+            markUnsavedChanges();
+            renderPlanogramGrid();
+            updateRightPanel();
+        };
+
+        // Handle tab clicks
+        window.handleTabClick = function(tabElement, tabName) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            tabElement.classList.add('active');
+            
+            // For now, tabs don't do anything else
+            console.log(`Clicked ${tabName} tab`);
+        };
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all products?')) {
+                state.planogram = {};
+                state.selectedSlots.clear();
+                saveStateSnapshot();
+                markUnsavedChanges();
+                renderPlanogramGrid();
+                updateRightPanel();
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('🔧 SETUP - Setting up event listeners...');
+            
+            // Asset dropdown
+            const assetBtn = document.getElementById('assetBtn');
+            if (assetBtn) {
+                assetBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const dropdown = document.getElementById('assetDropdown');
+                    dropdown.classList.toggle('show');
+                });
+            }
+            
+            // Asset search functionality
+            const assetSearch = document.getElementById('assetSearch');
+            if (assetSearch) {
+                assetSearch.addEventListener('input', filterAssetDropdown);
+                assetSearch.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent dropdown from closing when clicking search
+                });
+            }
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                const dropdown = document.getElementById('assetDropdown');
+                if (dropdown) {
+                    dropdown.classList.remove('show');
+                }
+            });
+            
+            document.getElementById('searchInput').addEventListener('input', renderProductLibrary);
+            document.getElementById('categoryFilter').addEventListener('change', async (e) => {
+                try {
+                    await loadProductsByCategory(e.target.value);
+                    renderProductLibrary();
+                } catch (error) {
+                    console.error('Failed to load products for category:', error);
+                }
+            });
+            document.getElementById('clearAllBtn').addEventListener('click', clearAll);
+            
+            // Save button event listener with debug
+            const saveBtn = document.getElementById('saveBtn');
+            console.log('🔧 SETUP - Save button element:', saveBtn);
+            console.log('🔧 SETUP - Save button disabled:', saveBtn?.disabled);
+            console.log('🔧 SETUP - Save button classes:', saveBtn?.className);
+            console.log('🔧 SETUP - Save button style:', saveBtn?.style.cssText);
+            
+            if (saveBtn) {
+                // Force enable the button and ensure proper cursor
+                saveBtn.disabled = false;
+                saveBtn.style.cursor = 'pointer';
+                saveBtn.style.pointerEvents = 'auto';
+                
+                console.log('🔧 SETUP - Forced save button enabled');
+                
+                saveBtn.addEventListener('click', async (e) => {
+                    console.log('🔧 SAVE BUTTON CLICKED - Event fired!', e);
+                    await saveState();
+                });
+                console.log('🔧 SETUP - Save button event listener attached successfully');
+            } else {
+                console.error('🔧 SETUP - Save button not found!');
+            }
+            
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('redoBtn').addEventListener('click', redo);
+            
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                    e.preventDefault();
+                    undo();
+                } else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+                    e.preventDefault();
+                    redo();
+                }
+            });
+        }
+
+        // Iframe communication
+        function setupIframeCommunication() {
+            const allowedOrigin = window.location.origin;
+            
+            // Listen for messages from parent
+            window.addEventListener('message', function(event) {
+                // Validate origin
+                if (event.origin !== allowedOrigin) {
+                    console.warn('Rejected message from unauthorized origin:', event.origin);
+                    return;
+                }
+                
+                // Handle incoming data
+                if (event.data.type === 'DEVICES_DATA') {
+                    console.log('Received device data:', event.data.devices);
+                    // Store the data for use in SPT
+                    window.cvdDevices = event.data.devices;
+                    
+                    // You can use this data to enhance the SPT functionality
+                    // For example, show device-specific planograms
+                }
+            });
+            
+            // Request data from parent when loaded
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'REQUEST_DEVICES' }, allowedOrigin);
+            }
+        }
+
+        // Initialize AI Feedback Panel
+        let aiFeedbackPanel = null;
+        
+        function initAIPanel() {
+            if (window.AIFeedbackPanel) {
+                aiFeedbackPanel = new AIFeedbackPanel(cvdApi);
+                
+                // Make the planogram state available globally for AI panel
+                window.getCurrentPlanogramData = getCurrentPlanogramData;
+                window.state = state; // Make page state accessible to AI panel
+                
+                // Add AI button to toolbar if not exists
+                const toolbar = document.querySelector('.toolbar');
+                if (toolbar && !document.querySelector('.btn-ai-assistant')) {
+                    const aiButton = document.createElement('button');
+                    aiButton.className = 'btn btn-primary btn-ai-assistant';
+                    aiButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;"><path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H11V21H5V3H13V9H21ZM16 11V13H22V11H16ZM16 15V17H22V15H16ZM16 19V21H22V19H16Z"/></svg>AI Assistant';
+                    aiButton.title = 'Toggle AI Optimization Assistant';
+                    aiButton.onclick = () => {
+                        // Refresh planogram data before showing panel
+                        aiFeedbackPanel.refreshPlanogramData();
+                        aiFeedbackPanel.toggle();
+                    };
+                    
+                    // Insert after Edit Layout button in left toolbar
+                    const leftToolbar = document.querySelector('.toolbar-group:not(.toolbar-center):not(.toolbar-right)');
+                    if (leftToolbar) {
+                        leftToolbar.appendChild(aiButton);
+                    } else {
+                        toolbar.appendChild(aiButton);
+                    }
+                }
+                
+                // Update AI panel when products are dragged
+                document.addEventListener('product-placed', (event) => {
+                    const { productId, position } = event.detail;
+                    if (aiFeedbackPanel && aiFeedbackPanel.isVisible) {
+                        const planogramData = getCurrentPlanogramData();
+                        aiFeedbackPanel.updateScore(planogramData, productId, position);
+                    }
+                });
+                
+                // Update AI panel when cabinet is selected
+                document.addEventListener('cabinet-selected', (event) => {
+                    if (aiFeedbackPanel && aiFeedbackPanel.isVisible) {
+                        aiFeedbackPanel.refreshPlanogramData();
+                    }
+                });
+                
+                // Handle optimization results
+                window.addEventListener('planogram-optimized', (event) => {
+                    const result = event.detail;
+                    if (result.optimized_planogram) {
+                        // Apply optimized planogram
+                        applyOptimizedPlanogram(result.optimized_planogram);
+                    }
+                });
+                
+                console.log('AI Feedback Panel initialized successfully');
+            } else {
+                console.warn('AIFeedbackPanel class not found. Make sure ai-feedback-panel.js is loaded.');
+            }
+        }
+        
+        function getCurrentPlanogramData() {
+            // Export current planogram state for AI
+            const slots = [];
+            
+            // Get current planogram data from state.planogram
+            if (state.planogram && typeof state.planogram === 'object') {
+                Object.entries(state.planogram).forEach(([slotId, slotData]) => {
+                    if (slotData && slotData.productId !== undefined) {
+                        // Parse slot position from slotId (format: "R{row}C{col}")
+                        const match = slotId.match(/R(\d+)C(\d+)/);
+                        if (match) {
+                            const row = parseInt(match[1]);
+                            const column = parseInt(match[2]);
+                            
+                            slots.push({
+                                row: row,
+                                column: column,
+                                cabinet: state.currentCabinet?.cabinetIndex || 1,
+                                product_id: slotData.productId,
+                                product_name: slotData.productName,
+                                price: slotData.price || 0,
+                                quantity: slotData.quantity || 0,
+                                parlevel: slotData.parlevel || 0,
+                                capacity: slotData.capacity || 10
+                            });
+                        }
+                    }
+                });
+            }
+            
+            console.log('getCurrentPlanogramData:', {
+                device_id: state.currentAsset?.id,
+                cabinet_id: state.currentCabinet?.id,
+                slots_count: slots.length
+            });
+            
+            const planogramData = {
+                device_id: state.currentAsset?.id,
+                cabinet_id: state.currentCabinet?.id,
+                slots: slots
+            };
+            
+            window.currentPlanogram = planogramData;
+            return planogramData;
+        }
+        
+        function applyOptimizedPlanogram(optimizedPlanogram) {
+            // Apply AI-optimized planogram
+            if (optimizedPlanogram.slots) {
+                optimizedPlanogram.slots.forEach(slot => {
+                    const gridSlot = document.querySelector(
+                        `.slot[data-row="${slot.row}"][data-column="${slot.column}"]`
+                    );
+                    if (gridSlot && slot.product_id) {
+                        // Update slot with new product
+                        const product = state.products.find(p => p.id === slot.product_id);
+                        if (product) {
+                            updateSlotDisplay(gridSlot, product);
+                        }
+                    }
+                });
+                
+                // Save changes
+                savePlanogram();
+            }
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            setupIframeCommunication();
+            
+            // Initialize AI panel after ensuring everything is loaded
+            setTimeout(() => {
+                // Ensure CVDApi is available before initializing AI panel
+                if (typeof cvdApi === 'undefined' || !cvdApi) {
+                    console.error('CVDApi not available for AI panel initialization');
+                    return;
+                }
+                initAIPanel();
+            }, 500);
+        });
+    </script>
+</body>
+</html>

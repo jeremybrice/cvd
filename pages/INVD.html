@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation New Vision Device</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .step {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .step.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: #006dfe;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+        
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .device-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .device-item {
+            padding: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .device-item:hover {
+            border-color: #006dfe;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .device-item.selected {
+            border-color: #006dfe;
+            background: #f0f7ff;
+            color: #006dfe;
+            font-weight: 500;
+        }
+        
+        .device-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .device-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .config-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .config-item {
+            padding: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .config-item:hover {
+            border-color: #006dfe;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .config-item.selected {
+            border-color: #006dfe;
+            background: #f0f7ff;
+        }
+        
+        .config-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .config-addons {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .config-visual {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .visual-box {
+            width: 50px;
+            height: 60px;
+            border: 2px solid #666;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .visual-box.cooler {
+            background: #E3F2FD;
+            border-color: #2196F3;
+            color: #2196F3;
+        }
+        
+        .visual-box.freezer {
+            background: #E8EAF6;
+            border-color: #3F51B5;
+            color: #3F51B5;
+        }
+        
+        .visual-box.ambient {
+            background: #F5F5F5;
+            border-color: #757575;
+            color: #757575;
+        }
+        
+        .visual-box.express {
+            background: #E8F5E8;
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .visual-box.parent {
+            box-shadow: 0 0 0 3px #006dfe;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-box {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #666;
+            border-radius: 4px;
+        }
+        
+        .machine-info {
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .machine-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .machine-info p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .preview-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        
+        .layout-preview {
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .layout-grid {
+            display: inline-grid;
+            gap: 2px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .layout-cell {
+            width: 30px;
+            height: 30px;
+            background: #e0e0e0;
+            border: 1px solid #bbb;
+            border-radius: 2px;
+        }
+        
+        .no-selection {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .form-section {
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #006dfe;
+        }
+        
+        .form-input.error,
+        .form-select.error {
+            border-color: #dc3545;
+        }
+        
+        .form-hint {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .form-error {
+            font-size: 13px;
+            color: #dc3545;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .form-error.show {
+            display: block;
+        }
+        
+        .photos-container {
+            margin-top: 12px;
+        }
+        
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .photo-item {
+            position: relative;
+            padding-top: 100%;
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .photo-item img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .photo-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            line-height: 1;
+        }
+        
+        .photo-remove:hover {
+            background: #dc3545;
+        }
+        
+        .add-photo-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: white;
+            border: 2px dashed #006dfe;
+            border-radius: 8px;
+            color: #006dfe;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .add-photo-btn:hover {
+            background: #f0f7ff;
+        }
+        
+        .add-photo-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e9e9e9;
+        }
+        
+        .btn-primary {
+            background: #006dfe;
+            color: white;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            background: #0056d3;
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .additional-cabinets-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .current-configuration {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .cabinet-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            min-width: 140px;
+        }
+        
+        .cabinet-display.parent {
+            border-color: #006dfe;
+            background: #f0f7ff;
+            box-shadow: 0 0 0 2px #006dfe;
+        }
+        
+        .cabinet-icon {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #666;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .cabinet-icon.cooler {
+            background: #E3F2FD;
+            border-color: #2196F3;
+            color: #2196F3;
+        }
+        
+        .cabinet-icon.freezer {
+            background: #E8EAF6;
+            border-color: #3F51B5;
+            color: #3F51B5;
+        }
+        
+        .cabinet-icon.ambient {
+            background: #F5F5F5;
+            border-color: #757575;
+            color: #757575;
+        }
+        
+        .cabinet-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .cabinet-remove {
+            width: 20px;
+            height: 20px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 1;
+            margin-left: auto;
+        }
+        
+        .cabinet-remove:hover {
+            background: #dc3545;
+        }
+        
+        .add-cabinet-btn {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 2px dashed #006dfe;
+            border-radius: 8px;
+            color: #006dfe;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.2s;
+        }
+        
+        .add-cabinet-btn:hover {
+            background: #f0f7ff;
+            border-color: #0056d3;
+        }
+        
+        .add-cabinet-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #ddd;
+            color: #999;
+        }
+        
+        .configuration-separator {
+            font-size: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Implementation / New Vision Device</h1>
+        </div>
+        
+        <!-- Section 1: Device Type Selection -->
+        <div class="step" id="section1">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">Select Device Type</div>
+            </div>
+            <div class="device-list" id="deviceTypeList">
+                <!-- Device types will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Section 2: Cabinet Selection -->
+        <div class="step disabled" id="section2">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">Select Parent Cabinet</div>
+            </div>
+            <div class="device-list" id="cabinetList">
+                <!-- Cabinet types will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Section 3: Additional Cabinets -->
+        <div class="step disabled" id="section3">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">Add Additional Cabinets</div>
+            </div>
+            <div class="additional-cabinets-container">
+                <div class="current-configuration" id="currentConfiguration">
+                    <!-- Current cabinet configuration will be shown here -->
+                </div>
+                <div class="add-cabinet-options" id="addCabinetOptions" style="display: none;">
+                    <p class="form-hint">Select additional cabinet to add (up to 2 additional cabinets):</p>
+                    <div class="device-list" id="additionalCabinetList">
+                        <!-- Additional cabinet options will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 4: Layout Preview -->
+        <div class="step disabled" id="section4">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <div class="step-title">Layout Preview</div>
+            </div>
+            
+            <div class="machine-info" id="machineInfo" style="display: none;">
+                <!-- Machine info will be populated here -->
+            </div>
+            
+            <div class="preview-section">
+                <div class="preview-title">Individual Cabinet Layouts</div>
+                <div class="layout-preview" id="layoutPreview">
+                    <div class="no-selection">Select device type and cabinet to see layout preview</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 5: Device Details -->
+        <div class="step disabled" id="section5">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <div class="step-title">Device Details</div>
+            </div>
+            
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="assetNumber">Asset Number <span class="required">*</span></label>
+                    <input type="text" id="assetNumber" class="form-input" placeholder="Enter asset number">
+                    <div id="assetError" class="form-error">This asset number already exists</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="deviceName">Asset Name <span class="required">*</span></label>
+                    <input type="text" id="deviceName" class="form-input" placeholder="Enter asset name (e.g., 'Lobby Left Snack')">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location <span class="required">*</span></label>
+                    <select id="location" class="form-select">
+                        <option value="">Select location...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Planogram Photos (Optional)</label>
+                    <p class="form-hint">Add up to 3 photos for planogram compliance verification</p>
+                    <div class="photos-container">
+                        <div class="photos-grid" id="photosGrid">
+                            <!-- Photos will be added here -->
+                        </div>
+                        <div class="add-photo-btn" id="addPhotoBtn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006DFF" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            <span>Add Photo (0/3)</span>
+                        </div>
+                        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+            <button class="btn btn-primary" id="createBtn" disabled>Create Device & Continue</button>
+        </div>
+    </div>
+
+    <!-- Include API module -->
+    <script src="/api.js"></script>
+    <script src="/auth-check.js"></script>
+    
+    <script>
+        // Configuration
+        const allowedOrigin = window.location.origin;
+        
+        // Stockwell-specific constants
+        const STOCKWELL_DEVICE_ID = 3;
+        const STOCKWELL_COOLER_TYPE_ID = 5;
+        const STOCKWELL_AMBIENT_TYPE_ID = 6;
+        
+        // Data structures
+        // Dynamic types loaded from API
+        let deviceTypes = [];
+        let cabinetTypes = [];
+        let locations = [];
+        
+        // Asset validation state
+        let assetCheckTimeout = null;
+        let lastCheckedAsset = '';
+        let isAssetDuplicate = false;
+
+        // Load locations from API
+        async function loadLocations() {
+            try {
+                const locs = await cvdApi.getLocations();
+                locations = locs;
+                console.log('Loaded locations:', locations);
+                
+                // Update the dropdown
+                const locationSelect = document.getElementById('location');
+                locationSelect.innerHTML = '<option value="">Select location...</option>';
+                locations.forEach(loc => {
+                    const option = document.createElement('option');
+                    option.value = loc.id;
+                    option.textContent = loc.name;
+                    locationSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Failed to load locations:', error);
+                alert('Failed to load locations. Please refresh the page.');
+            }
+        }
+
+        // Load device types from API
+        async function loadDeviceTypes() {
+            try {
+                const types = await cvdApi.getDeviceTypes();
+                // Use numeric IDs directly from API
+                deviceTypes = types.map(type => ({
+                    id: type.id,  // Use numeric ID from database
+                    name: type.name,
+                    description: type.description,
+                    allowsAdditionalCabinets: type.allowsAdditionalCabinets
+                }));
+                console.log('Loaded device types:', deviceTypes);
+            } catch (error) {
+                console.error('Failed to load device types:', error);
+                alert('Failed to load device types. Please refresh the page.');
+            }
+        }
+
+        // Load cabinet types from API
+        async function loadCabinetTypes() {
+            try {
+                const types = await cvdApi.getCabinetTypes();
+                // Preserve numeric IDs from database
+                cabinetTypes = types.map(type => ({
+                    id: type.id,  // Use numeric ID from database
+                    name: type.name,
+                    description: type.description,
+                    rows: type.rows,
+                    cols: type.cols,
+                    icon: type.icon,
+                    modelName: type.name,
+                    typeId: type.type_id  // Include for potential future use
+                }));
+                console.log('Loaded cabinet types:', cabinetTypes);
+            } catch (error) {
+                console.error('Failed to load cabinet types:', error);
+                alert('Failed to load cabinet types. Please refresh the page.');
+            }
+        }
+
+        // State
+        let selectedDeviceType = null;
+        let selectedParentCabinet = null;
+        let additionalCabinets = [];
+        let uploadedPhotos = [];
+
+        // Initialize
+        async function init() {
+            // Show loading state
+            const deviceTypeList = document.getElementById('deviceTypeList');
+            const parentCabinetList = document.getElementById('parentCabinetList');
+            
+            if (deviceTypeList) {
+                deviceTypeList.innerHTML = '<div style="text-align: center; padding: 20px;">Loading device types...</div>';
+            }
+            if (parentCabinetList) {
+                parentCabinetList.innerHTML = '<div style="text-align: center; padding: 20px;">Loading cabinet types...</div>';
+            }
+            
+            // Load types from API
+            await Promise.all([
+                loadDeviceTypes(),
+                loadCabinetTypes(),
+                loadLocations()
+            ]);
+            
+            // Initialize the page
+            renderDeviceTypes();
+            initializePhotoUpload();
+            initializeFormValidation();
+            initializeButtons();
+        }
+
+        // Render device types
+        function renderDeviceTypes() {
+            const deviceTypeList = document.getElementById('deviceTypeList');
+            deviceTypeList.innerHTML = deviceTypes.map(deviceType => `
+                <div class="device-item" data-device-type="${deviceType.id}" onclick="selectDeviceType(${deviceType.id})">
+                    <div class="device-name">${deviceType.name}</div>
+                    <div class="device-info">${deviceType.description}</div>
+                </div>
+            `).join('');
+        }
+
+        // Select device type
+        function selectDeviceType(deviceTypeId) {
+            deviceTypeId = parseInt(deviceTypeId); // Ensure it's a number
+            selectedDeviceType = deviceTypes.find(dt => dt.id === deviceTypeId);
+            selectedParentCabinet = null;
+            additionalCabinets = [];
+            uploadedPhotos = [];
+            
+            // Update UI
+            document.querySelectorAll('#deviceTypeList .device-item').forEach(el => {
+                el.classList.toggle('selected',  parseInt(el.dataset.deviceType) === deviceTypeId);
+            });
+            
+            // Check if Stockwell device
+            if (deviceTypeId === STOCKWELL_DEVICE_ID) {
+                // Skip steps 2 and 3 for Stockwell
+                document.getElementById('section2').classList.add('disabled');
+                document.getElementById('section3').classList.add('disabled');
+                document.getElementById('section4').classList.remove('disabled');
+                document.getElementById('section5').classList.remove('disabled');
+                
+                // Set up fixed Stockwell configuration
+                setupStockwellConfiguration();
+                updatePreview();
+                validateForm();
+            } else {
+                // Normal flow for other devices
+                // Enable section 2
+                document.getElementById('section2').classList.remove('disabled');
+                
+                // Render cabinet types
+                renderCabinetTypes();
+                
+                // Reset sections 3, 4, and 5
+                document.getElementById('section3').classList.add('disabled');
+                document.getElementById('section4').classList.add('disabled');
+                document.getElementById('section5').classList.add('disabled');
+                document.getElementById('createBtn').disabled = true;
+            }
+            
+            // Reset form fields
+            document.getElementById('assetNumber').value = '';
+            document.getElementById('deviceName').value = '';
+            document.getElementById('location').value = '';
+            renderPhotos();
+            
+            // Clear validation errors
+            document.querySelectorAll('.form-input, .form-select').forEach(el => {
+                el.classList.remove('error');
+            });
+            
+            // Reset asset validation state
+            isAssetDuplicate = false;
+            lastCheckedAsset = '';
+            document.getElementById('assetError').classList.remove('show');
+            if (assetCheckTimeout) {
+                clearTimeout(assetCheckTimeout);
+                assetCheckTimeout = null;
+            }
+        }
+
+        // Render cabinet types
+        function renderCabinetTypes() {
+            const cabinetList = document.getElementById('cabinetList');
+            
+            // Filter out Stockwell-specific cabinets (IDs 5 and 6)
+            const filteredCabinets = cabinetTypes.filter(cabinet => 
+                cabinet.id !== STOCKWELL_COOLER_TYPE_ID && cabinet.id !== STOCKWELL_AMBIENT_TYPE_ID
+            );
+            
+            cabinetList.innerHTML = filteredCabinets.map(cabinet => `
+                <div class="device-item" data-cabinet-id="${cabinet.id}" onclick="selectParentCabinet(${cabinet.id})">
+                    <div class="device-name">${cabinet.name}</div>
+                    <div class="device-info">${cabinet.description} (${cabinet.rows}×${cabinet.cols})</div>
+                </div>
+            `).join('');
+        }
+
+        // Select parent cabinet
+        function selectParentCabinet(cabinetId) {
+            selectedParentCabinet = cabinetTypes.find(c => c.id === cabinetId);
+            additionalCabinets = [];
+            
+            // Update UI
+            document.querySelectorAll('#cabinetList .device-item').forEach(el => {
+                el.classList.toggle('selected', el.dataset.cabinetId === cabinetId);
+            });
+            
+            // Enable section 3
+            document.getElementById('section3').classList.remove('disabled');
+            
+            // Set section 3 state based on device type
+            const section3 = document.getElementById('section3');
+            if (selectedDeviceType.allowsAdditionalCabinets) {
+                section3.classList.remove('disabled');
+            } else {
+                section3.classList.add('disabled');
+            }
+            
+            // Enable sections 4 and 5
+            document.getElementById('section4').classList.remove('disabled');
+            document.getElementById('section5').classList.remove('disabled');
+            
+            // Update displays
+            renderCurrentConfiguration();
+            updatePreview();
+            validateForm();
+        }
+
+        // Render current configuration
+        function renderCurrentConfiguration() {
+            const currentConfiguration = document.getElementById('currentConfiguration');
+            const addCabinetOptions = document.getElementById('addCabinetOptions');
+            
+            // Special handling for Stockwell
+            if (selectedDeviceType?.id === STOCKWELL_DEVICE_ID) {
+                let configHtml = '<div style="margin-bottom: 10px; color: #666; font-weight: 500;">Fixed Configuration:</div>';
+                
+                // Show Stockwell Cooler
+                if (selectedParentCabinet) {
+                    configHtml += `
+                        <div class="cabinet-display">
+                            <div class="cabinet-icon ${getCabinetCssClass(selectedParentCabinet)}">
+                                ${selectedParentCabinet.icon}
+                            </div>
+                            <div class="cabinet-name">${selectedParentCabinet.name}</div>
+                        </div>
+                    `;
+                }
+                
+                // Show Stockwell Ambient
+                if (additionalCabinets.length > 0) {
+                    configHtml += '<div class="configuration-separator">+</div>';
+                    configHtml += `
+                        <div class="cabinet-display">
+                            <div class="cabinet-icon ${getCabinetCssClass(additionalCabinets[0])}">
+                                ${additionalCabinets[0].icon}
+                            </div>
+                            <div class="cabinet-name">${additionalCabinets[0].name}</div>
+                        </div>
+                    `;
+                }
+                
+                currentConfiguration.innerHTML = configHtml;
+                addCabinetOptions.style.display = 'none';
+                return;
+            }
+            
+            if (!selectedParentCabinet) {
+                currentConfiguration.innerHTML = '<div class="no-selection">Select a parent cabinet to continue</div>';
+                addCabinetOptions.style.display = 'none';
+                return;
+            }
+            
+            let configHtml = '';
+            
+            // Show parent cabinet
+            configHtml += `
+                <div class="cabinet-display parent">
+                    <div class="cabinet-icon ${getCabinetCssClass(selectedParentCabinet)}">
+                        ${selectedParentCabinet.icon}
+                    </div>
+                    <div class="cabinet-name">${selectedParentCabinet.name} (Parent)</div>
+                </div>
+            `;
+            
+            // Show additional cabinets
+            if (additionalCabinets.length > 0) {
+                configHtml += '<div class="configuration-separator">+</div>';
+                additionalCabinets.forEach((cabinet, index) => {
+                    configHtml += `
+                        <div class="cabinet-display">
+                            <div class="cabinet-icon ${getCabinetCssClass(cabinet)}">
+                                ${cabinet.icon}
+                            </div>
+                            <div class="cabinet-name">${cabinet.name}</div>
+                            <button class="cabinet-remove" onclick="removeAdditionalCabinet(${index})">×</button>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Show add button if allowed and space available
+            if (selectedDeviceType.allowsAdditionalCabinets && additionalCabinets.length < 2) {
+                if (additionalCabinets.length > 0) {
+                    configHtml += '<div class="configuration-separator">+</div>';
+                } else {
+                    configHtml += '<div class="configuration-separator">+</div>';
+                }
+                configHtml += `
+                    <div class="add-cabinet-btn" onclick="toggleAddCabinetOptions()">
+                        +
+                    </div>
+                `;
+            }
+            
+            currentConfiguration.innerHTML = configHtml;
+            
+            // Show/hide add cabinet options
+            if (selectedDeviceType.allowsAdditionalCabinets && additionalCabinets.length < 2) {
+                renderAdditionalCabinetOptions();
+            } else {
+                addCabinetOptions.style.display = 'none';
+            }
+        }
+        
+        // Render additional cabinet options
+        function renderAdditionalCabinetOptions() {
+            const additionalCabinetList = document.getElementById('additionalCabinetList');
+            
+            // Filter out Stockwell-specific cabinets (IDs 5 and 6) for additional cabinet selection
+            const filteredCabinets = cabinetTypes.filter(cabinet => 
+                cabinet.id !== STOCKWELL_COOLER_TYPE_ID && cabinet.id !== STOCKWELL_AMBIENT_TYPE_ID
+            );
+            
+            additionalCabinetList.innerHTML = filteredCabinets.map(cabinet => `
+                <div class="device-item" data-cabinet-id="${cabinet.id}" onclick="addAdditionalCabinet(${cabinet.id})">
+                    <div class="device-name">${cabinet.name}</div>
+                    <div class="device-info">${cabinet.description} (${cabinet.rows}×${cabinet.cols})</div>
+                </div>
+            `).join('');
+        }
+        
+        // Toggle add cabinet options visibility
+        function toggleAddCabinetOptions() {
+            const addCabinetOptions = document.getElementById('addCabinetOptions');
+            if (addCabinetOptions.style.display === 'none' || !addCabinetOptions.style.display) {
+                addCabinetOptions.style.display = 'block';
+            } else {
+                addCabinetOptions.style.display = 'none';
+            }
+        }
+        
+        // Add additional cabinet
+        function addAdditionalCabinet(cabinetId) {
+            if (additionalCabinets.length >= 2) return;
+            
+            const cabinet = cabinetTypes.find(c => c.id === cabinetId);
+            if (cabinet) {
+                additionalCabinets.push(cabinet);
+                renderCurrentConfiguration();
+                updatePreview();
+                
+                // Hide add options
+                document.getElementById('addCabinetOptions').style.display = 'none';
+            }
+        }
+        
+        // Remove additional cabinet
+        function removeAdditionalCabinet(index) {
+            additionalCabinets.splice(index, 1);
+            renderCurrentConfiguration();
+            updatePreview();
+        }
+
+        // Update preview
+        function updatePreview() {
+            const layoutPreview = document.getElementById('layoutPreview');
+            const machineInfo = document.getElementById('machineInfo');
+            
+            // Special handling for Stockwell
+            if (selectedDeviceType?.id === STOCKWELL_DEVICE_ID) {
+                if (!selectedParentCabinet || additionalCabinets.length === 0) {
+                    layoutPreview.innerHTML = '<div class="no-selection">Loading Stockwell configuration...</div>';
+                    machineInfo.style.display = 'none';
+                    return;
+                }
+                
+                // Show machine info for Stockwell
+                machineInfo.style.display = 'block';
+                machineInfo.innerHTML = `
+                    <h3>Device Configuration</h3>
+                    <p><strong>Device Type:</strong> ${selectedDeviceType.name}</p>
+                    <p><strong>Configuration:</strong> Fixed (2 cabinets)</p>
+                    <p><strong>Cabinets:</strong> ${selectedParentCabinet.name}, ${additionalCabinets[0].name}</p>
+                `;
+                
+                // Generate Stockwell cabinet previews
+                let previewHtml = '';
+                
+                // Stockwell Cooler
+                previewHtml += `
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="margin-bottom: 16px; color: #333; font-size: 16px;">${selectedParentCabinet.name}</h4>
+                        <div class="layout-grid" style="grid-template-columns: repeat(${selectedParentCabinet.cols}, 1fr);">
+                            ${Array(selectedParentCabinet.rows * selectedParentCabinet.cols).fill(0).map(() => 
+                                '<div class="layout-cell"></div>'
+                            ).join('')}
+                        </div>
+                        <p style="margin-top: 8px; font-size: 14px; color: #666;">Layout: ${selectedParentCabinet.rows} rows × ${selectedParentCabinet.cols} columns</p>
+                    </div>
+                `;
+                
+                // Stockwell Ambient
+                previewHtml += `
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="margin-bottom: 16px; color: #333; font-size: 16px;">${additionalCabinets[0].name}</h4>
+                        <div class="layout-grid" style="grid-template-columns: repeat(${additionalCabinets[0].cols}, 1fr);">
+                            ${Array(additionalCabinets[0].rows * additionalCabinets[0].cols).fill(0).map(() => 
+                                '<div class="layout-cell"></div>'
+                            ).join('')}
+                        </div>
+                        <p style="margin-top: 8px; font-size: 14px; color: #666;">Layout: ${additionalCabinets[0].rows} rows × ${additionalCabinets[0].cols} columns</p>
+                    </div>
+                `;
+                
+                layoutPreview.innerHTML = previewHtml;
+                return;
+            }
+            
+            if (!selectedDeviceType || !selectedParentCabinet) {
+                layoutPreview.innerHTML = '<div class="no-selection">Select device type and cabinet to see layout preview</div>';
+                machineInfo.style.display = 'none';
+                return;
+            }
+            
+            // Show machine info
+            machineInfo.style.display = 'block';
+            const totalCabinets = 1 + additionalCabinets.length;
+            machineInfo.innerHTML = `
+                <h3>Device Configuration</h3>
+                <p><strong>Device Type:</strong> ${selectedDeviceType.name}</p>
+                <p><strong>Parent Cabinet:</strong> ${selectedParentCabinet.name}</p>
+                <p><strong>Total Cabinets:</strong> ${totalCabinets}</p>
+                ${additionalCabinets.length > 0 ? `<p><strong>Additional Cabinets:</strong> ${additionalCabinets.map(c => c.name).join(', ')}</p>` : ''}
+            `;
+            
+            // Generate individual cabinet previews
+            let previewHtml = '';
+            
+            // Parent cabinet
+            previewHtml += `
+                <div style="margin-bottom: 30px;">
+                    <h4 style="margin-bottom: 16px; color: #333; font-size: 16px;">${selectedParentCabinet.name} (Parent Cabinet)</h4>
+                    <div class="layout-grid" style="grid-template-columns: repeat(${selectedParentCabinet.cols}, 1fr);">
+                        ${Array(selectedParentCabinet.rows * selectedParentCabinet.cols).fill(0).map(() => 
+                            '<div class="layout-cell"></div>'
+                        ).join('')}
+                    </div>
+                    <p style="margin-top: 8px; font-size: 14px; color: #666;">Layout: ${selectedParentCabinet.rows} rows × ${selectedParentCabinet.cols} columns</p>
+                </div>
+            `;
+            
+            // Additional cabinets
+            additionalCabinets.forEach((cabinet, index) => {
+                previewHtml += `
+                    <div style="margin-bottom: 30px;">
+                        <h4 style="margin-bottom: 16px; color: #333; font-size: 16px;">${cabinet.name} (Additional Cabinet ${index + 1})</h4>
+                        <div class="layout-grid" style="grid-template-columns: repeat(${cabinet.cols}, 1fr);">
+                            ${Array(cabinet.rows * cabinet.cols).fill(0).map(() => 
+                                '<div class="layout-cell"></div>'
+                            ).join('')}
+                        </div>
+                        <p style="margin-top: 8px; font-size: 14px; color: #666;">Layout: ${cabinet.rows} rows × ${cabinet.cols} columns</p>
+                    </div>
+                `;
+            });
+            
+            layoutPreview.innerHTML = previewHtml;
+        }
+
+        // Initialize photo upload
+        function initializePhotoUpload() {
+            const addPhotoBtn = document.getElementById('addPhotoBtn');
+            const photoInput = document.getElementById('photoInput');
+            
+            addPhotoBtn.addEventListener('click', function() {
+                if (uploadedPhotos.length < 3) {
+                    photoInput.click();
+                }
+            });
+            
+            photoInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedPhotos.push({
+                            id: Date.now(),
+                            url: e.target.result,
+                            name: file.name
+                        });
+                        renderPhotos();
+                    };
+                    reader.readAsDataURL(file);
+                }
+                photoInput.value = '';
+            });
+        }
+
+        // Render photos
+        function renderPhotos() {
+            const photosGrid = document.getElementById('photosGrid');
+            const addPhotoBtn = document.getElementById('addPhotoBtn');
+            
+            photosGrid.innerHTML = uploadedPhotos.map(photo => `
+                <div class="photo-item">
+                    <img src="${photo.url}" alt="${photo.name}">
+                    <button class="photo-remove" onclick="removePhoto(${photo.id})">×</button>
+                </div>
+            `).join('');
+            
+            // Update add photo button
+            const photoCount = uploadedPhotos.length;
+            addPhotoBtn.querySelector('span').textContent = `Add Photo (${photoCount}/3)`;
+            addPhotoBtn.classList.toggle('disabled', photoCount >= 3);
+        }
+
+        // Remove photo
+        window.removePhoto = function(photoId) {
+            uploadedPhotos = uploadedPhotos.filter(p => p.id !== photoId);
+            renderPhotos();
+        };
+        
+        // Helper function to get CSS class for cabinet icons
+        function getCabinetCssClass(cabinet) {
+            const cssClassMap = {
+                1: 'cooler',
+                2: 'freezer',
+                3: 'ambient',
+                4: 'ambient',  // Ambient+ uses same style as ambient
+                5: 'cooler',   // Stockwell Cooler
+                6: 'ambient'   // Stockwell Ambient
+            };
+            return cssClassMap[cabinet.id] || 'ambient';
+        }
+        
+        // Setup Stockwell configuration
+        function setupStockwellConfiguration() {
+            // Find Stockwell cabinet types using numeric IDs
+            const stockwellCooler = cabinetTypes.find(c => c.id === STOCKWELL_COOLER_TYPE_ID);
+            const stockwellAmbient = cabinetTypes.find(c => c.id === STOCKWELL_AMBIENT_TYPE_ID);
+            
+            if (stockwellCooler && stockwellAmbient) {
+                // Set up fixed configuration
+                selectedParentCabinet = stockwellCooler;
+                additionalCabinets = [stockwellAmbient];
+            } else {
+                console.error('Stockwell cabinet types not found in database');
+            }
+        }
+
+        // Initialize form validation
+        function initializeFormValidation() {
+            const requiredFields = ['assetNumber', 'deviceName', 'location'];
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                field.addEventListener('input', validateForm);
+                field.addEventListener('change', validateForm);
+            });
+            
+            // Add special handling for asset number
+            const assetField = document.getElementById('assetNumber');
+            assetField.addEventListener('input', function() {
+                // Clear previous timeout
+                if (assetCheckTimeout) {
+                    clearTimeout(assetCheckTimeout);
+                }
+                
+                // Reset error state immediately when user types
+                const assetError = document.getElementById('assetError');
+                assetError.classList.remove('show');
+                assetField.classList.remove('error');
+                isAssetDuplicate = false;
+                
+                const assetValue = assetField.value.trim();
+                
+                // Only check if there's a value
+                if (assetValue) {
+                    // Debounce the check by 500ms
+                    assetCheckTimeout = setTimeout(async () => {
+                        await checkAssetDuplicate(assetValue);
+                    }, 500);
+                }
+            });
+        }
+
+        // Check for duplicate asset number
+        async function checkAssetDuplicate(assetNumber) {
+            try {
+                const isDuplicate = await cvdApi.checkAssetExists(assetNumber);
+                isAssetDuplicate = isDuplicate;
+                
+                const assetField = document.getElementById('assetNumber');
+                const assetError = document.getElementById('assetError');
+                
+                if (isDuplicate) {
+                    assetField.classList.add('error');
+                    assetError.classList.add('show');
+                } else {
+                    assetField.classList.remove('error');
+                    assetError.classList.remove('show');
+                }
+                
+                // Re-validate form after check completes
+                validateForm();
+            } catch (error) {
+                console.error('Failed to check asset duplicate:', error);
+                // On error, allow form to continue (backend will validate)
+                isAssetDuplicate = false;
+                validateForm();
+            }
+        }
+        
+        // Validate form
+        function validateForm() {
+            const assetNumber = document.getElementById('assetNumber');
+            const deviceName = document.getElementById('deviceName');
+            const location = document.getElementById('location');
+            const createBtn = document.getElementById('createBtn');
+            
+            // Special validation for Stockwell
+            let hasValidCabinets = false;
+            if (selectedDeviceType?.id === STOCKWELL_DEVICE_ID) {
+                hasValidCabinets = selectedParentCabinet && additionalCabinets.length === 1;
+            } else {
+                hasValidCabinets = selectedParentCabinet;
+            }
+            
+            const isValid = 
+                selectedDeviceType && 
+                hasValidCabinets && 
+                assetNumber.value.trim() !== '' &&
+                deviceName.value.trim() !== '' &&
+                location.value !== '' &&
+                !isAssetDuplicate;
+            
+            createBtn.disabled = !isValid;
+            
+            // Show validation errors
+            [assetNumber, deviceName, location].forEach(field => {
+                if (field.value.trim() === '' && field === document.activeElement) {
+                    field.classList.add('error');
+                } else {
+                    field.classList.remove('error');
+                }
+            });
+        }
+
+        // Initialize buttons
+        function initializeButtons() {
+            const cancelBtn = document.getElementById('cancelBtn');
+            const createBtn = document.getElementById('createBtn');
+            
+            cancelBtn.addEventListener('click', function() {
+                sendMessageToParent('NAVIGATE', { page: 'coolers' });
+            });
+            
+            createBtn.addEventListener('click', function() {
+                if (!createBtn.disabled) {
+                    saveDevice();
+                }
+            });
+        }
+
+        // Save device
+        async function saveDevice() {
+            const assetNumber = document.getElementById('assetNumber').value.trim();
+            const deviceName = document.getElementById('deviceName').value.trim();
+            const locationId = document.getElementById('location').value;
+            
+            // Final check for duplicate asset before saving
+            if (isAssetDuplicate) {
+                alert('Cannot create device: Asset number already exists');
+                return;
+            }
+            
+            // Model remains the parent cabinet for backward compatibility
+            const model = selectedParentCabinet.modelName;
+            
+            // Build cabinet configuration array
+            let cabinetConfiguration;
+            
+            // Special handling for Stockwell
+            if (selectedDeviceType.id === STOCKWELL_DEVICE_ID) {
+                // Ensure Stockwell has exactly the right cabinets
+                cabinetConfiguration = [
+                    {
+                        ...selectedParentCabinet,
+                        cabinet_type_id: STOCKWELL_COOLER_TYPE_ID,
+                        is_parent: true
+                    },
+                    {
+                        ...additionalCabinets[0],
+                        cabinet_type_id: STOCKWELL_AMBIENT_TYPE_ID,
+                        is_parent: false
+                    }
+                ];
+            } else {
+                cabinetConfiguration = [selectedParentCabinet, ...additionalCabinets];
+            }
+            
+            const newDevice = {
+                asset: assetNumber,
+                cooler: deviceName, // Keep field name for compatibility
+                location_id: parseInt(locationId), // Send location_id instead of location
+                model: model, // Parent cabinet model
+                device_type_id: selectedDeviceType.id, // Send numeric ID
+                cabinetConfiguration: cabinetConfiguration // NEW: Full cabinet array
+            };
+            
+            console.log('Sending device with type ID:', selectedDeviceType.id);
+            console.log('Complete payload:', newDevice);
+            
+            // Save using API
+            try {
+                await cvdApi.createDevice(newDevice);
+            } catch (error) {
+                console.error('Failed to save device to API:', error);
+                alert('Failed to save device. Please ensure the backend server is running.');
+                return;
+            }
+            
+            // Notify parent frame
+            sendMessageToParent('DEVICE_ADDED', { device: newDevice });
+            
+            // Navigate back
+            sendMessageToParent('NAVIGATE', { page: 'coolers' });
+        }
+
+        // Communication with parent frame
+        function sendMessageToParent(type, payload = {}) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: type,
+                    payload: payload,
+                    timestamp: Date.now()
+                }, allowedOrigin);
+            }
+        }
+
+        // Make functions available globally
+        window.selectDeviceType = selectDeviceType;
+        window.selectParentCabinet = selectParentCabinet;
+        window.addAdditionalCabinet = addAdditionalCabinet;
+        window.removeAdditionalCabinet = removeAdditionalCabinet;
+        window.toggleAddCabinetOptions = toggleAddCabinetOptions;
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+        });
+    </script>
+</body>
+</html>

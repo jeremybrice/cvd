@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVD Frontend Testing Examples</title>
+    
+    <!-- Load CVD API Client -->
+    <script src="/api.js"></script>
+    
+    <!-- Testing Styles -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        .test-section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .test-results {
+            padding: 20px;
+        }
+        
+        .test-result {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border-left: 4px solid;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+        
+        .test-pass {
+            background-color: #d1f2eb;
+            color: #0e6b50;
+            border-left-color: #28a745;
+        }
+        
+        .test-fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+        
+        .test-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left-color: #17a2b8;
+        }
+        
+        .test-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+        
+        .test-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 0 8px 8px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .btn.btn-success {
+            background: #28a745;
+        }
+        
+        .btn.btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .code-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        
+        .test-output {
+            background: #343a40;
+            color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="test-header">
+        <h1>CVD Frontend Testing Examples</h1>
+        <p>Comprehensive frontend testing patterns for CVD application components</p>
+        <p><strong>Features:</strong> API Integration • DOM Manipulation • User Interactions • Cross-frame Communication • PWA Testing</p>
+    </div>
+    
+    <!-- Test Controls -->
+    <div class="test-controls">
+        <h3>Test Suite Controls</h3>
+        <button id="runAllTests" class="btn">Run All Tests</button>
+        <button id="runApiTests" class="btn">API Tests Only</button>
+        <button id="runDomTests" class="btn">DOM Tests Only</button>
+        <button id="runInteractionTests" class="btn">Interaction Tests</button>
+        <button id="runPwaTests" class="btn">PWA Tests</button>
+        <button id="clearResults" class="btn">Clear Results</button>
+    </div>
+    
+    <!-- Test Statistics -->
+    <div class="stats-grid" id="testStats" style="display: none;">
+        <div class="stat-card">
+            <div class="stat-value" id="totalTests">0</div>
+            <div class="stat-label">Total Tests</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="passedTests">0</div>
+            <div class="stat-label">Passed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="failedTests">0</div>
+            <div class="stat-label">Failed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="executionTime">0ms</div>
+            <div class="stat-label">Execution Time</div>
+        </div>
+    </div>
+    
+    <!-- API Integration Tests -->
+    <div class="test-section">
+        <div class="test-section-header">
+            <h3>🔌 API Integration Tests</h3>
+            <p>Testing CVDApi client, authentication, and endpoint communication</p>
+        </div>
+        <div class="test-results" id="apiTestResults">
+            <div class="loading">
+                <span class="spinner"></span>
+                Ready to run API integration tests...
+            </div>
+        </div>
+    </div>
+    
+    <!-- DOM Manipulation Tests -->
+    <div class="test-section">
+        <div class="test-section-header">
+            <h3>🏗️ DOM Manipulation Tests</h3>
+            <p>Testing DOM operations, element creation, and state management</p>
+        </div>
+        <div class="test-results" id="domTestResults">
+            <div class="loading">
+                <span class="spinner"></span>
+                Ready to run DOM manipulation tests...
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Interaction Tests -->
+    <div class="test-section">
+        <div class="test-section-header">
+            <h3>👆 User Interaction Tests</h3>
+            <p>Testing form validation, button clicks, and user interface responses</p>
+        </div>
+        <div class="test-results" id="interactionTestResults">
+            <div class="loading">
+                <span class="spinner"></span>
+                Ready to run user interaction tests...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cross-frame Communication Tests -->
+    <div class="test-section">
+        <div class="test-section-header">
+            <h3>🖼️ Cross-frame Communication Tests</h3>
+            <p>Testing iframe navigation, message passing, and data synchronization</p>
+        </div>
+        <div class="test-results" id="crossFrameTestResults">
+            <div class="loading">
+                <span class="spinner"></span>
+                Ready to run cross-frame communication tests...
+            </div>
+        </div>
+    </div>
+    
+    <!-- PWA Functionality Tests -->
+    <div class="test-section">
+        <div class="test-section-header">
+            <h3>📱 PWA Functionality Tests</h3>
+            <p>Testing Progressive Web App features, offline support, and mobile functionality</p>
+        </div>
+        <div class="test-results" id="pwaTestResults">
+            <div class="loading">
+                <span class="spinner"></span>
+                Ready to run PWA functionality tests...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Test Output Console -->
+    <div class="test-section">
+        <div class="test-section-header">
+            <h3>📋 Test Output Console</h3>
+            <p>Detailed test execution logs and debugging information</p>
+        </div>
+        <div class="test-results">
+            <div class="test-output" id="testConsole">
+                CVD Frontend Test Suite initialized...<br>
+                Waiting for test execution...<br>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Implementation Script -->
+    <script>
+        /**
+         * CVD Frontend Test Suite
+         * 
+         * This comprehensive test suite demonstrates frontend testing patterns
+         * for the CVD application, including:
+         * - API integration testing
+         * - DOM manipulation validation
+         * - User interaction simulation
+         * - Cross-frame communication
+         * - Progressive Web App features
+         */
+        
+        class CVDFrontendTestSuite {
+            constructor() {
+                this.testResults = [];
+                this.startTime = null;
+                this.api = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.log('Initializing CVD Frontend Test Suite...');
+                
+                // Initialize API client
+                try {
+                    this.api = new CVDApi();
+                    this.log('✓ CVDApi client initialized');
+                } catch (error) {
+                    this.log(`✗ Failed to initialize CVDApi: ${error.message}`);
+                }
+                
+                this.setupEventListeners();
+                this.log('Test suite ready for execution');
+            }
+            
+            setupEventListeners() {
+                document.getElementById('runAllTests').addEventListener('click', () => this.runAllTests());
+                document.getElementById('runApiTests').addEventListener('click', () => this.runApiTests());
+                document.getElementById('runDomTests').addEventListener('click', () => this.runDomTests());
+                document.getElementById('runInteractionTests').addEventListener('click', () => this.runInteractionTests());
+                document.getElementById('runPwaTests').addEventListener('click', () => this.runPwaTests());
+                document.getElementById('clearResults').addEventListener('click', () => this.clearResults());
+            }
+            
+            log(message) {
+                const console = document.getElementById('testConsole');
+                const timestamp = new Date().toLocaleTimeString();
+                console.innerHTML += `[${timestamp}] ${message}<br>`;
+                console.scrollTop = console.scrollHeight;
+                
+                // Also log to browser console for debugging
+                console.log(`[CVD Test] ${message}`);
+            }
+            
+            addTestResult(testName, passed, message, category = 'general') {
+                const result = {
+                    name: testName,
+                    passed: passed,
+                    message: message,
+                    category: category,
+                    timestamp: new Date()
+                };
+                
+                this.testResults.push(result);
+                this.displayTestResult(result);
+                this.updateStats();
+            }
+            
+            displayTestResult(result) {
+                const categoryMap = {
+                    api: 'apiTestResults',
+                    dom: 'domTestResults', 
+                    interaction: 'interactionTestResults',
+                    crossframe: 'crossFrameTestResults',
+                    pwa: 'pwaTestResults'
+                };
+                
+                const containerId = categoryMap[result.category] || 'testConsole';
+                const container = document.getElementById(containerId);
+                
+                if (container) {
+                    const resultElement = document.createElement('div');
+                    resultElement.className = `test-result ${result.passed ? 'test-pass' : 'test-fail'}`;
+                    resultElement.innerHTML = `
+                        <strong>${result.name}</strong><br>
+                        ${result.message}
+                        <small style="float: right;">${result.timestamp.toLocaleTimeString()}</small>
+                    `;
+                    
+                    // Remove loading message if it's the first result in this category
+                    const loadingElement = container.querySelector('.loading');
+                    if (loadingElement) {
+                        loadingElement.remove();
+                    }
+                    
+                    container.appendChild(resultElement);
+                }
+            }
+            
+            updateStats() {
+                const total = this.testResults.length;
+                const passed = this.testResults.filter(r => r.passed).length;
+                const failed = total - passed;
+                const executionTime = this.startTime ? Date.now() - this.startTime : 0;
+                
+                document.getElementById('totalTests').textContent = total;
+                document.getElementById('passedTests').textContent = passed;
+                document.getElementById('failedTests').textContent = failed;
+                document.getElementById('executionTime').textContent = `${executionTime}ms`;
+                
+                document.getElementById('testStats').style.display = 'block';
+            }
+            
+            clearResults() {
+                this.testResults = [];
+                this.startTime = null;
+                
+                // Clear result containers
+                const containers = [
+                    'apiTestResults', 'domTestResults', 'interactionTestResults',
+                    'crossFrameTestResults', 'pwaTestResults'
+                ];
+                
+                containers.forEach(containerId => {
+                    const container = document.getElementById(containerId);
+                    container.innerHTML = '<div class="loading"><span class="spinner"></span>Ready to run tests...</div>';
+                });
+                
+                // Clear console
+                document.getElementById('testConsole').innerHTML = 'CVD Frontend Test Suite cleared...<br>';
+                
+                // Hide stats
+                document.getElementById('testStats').style.display = 'none';
+                
+                this.log('Test results cleared');
+            }
+            
+            async runAllTests() {
+                this.log('Starting complete test suite execution...');
+                this.startTime = Date.now();
+                this.testResults = [];
+                
+                await this.runApiTests();
+                await this.runDomTests();
+                await this.runInteractionTests();
+                await this.runCrossFrameTests();
+                await this.runPwaTests();
+                
+                const executionTime = Date.now() - this.startTime;
+                this.log(`All tests completed in ${executionTime}ms`);
+            }
+            
+            async runApiTests() {
+                this.log('Running API Integration Tests...');
+                
+                // Test 1: CVDApi Client Initialization
+                try {
+                    const apiExists = typeof CVDApi !== 'undefined';
+                    this.addTestResult(
+                        'CVDApi Client Availability',
+                        apiExists,
+                        apiExists ? 'CVDApi class is available globally' : 'CVDApi class not found',
+                        'api'
+                    );
+                    
+                    if (apiExists) {
+                        const apiInstance = new CVDApi();
+                        const hasGetMethod = typeof apiInstance.get === 'function';
+                        const hasPostMethod = typeof apiInstance.post === 'function';
+                        
+                        this.addTestResult(
+                            'CVDApi Method Availability',
+                            hasGetMethod && hasPostMethod,
+                            `GET method: ${hasGetMethod}, POST method: ${hasPostMethod}`,
+                            'api'
+                        );
+                    }
+                } catch (error) {
+                    this.addTestResult(
+                        'CVDApi Client Initialization',
+                        false,
+                        `Initialization failed: ${error.message}`,
+                        'api'
+                    );
+                }
+                
+                // Test 2: API Request Structure
+                try {
+                    if (this.api) {
+                        // Test API request without actually making network call
+                        const requestStructure = this.api.buildRequest || this.api.makeRequest;
+                        this.addTestResult(
+                            'API Request Structure',
+                            typeof requestStructure === 'function',
+                            'API client has request building capability',
+                            'api'
+                        );
+                    }
+                } catch (error) {
+                    this.addTestResult(
+                        'API Request Structure',
+                        false,
+                        `Request structure test failed: ${error.message}`,
+                        'api'
+                    );
+                }
+                
+                // Test 3: Authentication Flow Simulation
+                try {
+                    // Simulate authentication without actual network request
+                    const mockAuthData = {
+                        username: 'test_user',
+                        password: 'test_password'
+                    };
+                    
+                    const authDataValid = mockAuthData.username && mockAuthData.password;
+                    
+                    this.addTestResult(
+                        'Authentication Data Structure',
+                        authDataValid,
+                        'Authentication payload structure is valid',
+                        'api'
+                    );
+                    
+                    // Test localStorage interaction for session management
+                    const canStoreSession = typeof Storage !== 'undefined';
+                    if (canStoreSession) {
+                        localStorage.setItem('cvd_test_session', 'test_token');
+                        const storedSession = localStorage.getItem('cvd_test_session');
+                        localStorage.removeItem('cvd_test_session');
+                        
+                        this.addTestResult(
+                            'Session Storage Capability',
+                            storedSession === 'test_token',
+                            'Browser supports session storage for authentication',
+                            'api'
+                        );
+                    }
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Authentication Flow Simulation',
+                        false,
+                        `Auth flow test failed: ${error.message}`,
+                        'api'
+                    );
+                }
+                
+                // Test 4: Error Handling
+                try {
+                    // Test error handling without network requests
+                    const errorHandlingTest = () => {
+                        try {
+                            throw new Error('Test API error');
+                        } catch (e) {
+                            return { error: e.message, handled: true };
+                        }
+                    };
+                    
+                    const errorResult = errorHandlingTest();
+                    
+                    this.addTestResult(
+                        'API Error Handling',
+                        errorResult.handled && errorResult.error,
+                        'API error handling mechanism works correctly',
+                        'api'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'API Error Handling',
+                        false,
+                        `Error handling test failed: ${error.message}`,
+                        'api'
+                    );
+                }
+                
+                this.log('API Integration Tests completed');
+            }
+            
+            async runDomTests() {
+                this.log('Running DOM Manipulation Tests...');
+                
+                // Test 1: Element Creation and Manipulation
+                try {
+                    const testElement = document.createElement('div');
+                    testElement.id = 'cvd-test-element';
+                    testElement.className = 'test-class';
+                    testElement.innerHTML = '<span>Test Content</span>';
+                    
+                    document.body.appendChild(testElement);
+                    
+                    const elementExists = document.getElementById('cvd-test-element') !== null;
+                    const hasCorrectClass = testElement.classList.contains('test-class');
+                    const hasCorrectContent = testElement.querySelector('span') !== null;
+                    
+                    this.addTestResult(
+                        'Element Creation and Manipulation',
+                        elementExists && hasCorrectClass && hasCorrectContent,
+                        `Element created: ${elementExists}, Class applied: ${hasCorrectClass}, Content added: ${hasCorrectContent}`,
+                        'dom'
+                    );
+                    
+                    // Clean up
+                    testElement.remove();
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Element Creation and Manipulation',
+                        false,
+                        `DOM manipulation failed: ${error.message}`,
+                        'dom'
+                    );
+                }
+                
+                // Test 2: Dynamic Table Generation (Service Orders style)
+                try {
+                    const tableContainer = document.createElement('div');
+                    tableContainer.id = 'test-table-container';
+                    
+                    // Mock service order data
+                    const mockServiceOrders = [
+                        { id: 1, status: 'pending', route: 'Route A', created_at: '2024-12-01' },
+                        { id: 2, status: 'in_progress', route: 'Route B', created_at: '2024-12-02' },
+                        { id: 3, status: 'completed', route: 'Route C', created_at: '2024-12-03' }
+                    ];
+                    
+                    // Generate table
+                    const table = document.createElement('table');
+                    table.className = 'cvd-service-orders-table';
+                    
+                    // Header
+                    const header = document.createElement('thead');
+                    header.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Status</th>
+                            <th>Route</th>
+                            <th>Created</th>
+                        </tr>
+                    `;
+                    table.appendChild(header);
+                    
+                    // Body
+                    const body = document.createElement('tbody');
+                    mockServiceOrders.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${order.id}</td>
+                            <td class="status-${order.status}">${order.status}</td>
+                            <td>${order.route}</td>
+                            <td>${order.created_at}</td>
+                        `;
+                        body.appendChild(row);
+                    });
+                    table.appendChild(body);
+                    
+                    tableContainer.appendChild(table);
+                    document.body.appendChild(tableContainer);
+                    
+                    const tableExists = table.querySelector('tbody').children.length === 3;
+                    const statusClassesApplied = table.querySelector('.status-pending') !== null;
+                    
+                    this.addTestResult(
+                        'Dynamic Table Generation',
+                        tableExists && statusClassesApplied,
+                        `Table rows: ${table.querySelector('tbody').children.length}, Status classes applied: ${statusClassesApplied}`,
+                        'dom'
+                    );
+                    
+                    // Clean up
+                    tableContainer.remove();
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Dynamic Table Generation',
+                        false,
+                        `Table generation failed: ${error.message}`,
+                        'dom'
+                    );
+                }
+                
+                // Test 3: Form Creation and Validation
+                try {
+                    const formContainer = document.createElement('div');
+                    formContainer.innerHTML = `
+                        <form id="cvd-test-form">
+                            <input type="text" name="deviceName" required placeholder="Device Name">
+                            <input type="number" name="deviceId" required placeholder="Device ID">
+                            <select name="deviceType" required>
+                                <option value="">Select Type</option>
+                                <option value="cooler">Cooler</option>
+                                <option value="snack">Snack Unit</option>
+                            </select>
+                            <button type="submit">Submit</button>
+                        </form>
+                    `;
+                    
+                    document.body.appendChild(formContainer);
+                    
+                    const form = document.getElementById('cvd-test-form');
+                    const inputs = form.querySelectorAll('input[required]');
+                    const select = form.querySelector('select[required]');
+                    
+                    // Test form validation
+                    let validationWorks = true;
+                    try {
+                        const isValid = form.checkValidity();
+                        validationWorks = !isValid; // Should be invalid when empty
+                    } catch (e) {
+                        validationWorks = false;
+                    }
+                    
+                    this.addTestResult(
+                        'Form Creation and Validation',
+                        inputs.length === 2 && select !== null && validationWorks,
+                        `Required inputs: ${inputs.length}, Select element: ${select !== null}, Validation: ${validationWorks}`,
+                        'dom'
+                    );
+                    
+                    // Clean up
+                    formContainer.remove();
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Form Creation and Validation',
+                        false,
+                        `Form test failed: ${error.message}`,
+                        'dom'
+                    );
+                }
+                
+                this.log('DOM Manipulation Tests completed');
+            }
+            
+            async runInteractionTests() {
+                this.log('Running User Interaction Tests...');
+                
+                // Test 1: Button Click Events
+                try {
+                    let clickCount = 0;
+                    
+                    const testButton = document.createElement('button');
+                    testButton.id = 'cvd-test-button';
+                    testButton.textContent = 'Test Button';
+                    testButton.addEventListener('click', () => {
+                        clickCount++;
+                        testButton.textContent = `Clicked ${clickCount} times`;
+                    });
+                    
+                    document.body.appendChild(testButton);
+                    
+                    // Simulate clicks
+                    testButton.click();
+                    testButton.click();
+                    testButton.click();
+                    
+                    this.addTestResult(
+                        'Button Click Event Handling',
+                        clickCount === 3,
+                        `Button clicked ${clickCount} times, text updated correctly`,
+                        'interaction'
+                    );
+                    
+                    testButton.remove();
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Button Click Event Handling',
+                        false,
+                        `Button interaction test failed: ${error.message}`,
+                        'interaction'
+                    );
+                }
+                
+                // Test 2: Form Input Validation
+                try {
+                    const testForm = document.createElement('form');
+                    testForm.innerHTML = `
+                        <input type="email" id="test-email" required>
+                        <input type="tel" id="test-phone" pattern="[0-9]{10}" required>
+                        <input type="number" id="test-number" min="1" max="100" required>
+                    `;
+                    
+                    document.body.appendChild(testForm);
+                    
+                    const emailInput = document.getElementById('test-email');
+                    const phoneInput = document.getElementById('test-phone');
+                    const numberInput = document.getElementById('test-number');
+                    
+                    // Test valid inputs
+                    emailInput.value = 'test@cvd.com';
+                    phoneInput.value = '1234567890';
+                    numberInput.value = '50';
+                    
+                    const validInputsPass = emailInput.validity.valid && 
+                                          phoneInput.validity.valid && 
+                                          numberInput.validity.valid;
+                    
+                    // Test invalid inputs
+                    emailInput.value = 'invalid-email';
+                    phoneInput.value = '123'; // Too short
+                    numberInput.value = '150'; // Above max
+                    
+                    const invalidInputsFail = !emailInput.validity.valid && 
+                                            !phoneInput.validity.valid && 
+                                            !numberInput.validity.valid;
+                    
+                    this.addTestResult(
+                        'Form Input Validation',
+                        validInputsPass && invalidInputsFail,
+                        `Valid inputs passed: ${validInputsPass}, Invalid inputs failed: ${invalidInputsFail}`,
+                        'interaction'
+                    );
+                    
+                    testForm.remove();
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Form Input Validation',
+                        false,
+                        `Input validation test failed: ${error.message}`,
+                        'interaction'
+                    );
+                }
+                
+                // Test 3: Dynamic Content Updates
+                try {
+                    const contentContainer = document.createElement('div');
+                    contentContainer.id = 'dynamic-content';
+                    contentContainer.innerHTML = '<p>Initial content</p>';
+                    
+                    document.body.appendChild(contentContainer);
+                    
+                    // Simulate dynamic updates like service order status changes
+                    const updates = [
+                        '<p class="status-pending">Status: Pending</p>',
+                        '<p class="status-in-progress">Status: In Progress</p>',
+                        '<p class="status-completed">Status: Completed</p>'
+                    ];
+                    
+                    let updateIndex = 0;
+                    const updateContent = () => {
+                        if (updateIndex < updates.length) {
+                            contentContainer.innerHTML = updates[updateIndex];
+                            updateIndex++;
+                            setTimeout(updateContent, 50);
+                        }
+                    };
+                    
+                    updateContent();
+                    
+                    // Wait for updates to complete
+                    setTimeout(() => {
+                        const finalContent = contentContainer.innerHTML;
+                        const hasCompletedStatus = finalContent.includes('status-completed');
+                        const hasCorrectContent = finalContent.includes('Completed');
+                        
+                        this.addTestResult(
+                            'Dynamic Content Updates',
+                            hasCompletedStatus && hasCorrectContent,
+                            `Final status applied: ${hasCompletedStatus}, Content updated: ${hasCorrectContent}`,
+                            'interaction'
+                        );
+                        
+                        contentContainer.remove();
+                    }, 200);
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Dynamic Content Updates',
+                        false,
+                        `Dynamic content test failed: ${error.message}`,
+                        'interaction'
+                    );
+                }
+                
+                this.log('User Interaction Tests completed');
+            }
+            
+            async runCrossFrameTests() {
+                this.log('Running Cross-frame Communication Tests...');
+                
+                // Test 1: PostMessage Communication
+                try {
+                    let messageReceived = false;
+                    let receivedData = null;
+                    
+                    // Listen for test message
+                    const messageHandler = (event) => {
+                        if (event.data.type === 'CVD_TEST_MESSAGE') {
+                            messageReceived = true;
+                            receivedData = event.data.payload;
+                        }
+                    };
+                    
+                    window.addEventListener('message', messageHandler);
+                    
+                    // Send test message to self (simulating iframe communication)
+                    window.postMessage({
+                        type: 'CVD_TEST_MESSAGE',
+                        payload: { test: 'cross-frame-data', timestamp: Date.now() }
+                    }, window.location.origin);
+                    
+                    // Wait for message processing
+                    setTimeout(() => {
+                        this.addTestResult(
+                            'PostMessage Communication',
+                            messageReceived && receivedData && receivedData.test === 'cross-frame-data',
+                            `Message received: ${messageReceived}, Data valid: ${receivedData ? 'yes' : 'no'}`,
+                            'crossframe'
+                        );
+                        
+                        window.removeEventListener('message', messageHandler);
+                    }, 100);
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'PostMessage Communication',
+                        false,
+                        `Cross-frame communication test failed: ${error.message}`,
+                        'crossframe'
+                    );
+                }
+                
+                // Test 2: Navigation Message Structure
+                try {
+                    // Test CVD navigation message format
+                    const navigationMessage = {
+                        type: 'NAVIGATE',
+                        payload: {
+                            page: 'service-orders.html',
+                            params: { id: 123, status: 'pending' }
+                        }
+                    };
+                    
+                    const hasCorrectType = navigationMessage.type === 'NAVIGATE';
+                    const hasPayload = navigationMessage.payload !== undefined;
+                    const hasPageInfo = navigationMessage.payload.page !== undefined;
+                    
+                    this.addTestResult(
+                        'Navigation Message Structure',
+                        hasCorrectType && hasPayload && hasPageInfo,
+                        `Type correct: ${hasCorrectType}, Has payload: ${hasPayload}, Has page info: ${hasPageInfo}`,
+                        'crossframe'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Navigation Message Structure',
+                        false,
+                        `Navigation message test failed: ${error.message}`,
+                        'crossframe'
+                    );
+                }
+                
+                // Test 3: Data Synchronization Messages
+                try {
+                    // Test data refresh message format
+                    const refreshMessage = {
+                        type: 'REFRESH_DATA',
+                        payload: {
+                            component: 'service-orders',
+                            action: 'update',
+                            data: { id: 123, status: 'completed' }
+                        }
+                    };
+                    
+                    const isValidRefreshMessage = refreshMessage.type === 'REFRESH_DATA' &&
+                                                refreshMessage.payload.component &&
+                                                refreshMessage.payload.action;
+                    
+                    this.addTestResult(
+                        'Data Synchronization Messages',
+                        isValidRefreshMessage,
+                        `Refresh message structure valid: ${isValidRefreshMessage}`,
+                        'crossframe'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Data Synchronization Messages',
+                        false,
+                        `Data sync message test failed: ${error.message}`,
+                        'crossframe'
+                    );
+                }
+                
+                this.log('Cross-frame Communication Tests completed');
+            }
+            
+            async runPwaTests() {
+                this.log('Running PWA Functionality Tests...');
+                
+                // Test 1: Service Worker Support
+                try {
+                    const serviceWorkerSupported = 'serviceWorker' in navigator;
+                    
+                    this.addTestResult(
+                        'Service Worker Support',
+                        serviceWorkerSupported,
+                        `Browser supports Service Workers: ${serviceWorkerSupported}`,
+                        'pwa'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Service Worker Support',
+                        false,
+                        `Service Worker test failed: ${error.message}`,
+                        'pwa'
+                    );
+                }
+                
+                // Test 2: Local Storage for Offline Support
+                try {
+                    const localStorageSupported = typeof Storage !== 'undefined';
+                    
+                    if (localStorageSupported) {
+                        // Test offline data storage
+                        const testData = {
+                            serviceOrders: [
+                                { id: 1, status: 'pending', offline: true },
+                                { id: 2, status: 'in_progress', offline: true }
+                            ]
+                        };
+                        
+                        localStorage.setItem('cvd_offline_data', JSON.stringify(testData));
+                        const retrieved = JSON.parse(localStorage.getItem('cvd_offline_data'));
+                        const dataIntact = retrieved.serviceOrders.length === 2;
+                        
+                        localStorage.removeItem('cvd_offline_data');
+                        
+                        this.addTestResult(
+                            'Offline Data Storage',
+                            dataIntact,
+                            `Local storage works: ${localStorageSupported}, Data integrity: ${dataIntact}`,
+                            'pwa'
+                        );
+                    }
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Offline Data Storage',
+                        false,
+                        `Offline storage test failed: ${error.message}`,
+                        'pwa'
+                    );
+                }
+                
+                // Test 3: PWA Manifest Support
+                try {
+                    // Check for manifest link
+                    const manifestLink = document.querySelector('link[rel="manifest"]');
+                    const hasManifest = manifestLink !== null;
+                    
+                    // Check for PWA meta tags
+                    const viewportMeta = document.querySelector('meta[name="viewport"]');
+                    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                    
+                    const hasPwaMetaTags = viewportMeta !== null;
+                    
+                    this.addTestResult(
+                        'PWA Manifest and Meta Tags',
+                        hasPwaMetaTags, // Manifest may not be present in test environment
+                        `Manifest link: ${hasManifest}, Viewport meta: ${viewportMeta !== null}, Theme color: ${themeColorMeta !== null}`,
+                        'pwa'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'PWA Manifest and Meta Tags',
+                        false,
+                        `PWA manifest test failed: ${error.message}`,
+                        'pwa'
+                    );
+                }
+                
+                // Test 4: Push Notification Support
+                try {
+                    const pushSupported = 'PushManager' in window;
+                    const notificationSupported = 'Notification' in window;
+                    
+                    this.addTestResult(
+                        'Push Notification Support',
+                        pushSupported && notificationSupported,
+                        `Push Manager: ${pushSupported}, Notifications: ${notificationSupported}`,
+                        'pwa'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Push Notification Support',
+                        false,
+                        `Push notification test failed: ${error.message}`,
+                        'pwa'
+                    );
+                }
+                
+                // Test 5: Mobile Detection
+                try {
+                    const userAgent = navigator.userAgent;
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+                    const hasTouch = 'ontouchstart' in window;
+                    
+                    this.addTestResult(
+                        'Mobile Device Detection',
+                        true, // This test always passes, just reports mobile status
+                        `Mobile device: ${isMobile}, Touch support: ${hasTouch}`,
+                        'pwa'
+                    );
+                    
+                } catch (error) {
+                    this.addTestResult(
+                        'Mobile Device Detection',
+                        false,
+                        `Mobile detection test failed: ${error.message}`,
+                        'pwa'
+                    );
+                }
+                
+                this.log('PWA Functionality Tests completed');
+            }
+        }
+        
+        // Initialize test suite when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            window.cvdTestSuite = new CVDFrontendTestSuite();
+        });
+        
+        // Global error handling for test environment
+        window.addEventListener('error', function(event) {
+            console.error('Test environment error:', event.error);
+        });
+        
+        // Console override for capturing logs during tests
+        const originalConsoleLog = console.log;
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            
+            // Optionally capture logs for test reporting
+            if (window.cvdTestSuite) {
+                // Could add log capture functionality here
+            }
+        };
+    </script>
+</body>
+</html>

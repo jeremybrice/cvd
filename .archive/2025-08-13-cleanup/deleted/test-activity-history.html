@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Activity History</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #006dfe;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056cc;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .activity-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #006dfe;
+            border-radius: 4px;
+        }
+        .activity-time {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        .activity-details {
+            font-size: 14px;
+        }
+        .error {
+            color: #dc3545;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .success {
+            color: #155724;
+            padding: 10px;
+            background: #d4edda;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Activity History API</h1>
+        
+        <div class="controls">
+            <input type="text" id="username" placeholder="Enter username (e.g., admin)" value="admin">
+            <button onclick="fetchHistory()">Fetch Activity History</button>
+            <button onclick="clearResults()">Clear</button>
+        </div>
+        
+        <div id="status"></div>
+        <div id="results" class="results"></div>
+    </div>
+    
+    <script>
+        async function fetchHistory() {
+            const username = document.getElementById('username').value.trim();
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            
+            if (!username) {
+                statusDiv.innerHTML = '<div class="error">Please enter a username</div>';
+                return;
+            }
+            
+            statusDiv.innerHTML = '<div class="loading">Loading...</div>';
+            resultsDiv.innerHTML = '';
+            
+            try {
+                // First, get the list of users to find the user ID
+                const usersResponse = await fetch('/api/users', {
+                    credentials: 'include'
+                });
+                
+                if (!usersResponse.ok) {
+                    throw new Error(`Failed to fetch users: ${usersResponse.status}`);
+                }
+                
+                const usersData = await usersResponse.json();
+                const user = usersData.users.find(u => u.username === username);
+                
+                if (!user) {
+                    statusDiv.innerHTML = `<div class="error">User "${username}" not found</div>`;
+                    return;
+                }
+                
+                statusDiv.innerHTML = `<div class="success">Found user: ${user.username} (ID: ${user.id}, Role: ${user.role})</div>`;
+                
+                // Now fetch the activity history
+                const historyResponse = await fetch(`/api/admin/activity/history/${user.id}`, {
+                    credentials: 'include'
+                });
+                
+                if (!historyResponse.ok) {
+                    const errorText = await historyResponse.text();
+                    throw new Error(`Failed to fetch history: ${historyResponse.status} - ${errorText}`);
+                }
+                
+                const historyData = await historyResponse.json();
+                
+                // Display raw response for debugging
+                resultsDiv.innerHTML = '<h3>Raw API Response:</h3>';
+                resultsDiv.innerHTML += `<pre>${JSON.stringify(historyData, null, 2)}</pre>`;
+                
+                // Display formatted activities
+                if (historyData.data && historyData.data.activities) {
+                    const activities = historyData.data.activities;
+                    resultsDiv.innerHTML += `<h3>Activities (${activities.length} found):</h3>`;
+                    
+                    if (activities.length === 0) {
+                        resultsDiv.innerHTML += '<div class="activity-item">No activities found for this user</div>';
+                    } else {
+                        activities.forEach(activity => {
+                            const activityHtml = `
+                                <div class="activity-item">
+                                    <div class="activity-time">${new Date(activity.timestamp).toLocaleString()}</div>
+                                    <div class="activity-details">
+                                        <strong>Type:</strong> ${activity.action_type || 'Unknown'}<br>
+                                        <strong>Page URL:</strong> ${activity.page_url || 'N/A'}<br>
+                                        <strong>Page Title:</strong> ${activity.page_title || 'N/A'}<br>
+                                        ${activity.duration_ms ? `<strong>Duration:</strong> ${activity.duration_ms}ms<br>` : ''}
+                                        ${activity.ip_address ? `<strong>IP:</strong> ${activity.ip_address}<br>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                            resultsDiv.innerHTML += activityHtml;
+                        });
+                    }
+                    
+                    // Display summary
+                    if (historyData.data.summary) {
+                        const summary = historyData.data.summary;
+                        resultsDiv.innerHTML += '<h3>Summary:</h3>';
+                        resultsDiv.innerHTML += `<pre>${JSON.stringify(summary, null, 2)}</pre>`;
+                    }
+                }
+                
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                console.error('Full error:', error);
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('status').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Check authentication on load
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/auth/current-user', {
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    document.getElementById('status').innerHTML = 
+                        '<div class="error">Not authenticated. Please log in first at <a href="/pages/login.html">/pages/login.html</a></div>';
+                } else {
+                    const data = await response.json();
+                    document.getElementById('status').innerHTML = 
+                        `<div class="success">Logged in as: ${data.user.username} (${data.user.role})</div>`;
+                }
+            } catch (error) {
+                document.getElementById('status').innerHTML = 
+                    '<div class="error">Failed to check authentication</div>';
+            }
+        }
+        
+        // Check auth on page load
+        checkAuth();
+    </script>
+</body>
+</html>

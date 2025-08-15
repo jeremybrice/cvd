@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Schedule - PicoVision</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            min-width: 1000px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        /* Page Content (Left 50%) */
+        .page-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: calc(100vh - 40px);
+            overflow: hidden;
+        }
+        
+        /* Map Area (Right 50%) */
+        .map-area {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            height: calc(100vh - 40px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Map Container */
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        /* Map Status Legend */
+        .map-legend {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 12px;
+            font-size: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .map-legend-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .map-legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .map-legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .map-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+        }
+
+        .map-legend-color.critical { background: #dc3545; }
+        .map-legend-color.warning { background: #ffc107; }
+        .map-legend-color.normal { background: #28a745; }
+
+        /* Map Loading State */
+        .map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Custom Leaflet Popup Styling */
+        .leaflet-popup-content-wrapper {
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .device-popup {
+            min-width: 200px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .popup-header {
+            background: #006dfe;
+            color: white;
+            padding: 10px 12px;
+            margin: -10px -12px 10px -12px;
+            border-radius: 4px 4px 0 0;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .popup-content {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .popup-metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .popup-metric-label {
+            color: #666;
+        }
+
+        .popup-metric-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .popup-metric-value.critical {
+            color: #dc3545;
+        }
+
+        .popup-metric-value.warning {
+            color: #ffc107;
+        }
+
+        .popup-metric-value.normal {
+            color: #28a745;
+        }
+
+        .popup-address {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #e5e5e5;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Route Header Section */
+        .route-header {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .route-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .route-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .route-info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .route-info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Performance Metrics Section */
+        .metrics-section {
+            flex-shrink: 0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #006dfe;
+        }
+
+        .metric-unit {
+            font-size: 14px;
+            color: #999;
+            margin-left: 4px;
+        }
+
+        /* Device Listing Section */
+        .device-list-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .device-list-header {
+            background: #f8f9fa;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .device-list-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Device Item Styling */
+        .device-item {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .device-item:last-child {
+            border-bottom: none;
+        }
+
+        .device-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            background: #f8f9fa;
+        }
+
+        .device-header:hover {
+            background: #e9ecef;
+        }
+
+        .device-header.selected {
+            background: #e7f3ff;
+        }
+
+        .device-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .device-main-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .device-id {
+            font-weight: 700;
+            color: #333;
+            font-size: 16px;
+            min-width: 80px;
+        }
+
+        .device-location {
+            flex: 1;
+        }
+
+        .device-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .device-model {
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #e1e5e8;
+        }
+
+        .location-name {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .device-metrics {
+            display: flex;
+            gap: 20px;
+            margin-right: 20px;
+        }
+
+        .device-metric {
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .device-metric-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .device-metric-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .cabinet-summary {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+            min-width: 40px;
+        }
+
+
+        .expand-icon {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s ease;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        /* Cabinet Details */
+        .cabinet-details {
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: none;
+        }
+
+        .cabinet-details.expanded {
+            display: block;
+        }
+
+        .cabinet-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .cabinet-card {
+            background: white;
+            border: 1px solid #e1e5e8;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .cabinet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .cabinet-title {
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .parent-indicator {
+            color: #ffc107;
+            font-size: 14px;
+        }
+
+        .cabinet-type {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            background: #e7f3ff;
+            color: #006dfe;
+        }
+
+        .cabinet-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .cabinet-metric {
+            text-align: center;
+        }
+
+        .cabinet-metric-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .cabinet-metric-label {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .service-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Status indicators */
+        .dri-critical {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .dri-warning {
+            color: #ffc107;
+            font-weight: 700;
+        }
+
+        .dri-ok {
+            color: #28a745;
+            font-weight: 700;
+        }
+
+        /* Loading and error states */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #d32f2f;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            background: white;
+            padding: 20px;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-primary {
+            background: #006dfe;
+            color: white;
+            border: 1px solid #006dfe;
+        }
+
+        .btn-primary:hover {
+            background: #0056d3;
+        }
+
+        /* Route selector styling */
+        #route-select {
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid #ddd;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+        }
+
+        #route-select:focus {
+            outline: none;
+            border-color: #006dfe;
+        }
+    </style>
+    <script src="/api.js"></script>
+</head>
+<body>
+    <div class="main-content">
+        <!-- Page Content (Left 2/3) -->
+        <div class="page-content">
+            <!-- Route Header -->
+            <div class="route-header">
+                <div class="route-info">
+                    <div class="route-info-item">
+                        <span class="route-info-label">Route</span>
+                        <div style="display: flex; align-items: center;">
+                            <select id="route-select">
+                                <option value="">Select a route...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="route-info-item">
+                        <span class="route-info-label">Driver</span>
+                        <span class="route-info-value" id="driver-name">-</span>
+                    </div>
+                    <div class="route-info-item">
+                        <span class="route-info-label">Truck</span>
+                        <span class="route-info-value" id="truck-id">-</span>
+                    </div>
+                    <div class="route-info-item">
+                        <span class="route-info-label">Warehouse</span>
+                        <span class="route-info-value" id="warehouse-name">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Metrics -->
+            <div class="metrics-section">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Devices Selected</div>
+                        <div class="metric-value">0/0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Cabinets Selected</div>
+                        <div class="metric-value">0/0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Total Sold Out</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Cosumption Rate</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Units to Pick</div>
+                        <div class="metric-value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Device Listing -->
+            <div class="device-list-section">
+                <div class="device-list-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Devices on Route</span>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                            <span>Select All</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="device-list-content" id="device-list-content">
+                    <div class="loading">Select a route to view devices</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="saveDraft()">Save Draft</button>
+                <button class="btn btn-primary" onclick="finalizeRoute()">Finalize Route</button>
+            </div>
+        </div>
+        
+        <!-- Map Area (Right 50%) -->
+        <div class="map-area">
+            <div id="map"></div>
+            <div class="map-loading" id="map-loading">
+                Select a route to view device locations
+            </div>
+            <div class="map-legend">
+                <div class="map-legend-title">Device Status</div>
+                <div class="map-legend-item">
+                    <div class="map-legend-color critical"></div>
+                    <span>Critical (0-1 days)</span>
+                </div>
+                <div class="map-legend-item">
+                    <div class="map-legend-color warning"></div>
+                    <span>Warning (1-3 days)</span>
+                </div>
+                <div class="map-legend-item">
+                    <div class="map-legend-color normal"></div>
+                    <span>Normal (3+ days)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentRoute = null;
+        let devices = [];
+        let selectedDevices = new Set();
+        let selectedCabinets = new Set();
+        
+        // Map state
+        let map = null;
+        let mapMarkers = [];
+        let addressCoordinates = {};
+        
+        // Initialize API
+        const api = new CVDApi();
+        
+        // Address data from Asset Address.txt
+        const deviceAddresses = {
+            '5436': '480 Wilson Rd, East Lansing, MI 48824',
+            '7875': '1120 Red Cedar Rd, East Lansing, MI 48823',
+            '888': '18900 Michigan Ave, Dearborn, MI 48126',
+            '222': '32801 Ecorse Rd, Romulus, MI 48174',
+            '111': '35335 Eureka Rd, Romulus, MI 48174',
+            '333': '434 Farm Ln, East Lansing, MI 48824',
+            '555': '234 Wilson Rd, East Lansing, MI 48825',
+            '444': '20900 Oakwood Blvd, Dearborn, MI 48124',
+            '666': '428 S Shaw Ln, East Lansing, MI 48824',
+            '999': '5521 Fairlane Woods Dr, Dearborn, MI 48126'
+        };
+        
+        // Initialize page
+        async function init() {
+            console.log('Initializing route schedule...');
+            
+            try {
+                // Initialize map
+                initMap();
+                
+                // Load routes
+                const routes = await api.getRoutes();
+                console.log('Loaded routes:', routes);
+                
+                const select = document.getElementById('route-select');
+                
+                routes.forEach(route => {
+                    const option = document.createElement('option');
+                    option.value = route.id;
+                    option.textContent = route.name + (route.route_number ? ' - ' + route.route_number : '');
+                    select.appendChild(option);
+                });
+                
+                // Add event listener
+                select.addEventListener('change', handleRouteChange);
+                
+                console.log('Route schedule initialized');
+            } catch (error) {
+                console.error('Failed to initialize:', error);
+                document.getElementById('device-list-content').innerHTML = 
+                    '<div class="error">Failed to load routes. Please refresh the page.</div>';
+            }
+        }
+        
+        // Initialize map
+        function initMap() {
+            try {
+                // Create map centered on Michigan
+                map = L.map('map').setView([42.3314, -84.5467], 8);
+                
+                // Add OpenStreetMap tiles
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors',
+                    maxZoom: 19
+                }).addTo(map);
+                
+            } catch (error) {
+                console.error('Failed to initialize map:', error);
+                document.getElementById('map-loading').textContent = 'Failed to load map';
+            }
+        }
+        
+        // Handle route selection
+        async function handleRouteChange(e) {
+            currentRoute = e.target.value;
+            console.log('Route changed to:', currentRoute);
+            
+            if (!currentRoute) {
+                devices = [];
+                selectedDevices.clear();
+                selectedCabinets.clear();
+                resetMetrics();
+                clearMap();
+                document.getElementById('device-list-content').innerHTML = 
+                    '<div class="loading">Select a route to view devices</div>';
+                document.getElementById('map-loading').textContent = 'Select a route to view device locations';
+                document.getElementById('map-loading').style.display = 'block';
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('device-list-content').innerHTML = 
+                '<div class="loading">Loading devices for route ' + currentRoute + '...</div>';
+            document.getElementById('map-loading').textContent = 'Loading device locations...';
+            document.getElementById('map-loading').style.display = 'block';
+            
+            try {
+                // Load devices for selected route
+                const response = await api.makeRequest('GET', `/routes/${currentRoute}/devices`);
+                console.log('Devices response:', response);
+                
+                devices = response.devices || [];
+                console.log('Devices loaded:', devices.length);
+                
+                // Clear selections when route changes
+                selectedDevices.clear();
+                selectedCabinets.clear();
+                
+                // Update metrics and render devices
+                updateRouteMetrics();
+                renderDevices();
+                
+                // Load device markers on map
+                await loadDeviceMarkers();
+                
+            } catch (error) {
+                console.error('Failed to load devices:', error);
+                document.getElementById('device-list-content').innerHTML = 
+                    '<div class="error">Failed to load devices. Please try again.</div>';
+                document.getElementById('map-loading').textContent = 'Failed to load device locations';
+            }
+        }
+        
+        // Update route-level metrics based on current selections
+        function updateRouteMetrics() {
+            let totalSoldOut = 0;
+            let totalDailyConsumption = 0;
+            let totalUnitsToPick = 0;
+            let totalDevices = devices.length;
+            let totalCabinets = 0;
+            
+            // Calculate total cabinets and selected metrics
+            devices.forEach(device => {
+                if (device && device.cabinets) {
+                    totalCabinets += device.cabinets.length;
+                    
+                    // Only count metrics from selected cabinets
+                    device.cabinets.forEach(cabinet => {
+                        if (selectedCabinets.has(getCabinetKey(device.id, cabinet.cabinetId))) {
+                            const metrics = cabinet.metrics;
+                            if (metrics) {
+                                totalSoldOut += metrics.soldOutCount || 0;
+                                totalDailyConsumption += metrics.dailyConsumptionRate || 0;
+                                totalUnitsToPick += metrics.unitsToPick || 0;
+                            }
+                        }
+                    });
+                }
+            });
+            
+            // Update metric displays
+            const metricValues = document.querySelectorAll('.metric-value');
+            if (metricValues[0]) metricValues[0].textContent = `${selectedDevices.size}/${totalDevices}`;
+            if (metricValues[1]) metricValues[1].textContent = `${selectedCabinets.size}/${totalCabinets}`;
+            if (metricValues[2]) metricValues[2].textContent = totalSoldOut;
+            if (metricValues[3]) metricValues[3].childNodes[0].textContent = Math.round (totalDailyConsumption);
+            if (metricValues[4]) metricValues[4].textContent = totalUnitsToPick;
+        }
+        
+        // Reset metrics to zero
+        function resetMetrics() {
+            const metricValues = document.querySelectorAll('.metric-value');
+            if (metricValues[0]) metricValues[0].textContent = '0/0';
+            if (metricValues[1]) metricValues[1].textContent = '0/0';
+            if (metricValues[2]) metricValues[2].textContent = '0';
+            if (metricValues[3]) metricValues[3].childNodes[0].textContent = '0';
+            if (metricValues[4]) metricValues[4].textContent = '0';
+        }
+        
+        // Render devices list with accordion functionality
+        function renderDevices() {
+            const content = document.getElementById('device-list-content');
+            
+            if (devices.length === 0) {
+                content.innerHTML = '<div class="empty">No devices assigned to this route</div>';
+                return;
+            }
+            
+            const devicesHtml = devices.map(device => {
+                const slotMetrics = device.slotMetrics || {};
+                const dri = slotMetrics.daysRemainingInventory || 999;
+                const driStatus = getDRIStatus(dri);
+                const isSelected = selectedDevices.has(device.id);
+                const cabinets = device.cabinets || [];
+                
+                return `
+                    <div class="device-item">
+                        <div class="device-header ${isSelected ? 'selected' : ''}" onclick="toggleDeviceExpansion(${device.id}, event)">
+                            <input type="checkbox" class="device-checkbox" ${isSelected ? 'checked' : ''} 
+                                   onchange="toggleDeviceSelection(${device.id})" onclick="event.stopPropagation()">
+                            <div class="device-main-info">
+                                <div class="device-id">#${device.asset}</div>
+                                <div class="device-location">
+                                    <div class="device-name">${device.asset} - ${device.cooler} 
+                                        <span class="device-model">${device.deviceTypeDetails?.name || 'Unknown Model'}</span>
+                                    </div>
+                                    <div class="location-name">${device.location || 'Unknown Location'}</div>
+                                </div>
+                            </div>
+                            <div class="device-metrics">
+                                <div class="device-metric">
+                                    <div class="device-metric-value">${slotMetrics.soldOutCount || 0}</div>
+                                    <div class="device-metric-label">SO</div>
+                                </div>
+                                <div class="device-metric">
+                                    <div class="device-metric-value ${driStatus.class}">
+                                        ${dri >= 999 ? '∞' : dri}
+                                    </div>
+                                    <div class="device-metric-label">DRI</div>
+                                </div>
+                                <div class="device-metric">
+                                    <div class="device-metric-value">${Math.round(slotMetrics.dailyConsumptionRate || 0)}</div>
+                                    <div class="device-metric-label">DCR</div>
+                                </div>
+                                <div class="device-metric">
+                                    <div class="device-metric-value">${Math.round(slotMetrics.productLevelPercent || 0)}%</div>
+                                    <div class="device-metric-label">PL</div>
+                                </div>
+                                <div class="device-metric">
+                                    <div class="device-metric-value">${slotMetrics.unitsToPick || 0}</div>
+                                    <div class="device-metric-label">UTP</div>
+                                </div>
+                            </div>
+                            <div class="cabinet-summary">
+                                ${cabinets.length > 1 ? `<span class="expand-icon" id="expand-${device.id}">▶</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="cabinet-details" id="cabinet-details-${device.id}">
+                            <div class="cabinet-grid">
+                                ${renderCabinetCards(device)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            content.innerHTML = devicesHtml;
+        }
+        
+        // Render cabinet cards for a device
+        function renderCabinetCards(device) {
+            const cabinets = device.cabinets || [];
+            
+            return cabinets.map(cabinet => {
+                const metrics = cabinet.metrics || {};
+                const dri = metrics.daysRemainingInventory || 999;
+                const driStatus = getDRIStatus(dri);
+                const cabinetKey = getCabinetKey(device.id, cabinet.cabinetId);
+                const isSelected = selectedCabinets.has(cabinetKey);
+                
+                return `
+                    <div class="cabinet-card">
+                        <div class="cabinet-header">
+                            <div class="cabinet-title">
+                                ${cabinet.isParent ? '<span class="parent-indicator">⭐</span>' : ''}
+                                Cabinet ${cabinet.cabinetIndex + 1}
+                                <span class="cabinet-type">${cabinet.cabinetType}</span>
+                            </div>
+                            <input type="checkbox" class="service-checkbox" ${isSelected ? 'checked' : ''}
+                                   onchange="toggleCabinetSelection(${device.id}, ${cabinet.cabinetId})">
+                        </div>
+                        <div class="cabinet-metrics">
+                            <div class="cabinet-metric">
+                                <div class="cabinet-metric-value">${metrics.soldOutCount || 0}</div>
+                                <div class="cabinet-metric-label">SO</div>
+                            </div>
+                            <div class="cabinet-metric">
+                                <div class="cabinet-metric-value ${driStatus.class}">
+                                    ${dri >= 999 ? '∞' : dri}
+                                </div>
+                                <div class="cabinet-metric-label">DRI</div>
+                            </div>
+                            <div class="cabinet-metric">
+                                <div class="cabinet-metric-value">${Math.round(metrics.productLevelPercent || 0)}%</div>
+                                <div class="cabinet-metric-label">PL</div>
+                            </div>
+                            <div class="cabinet-metric">
+                                <div class="cabinet-metric-value">${metrics.unitsToPick || 0}</div>
+                                <div class="cabinet-metric-label">UTP</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Get DRI status class for color coding
+        function getDRIStatus(dri) {
+            if (dri <= 1) return { class: 'dri-critical' };
+            if (dri <= 3) return { class: 'dri-warning' };
+            return { class: 'dri-ok' };
+        }
+        
+        // Generate unique key for cabinet selection
+        function getCabinetKey(deviceId, cabinetId) {
+            return `${deviceId}-${cabinetId}`;
+        }
+        
+        // Toggle device expansion
+        function toggleDeviceExpansion(deviceId, event) {
+            const device = devices.find(d => d.id === deviceId);
+            if (!device || device.cabinets.length <= 1) return; // Only allow expansion for multi-cabinet devices
+            
+            const details = document.getElementById(`cabinet-details-${deviceId}`);
+            const expandIcon = document.getElementById(`expand-${deviceId}`);
+            
+            if (details && expandIcon) {
+                if (details.classList.contains('expanded')) {
+                    details.classList.remove('expanded');
+                    expandIcon.classList.remove('expanded');
+                } else {
+                    details.classList.add('expanded');
+                    expandIcon.classList.add('expanded');
+                }
+            }
+        }
+        
+        // Toggle device selection
+        function toggleDeviceSelection(deviceId) {
+            const device = devices.find(d => d.id === deviceId);
+            if (!device) return;
+            
+            const isSelected = selectedDevices.has(deviceId);
+            
+            if (isSelected) {
+                // Deselect device and all its cabinets
+                selectedDevices.delete(deviceId);
+                device.cabinets.forEach(cabinet => {
+                    selectedCabinets.delete(getCabinetKey(deviceId, cabinet.cabinetId));
+                });
+            } else {
+                // Select device and auto-select critical/warning cabinets
+                selectedDevices.add(deviceId);
+                device.cabinets.forEach(cabinet => {
+                    const dri = cabinet.metrics?.daysRemainingInventory || 999;
+                    if (dri <= 3) { // Auto-select critical and warning cabinets
+                        selectedCabinets.add(getCabinetKey(deviceId, cabinet.cabinetId));
+                    }
+                });
+            }
+            
+            // Update UI
+            updateDeviceSelectionUI();
+            updateRouteMetrics();
+            updateMapMarkers();
+        }
+        
+        // Toggle cabinet selection
+        function toggleCabinetSelection(deviceId, cabinetId) {
+            const cabinetKey = getCabinetKey(deviceId, cabinetId);
+            const device = devices.find(d => d.id === deviceId);
+            if (!device) return;
+            
+            if (selectedCabinets.has(cabinetKey)) {
+                selectedCabinets.delete(cabinetKey);
+            } else {
+                selectedCabinets.add(cabinetKey);
+            }
+            
+            // Update device selection based on cabinet selections
+            const deviceCabinets = device.cabinets || [];
+            const selectedDeviceCabinets = deviceCabinets.filter(cabinet => 
+                selectedCabinets.has(getCabinetKey(deviceId, cabinet.cabinetId))
+            );
+            
+            if (selectedDeviceCabinets.length === 0) {
+                selectedDevices.delete(deviceId);
+            } else {
+                selectedDevices.add(deviceId);
+            }
+            
+            // Update UI
+            updateDeviceSelectionUI();
+            updateRouteMetrics();
+            updateMapMarkers();
+        }
+        
+        // Update device selection UI
+        function updateDeviceSelectionUI() {
+            devices.forEach(device => {
+                const deviceCheckbox = document.querySelector(`input[onchange="toggleDeviceSelection(${device.id})"]`);
+                const deviceHeader = deviceCheckbox?.closest('.device-header');
+                
+                if (deviceCheckbox && deviceHeader) {
+                    const isSelected = selectedDevices.has(device.id);
+                    deviceCheckbox.checked = isSelected;
+                    
+                    if (isSelected) {
+                        deviceHeader.classList.add('selected');
+                    } else {
+                        deviceHeader.classList.remove('selected');
+                    }
+                }
+                
+                // Update cabinet checkboxes
+                (device.cabinets || []).forEach(cabinet => {
+                    const cabinetCheckbox = document.querySelector(`input[onchange="toggleCabinetSelection(${device.id}, ${cabinet.cabinetId})"]`);
+                    if (cabinetCheckbox) {
+                        cabinetCheckbox.checked = selectedCabinets.has(getCabinetKey(device.id, cabinet.cabinetId));
+                    }
+                });
+            });
+            
+            // Update select all checkbox
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = selectedDevices.size === devices.length && devices.length > 0;
+            }
+        }
+        
+        // Toggle select all
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const shouldSelectAll = selectAllCheckbox.checked;
+            
+            if (shouldSelectAll) {
+                // Select all devices and their critical/warning cabinets
+                devices.forEach(device => {
+                    selectedDevices.add(device.id);
+                    device.cabinets.forEach(cabinet => {
+                        const dri = cabinet.metrics?.daysRemainingInventory || 999;
+                        if (dri <= 3) { // Auto-select critical and warning cabinets
+                            selectedCabinets.add(getCabinetKey(device.id, cabinet.cabinetId));
+                        }
+                    });
+                });
+            } else {
+                // Deselect all
+                selectedDevices.clear();
+                selectedCabinets.clear();
+            }
+            
+            // Update UI
+            updateDeviceSelectionUI();
+            updateRouteMetrics();
+            updateMapMarkers();
+        }
+        
+        // Placeholder functions for action buttons
+        function saveDraft() {
+            const selectedCount = selectedDevices.size;
+            const cabinetCount = selectedCabinets.size;
+            alert(`Draft saved!\n\nSelected: ${selectedCount} devices, ${cabinetCount} cabinets`);
+        }
+        
+        function finalizeRoute() {
+            const selectedCount = selectedDevices.size;
+            const cabinetCount = selectedCabinets.size;
+            
+            if (selectedCount === 0) {
+                alert('Please select at least one device before finalizing the route.');
+                return;
+            }
+            
+            alert(`Route finalized!\n\nProcessing: ${selectedCount} devices, ${cabinetCount} cabinets`);
+        }
+        
+        // Clear map markers
+        function clearMap() {
+            if (map && mapMarkers.length > 0) {
+                mapMarkers.forEach(markerData => {
+                    map.removeLayer(markerData.marker);
+                });
+                mapMarkers = [];
+            }
+        }
+        
+        // Load device markers on map
+        async function loadDeviceMarkers() {
+            if (!map || devices.length === 0) {
+                document.getElementById('map-loading').style.display = 'block';
+                return;
+            }
+            
+            // Clear existing markers
+            clearMap();
+            
+            // Load markers for each device
+            for (const device of devices) {
+                await addDeviceMarker(device);
+            }
+            
+            // Hide loading and fit map to markers
+            document.getElementById('map-loading').style.display = 'none';
+            
+            if (mapMarkers.length > 0) {
+                const group = new L.featureGroup(mapMarkers.map(m => m.marker));
+                map.fitBounds(group.getBounds(), { padding: [20, 20] });
+            }
+        }
+        
+        // Add individual device marker
+        async function addDeviceMarker(device) {
+            if (!device || !device.asset) {
+                console.warn('Invalid device data:', device);
+                return;
+            }
+            
+            const address = deviceAddresses[device.asset];
+            if (!address) {
+                console.warn('No address found for device:', device.asset);
+                return;
+            }
+            
+            let coordinates;
+            
+            // Check if coordinates are already cached
+            if (addressCoordinates[address]) {
+                coordinates = addressCoordinates[address];
+            } else {
+                // Geocode the address
+                coordinates = await geocodeAddress(address);
+                if (coordinates) {
+                    addressCoordinates[address] = coordinates;
+                }
+            }
+            
+            if (!coordinates) {
+                console.warn('Failed to geocode address for device:', device.asset, address);
+                return;
+            }
+            
+            // Calculate device metrics
+            const slotMetrics = device.slotMetrics || {};
+            const dri = slotMetrics.daysRemainingInventory || 999;
+            const status = getDeviceStatus(dri);
+            const color = getStatusColor(status);
+            
+            // Determine if device is selected
+            const isSelected = selectedDevices.has(device.id);
+            
+            // Create marker
+            const marker = L.circleMarker([coordinates.lat, coordinates.lng], {
+                radius: isSelected ? 10 : 8,
+                fillColor: color,
+                color: isSelected ? '#006dfe' : '#fff',
+                weight: isSelected ? 3 : 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+            
+            // Create popup content
+            const popupContent = createDevicePopup(device, address);
+            marker.bindPopup(popupContent);
+            
+            // Add click handler for device selection
+            marker.on('click', () => {
+                toggleDeviceSelection(device.id);
+            });
+            
+            // Store marker with metadata
+            mapMarkers.push({
+                marker: marker,
+                device: device,
+                address: address,
+                status: status
+            });
+        }
+        
+        // Geocode address to coordinates
+        async function geocodeAddress(address) {
+            try {
+                // Add a small delay to avoid rate limiting
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`);
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    return {
+                        lat: parseFloat(data[0].lat),
+                        lng: parseFloat(data[0].lon)
+                    };
+                }
+            } catch (error) {
+                console.error('Geocoding failed for address:', address, error);
+            }
+            
+            return null;
+        }
+        
+        // Get device status based on DRI
+        function getDeviceStatus(dri) {
+            if (dri <= 1) return 'critical';
+            if (dri <= 3) return 'warning';
+            return 'normal';
+        }
+        
+        // Get status color
+        function getStatusColor(status) {
+            switch (status) {
+                case 'critical': return '#dc3545';
+                case 'warning': return '#ffc107';
+                default: return '#28a745';
+            }
+        }
+        
+        // Create device popup content
+        function createDevicePopup(device, address) {
+            const slotMetrics = device.slotMetrics || {};
+            const dri = slotMetrics.daysRemainingInventory || 999;
+            const status = getDeviceStatus(dri);
+            
+            return `
+                <div class="device-popup">
+                    <div class="popup-header">
+                        Asset ${device.asset} - ${device.cooler}
+                    </div>
+                    <div class="popup-content">
+                        <div class="popup-metric">
+                            <span class="popup-metric-label">Location:</span>
+                            <span class="popup-metric-value">${device.location || 'Unknown'}</span>
+                        </div>
+                        <div class="popup-metric">
+                            <span class="popup-metric-label">Sold Out:</span>
+                            <span class="popup-metric-value">${slotMetrics.soldOutCount || 0}</span>
+                        </div>
+                        <div class="popup-metric">
+                            <span class="popup-metric-label">Days Remaining:</span>
+                            <span class="popup-metric-value ${status}">
+                                ${dri >= 999 ? '∞' : dri.toFixed(1)}
+                            </span>
+                        </div>
+                        <div class="popup-metric">
+                            <span class="popup-metric-label">Daily Consumption:</span>
+                            <span class="popup-metric-value">${Math.round(slotMetrics.dailyConsumptionRate || 0)}</span>
+                        </div>
+                        <div class="popup-metric">
+                            <span class="popup-metric-label">Product Level:</span>
+                            <span class="popup-metric-value">${Math.round(slotMetrics.productLevelPercent || 0)}%</span>
+                        </div>
+                        <div class="popup-metric">
+                            <span class="popup-metric-label">Units to Pick:</span>
+                            <span class="popup-metric-value">${slotMetrics.unitsToPick || 0}</span>
+                        </div>
+                        <div class="popup-address">
+                            📍 ${address}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Update map markers when device selection changes
+        function updateMapMarkers() {
+            if (!mapMarkers || mapMarkers.length === 0) {
+                return;
+            }
+            
+            mapMarkers.forEach(markerData => {
+                if (markerData && markerData.marker && markerData.device) {
+                    const isSelected = selectedDevices.has(markerData.device.id);
+                    
+                    markerData.marker.setStyle({
+                        radius: isSelected ? 10 : 8,
+                        color: isSelected ? '#006dfe' : '#fff',
+                        weight: isSelected ? 3 : 2
+                    });
+                }
+            });
+        }
+        
+        // Start when DOM is ready
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+{
+  "test_run": {
+    "timestamp": "2025-08-12T08:17:30.920730",
+    "total_tests": 15,
+    "passed_tests": 15,
+    "failed_tests": 0,
+    "success_rate": 100.0
+  },
+  "results": [
+    {
+      "test_name": "Admin Authentication",
+      "success": true,
+      "message": "Admin user successfully authenticated",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.676673"
+    },
+    {
+      "test_name": "Test Manager Creation",
+      "success": true,
+      "message": "Test manager user available and authenticated",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.766952"
+    },
+    {
+      "test_name": "User List - Admin Hidden",
+      "success": true,
+      "message": "Admin user not present in user list",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.769656"
+    },
+    {
+      "test_name": "User List Filter - Admin Hidden",
+      "success": true,
+      "message": "Admin user not in role=admin filter",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.771961"
+    },
+    {
+      "test_name": "User Search - Admin Hidden",
+      "success": true,
+      "message": "Admin user not found in search",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.774573"
+    },
+    {
+      "test_name": "Get Admin User",
+      "success": true,
+      "message": "GET admin user correctly returns 404",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.777010"
+    },
+    {
+      "test_name": "Update Admin User",
+      "success": true,
+      "message": "PUT admin user correctly returns 404",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.779130"
+    },
+    {
+      "test_name": "Delete Admin User",
+      "success": true,
+      "message": "DELETE admin user correctly returns 404",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.781260"
+    },
+    {
+      "test_name": "Create Admin Username",
+      "success": true,
+      "message": "Username 'admin' correctly rejected",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.783390"
+    },
+    {
+      "test_name": "Create Admin Username Case",
+      "success": true,
+      "message": "Username 'ADMIN' correctly rejected (case insensitive)",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.785622"
+    },
+    {
+      "test_name": "Admin Login",
+      "success": true,
+      "message": "Admin can still authenticate successfully",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.909225"
+    },
+    {
+      "test_name": "Admin Current User",
+      "success": true,
+      "message": "Admin current-user endpoint works",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.911481"
+    },
+    {
+      "test_name": "Admin Endpoint Access",
+      "success": true,
+      "message": "Admin can access admin-only endpoints",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.913847"
+    },
+    {
+      "test_name": "User Count Accuracy",
+      "success": true,
+      "message": "User count accurate: 7 (admin excluded)",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.916426"
+    },
+    {
+      "test_name": "Manager User Access",
+      "success": true,
+      "message": "Manager correctly blocked from user endpoints",
+      "details": {},
+      "timestamp": "2025-08-12T08:17:30.920666"
+    }
+  ]
+}

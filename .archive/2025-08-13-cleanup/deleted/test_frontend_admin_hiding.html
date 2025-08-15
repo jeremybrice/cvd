@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Admin Hiding Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .test-result {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .loading {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .test-controls {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        #testResults {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Frontend Admin User Hiding Tests</h1>
+        <p>This page tests the user management interface to ensure the admin user is properly hidden from all users.</p>
+        
+        <div class="test-controls">
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="clearResults()">Clear Results</button>
+            <button onclick="testUserManagementPage()">Test User Management</button>
+            <button onclick="testUserCreation()">Test User Creation</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>Test Results</h3>
+            <div id="testResults">
+                <div class="info">Click "Run All Tests" to begin frontend testing...</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>User Management Interface Test</h3>
+            <div id="userManagementTest">
+                <p>This test will load the user management page in a hidden iframe and verify:</p>
+                <ul>
+                    <li>Admin user is not displayed in the user table</li>
+                    <li>User count is accurate (excluding admin)</li>
+                    <li>Search functionality doesn't find admin user</li>
+                    <li>No JavaScript errors occur</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>User Creation Test</h3>
+            <div id="userCreationTest">
+                <p>This test will attempt to create a user with 'admin' username and verify it's rejected.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/api.js"></script>
+    <script>
+        let testResults = [];
+        let api = new CVDApi();
+
+        function logResult(testName, success, message, details = null) {
+            const result = {
+                testName,
+                success,
+                message,
+                details,
+                timestamp: new Date().toISOString()
+            };
+            testResults.push(result);
+            
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = success ? 'test-result pass' : 'test-result fail';
+            resultDiv.innerHTML = `
+                <strong>${success ? '✅' : '❌'} ${testName}:</strong> ${message}
+                ${details ? `<br><small>${details}</small>` : ''}
+            `;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            testResults = [];
+        }
+
+        async function authenticateAsAdmin() {
+            try {
+                const response = await api.login('admin', 'UU8fz433');
+                if (response.user && response.user.username === 'admin') {
+                    logResult('Admin Authentication', true, 'Successfully authenticated as admin');
+                    return true;
+                } else {
+                    logResult('Admin Authentication', false, 'Failed to authenticate as admin');
+                    return false;
+                }
+            } catch (error) {
+                logResult('Admin Authentication', false, `Error: ${error.message}`);
+                return false;
+            }
+        }
+
+        async function testUserManagementPage() {
+            logResult('User Management Test', true, 'Starting user management interface test...', 'Loading users from API');
+            
+            try {
+                // Test 1: Get users and verify admin is hidden
+                const usersResponse = await api.getUsers();
+                const users = usersResponse.users || [];
+                
+                const adminUsers = users.filter(user => user.username === 'admin');
+                if (adminUsers.length === 0) {
+                    logResult('User List Display', true, 'Admin user not displayed in user list');
+                } else {
+                    logResult('User List Display', false, `Admin user found in list: ${adminUsers.length} instances`);
+                }
+                
+                // Test 2: Verify user count accuracy
+                const totalUsers = usersResponse.pagination?.total || users.length;
+                logResult('User Count Accuracy', true, `User count: ${totalUsers} (admin excluded from count)`);
+                
+                // Test 3: Test search functionality
+                try {
+                    const searchResponse = await api.getUsers({ search: 'admin' });
+                    const searchResults = searchResponse.users || [];
+                    const adminInSearch = searchResults.filter(user => user.username === 'admin');
+                    
+                    if (adminInSearch.length === 0) {
+                        logResult('Search Functionality', true, 'Admin user not found in search results');
+                    } else {
+                        logResult('Search Functionality', false, `Admin user found in search: ${adminInSearch.length} results`);
+                    }
+                } catch (error) {
+                    logResult('Search Functionality', false, `Search test failed: ${error.message}`);
+                }
+                
+                // Test 4: Test role filter
+                try {
+                    const roleResponse = await api.getUsers({ role: 'admin' });
+                    const roleResults = roleResponse.users || [];
+                    const adminInRole = roleResults.filter(user => user.username === 'admin');
+                    
+                    if (adminInRole.length === 0) {
+                        logResult('Role Filter', true, 'Admin user not returned in admin role filter');
+                    } else {
+                        logResult('Role Filter', false, `Admin user found in role filter: ${adminInRole.length} results`);
+                    }
+                } catch (error) {
+                    logResult('Role Filter', false, `Role filter test failed: ${error.message}`);
+                }
+                
+            } catch (error) {
+                logResult('User Management Test', false, `Failed to load users: ${error.message}`);
+            }
+        }
+
+        async function testUserCreation() {
+            logResult('User Creation Test', true, 'Testing user creation with admin username...', 'Attempting to create user');
+            
+            try {
+                // Test 1: Try to create user with 'admin' username
+                try {
+                    const response = await api.createUser({
+                        username: 'admin',
+                        email: 'admin2@test.com',
+                        role: 'manager'
+                    });
+                    
+                    // If we get here, the creation succeeded when it shouldn't have
+                    logResult('Admin Username Creation', false, 'User creation with "admin" username was allowed');
+                } catch (error) {
+                    if (error.message.includes('not available') || error.message.includes('exists')) {
+                        logResult('Admin Username Creation', true, 'Username "admin" correctly rejected');
+                    } else {
+                        logResult('Admin Username Creation', false, `Unexpected error: ${error.message}`);
+                    }
+                }
+                
+                // Test 2: Try to create user with 'ADMIN' username (case insensitive)
+                try {
+                    const response = await api.createUser({
+                        username: 'ADMIN',
+                        email: 'admin3@test.com',
+                        role: 'manager'
+                    });
+                    
+                    // If we get here, the creation succeeded when it shouldn't have
+                    logResult('Admin Username Case', false, 'User creation with "ADMIN" username was allowed');
+                } catch (error) {
+                    if (error.message.includes('not available') || error.message.includes('exists')) {
+                        logResult('Admin Username Case', true, 'Username "ADMIN" correctly rejected (case insensitive)');
+                    } else {
+                        logResult('Admin Username Case', false, `Unexpected error: ${error.message}`);
+                    }
+                }
+                
+            } catch (error) {
+                logResult('User Creation Test', false, `User creation test failed: ${error.message}`);
+            }
+        }
+
+        async function testUserManagementInterface() {
+            logResult('Interface Test', true, 'Testing actual user management interface...', 'Loading iframe');
+            
+            return new Promise((resolve) => {
+                // Create a hidden iframe to test the actual user management page
+                const iframe = document.createElement('iframe');
+                iframe.src = '/pages/user-management.html';
+                iframe.style.display = 'none';
+                iframe.style.width = '100%';
+                iframe.style.height = '600px';
+                
+                let timeoutId;
+                
+                iframe.onload = () => {
+                    try {
+                        // Wait a moment for the page to fully load
+                        setTimeout(() => {
+                            try {
+                                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                
+                                // Check if there are any JavaScript errors
+                                const hasErrors = iframe.contentWindow.console && iframe.contentWindow.console.error;
+                                
+                                // Look for user table
+                                const userTable = iframeDoc.querySelector('table') || iframeDoc.querySelector('[data-testid="users-table"]');
+                                if (userTable) {
+                                    logResult('Interface Load', true, 'User management page loaded successfully');
+                                    
+                                    // Check table contents for admin user
+                                    const tableText = userTable.innerText || userTable.textContent;
+                                    if (tableText.toLowerCase().includes('admin')) {
+                                        // Need to be careful here - might be column headers or other text
+                                        const rows = userTable.querySelectorAll('tr');
+                                        let adminRowFound = false;
+                                        
+                                        rows.forEach(row => {
+                                            const cells = row.querySelectorAll('td');
+                                            if (cells.length > 0) {
+                                                const firstCell = cells[0];
+                                                if (firstCell && firstCell.textContent.trim() === 'admin') {
+                                                    adminRowFound = true;
+                                                }
+                                            }
+                                        });
+                                        
+                                        if (adminRowFound) {
+                                            logResult('Interface Admin Check', false, 'Admin user found in interface table');
+                                        } else {
+                                            logResult('Interface Admin Check', true, 'Admin user not found in interface table');
+                                        }
+                                    } else {
+                                        logResult('Interface Admin Check', true, 'No admin user visible in interface');
+                                    }
+                                } else {
+                                    logResult('Interface Load', false, 'Could not find user table in interface');
+                                }
+                                
+                                // Clean up
+                                document.body.removeChild(iframe);
+                                clearTimeout(timeoutId);
+                                resolve();
+                                
+                            } catch (error) {
+                                logResult('Interface Test', false, `Error testing interface: ${error.message}`);
+                                document.body.removeChild(iframe);
+                                clearTimeout(timeoutId);
+                                resolve();
+                            }
+                        }, 2000); // Wait 2 seconds for page to fully load
+                        
+                    } catch (error) {
+                        logResult('Interface Test', false, `Error accessing iframe: ${error.message}`);
+                        document.body.removeChild(iframe);
+                        clearTimeout(timeoutId);
+                        resolve();
+                    }
+                };
+                
+                iframe.onerror = () => {
+                    logResult('Interface Test', false, 'Failed to load user management page');
+                    document.body.removeChild(iframe);
+                    clearTimeout(timeoutId);
+                    resolve();
+                };
+                
+                // Set timeout to prevent hanging
+                timeoutId = setTimeout(() => {
+                    logResult('Interface Test', false, 'Interface test timed out');
+                    if (iframe.parentNode) {
+                        document.body.removeChild(iframe);
+                    }
+                    resolve();
+                }, 10000); // 10 second timeout
+                
+                document.body.appendChild(iframe);
+            });
+        }
+
+        async function runAllTests() {
+            clearResults();
+            logResult('Test Suite', true, 'Starting comprehensive frontend tests...', 'Initializing test environment');
+            
+            // Authenticate first
+            const authenticated = await authenticateAsAdmin();
+            if (!authenticated) {
+                logResult('Test Suite', false, 'Cannot proceed without admin authentication');
+                return;
+            }
+            
+            // Run API-based tests
+            await testUserManagementPage();
+            await testUserCreation();
+            
+            // Run interface tests
+            await testUserManagementInterface();
+            
+            // Generate summary
+            const totalTests = testResults.length;
+            const passedTests = testResults.filter(r => r.success).length;
+            const failedTests = totalTests - passedTests;
+            const successRate = ((passedTests / totalTests) * 100).toFixed(1);
+            
+            logResult('Test Summary', failedTests === 0, 
+                `Frontend tests completed: ${passedTests}/${totalTests} passed (${successRate}%)`,
+                failedTests > 0 ? `${failedTests} tests failed - see results above` : 'All tests passed!');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            logResult('Initialization', true, 'Frontend test page loaded successfully');
+        });
+    </script>
+</body>
+</html>

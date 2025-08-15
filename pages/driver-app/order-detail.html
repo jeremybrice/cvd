@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Order Details - CVD Driver</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="order-detail.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header with back button -->
+        <header class="app-header">
+            <div class="header-content">
+                <button class="back-button" onclick="history.back()">
+                    <span>←</span>
+                </button>
+                <h1>Order Details</h1>
+                <div class="header-actions">
+                    <span class="sync-indicator" id="syncIndicator">●</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Order Content -->
+        <main class="order-content">
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2>Order #<span id="orderNumber"></span></h2>
+                <div class="order-meta">
+                    <span class="order-status" id="orderStatus"></span>
+                    <span class="order-date" id="orderDate"></span>
+                </div>
+            </div>
+
+            <!-- Location Card -->
+            <div class="location-card">
+                <h3>Location</h3>
+                <div class="location-info">
+                    <div class="location-name" id="locationName"></div>
+                    <div class="location-address" id="locationAddress"></div>
+                </div>
+                <button class="navigate-button" onclick="navigateToLocation()">
+                    <span>📍</span> Get Directions
+                </button>
+            </div>
+
+            <!-- Device List -->
+            <div class="device-section">
+                <h3>Devices</h3>
+                <div id="deviceList" class="device-list">
+                    <!-- Devices will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-section">
+                <button class="action-button primary" onclick="startDelivery()" id="startButton">
+                    Start Delivery
+                </button>
+                <button class="action-button secondary" onclick="showPhotoCapture()" id="photoButton" style="display: none;">
+                    📷 Take Photo
+                </button>
+                <button class="action-button success" onclick="completeDelivery()" id="completeButton" style="display: none;">
+                    ✓ Complete Delivery
+                </button>
+            </div>
+        </main>
+
+        <!-- Photo Capture Modal -->
+        <div class="modal" id="photoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Delivery Photo</h3>
+                    <button class="close-button" onclick="closePhotoCapture()">×</button>
+                </div>
+                <div class="modal-body">
+                    <video id="camera" autoplay playsinline></video>
+                    <canvas id="photoCanvas" style="display: none;"></canvas>
+                    <img id="photoPreview" style="display: none;">
+                    <div class="photo-controls">
+                        <button class="capture-button" onclick="capturePhoto()" id="captureBtn">
+                            📷 Capture
+                        </button>
+                        <button class="retake-button" onclick="retakePhoto()" id="retakeBtn" style="display: none;">
+                            🔄 Retake
+                        </button>
+                        <button class="save-button" onclick="savePhoto()" id="saveBtn" style="display: none;">
+                            ✓ Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/api.js"></script>
+    <script src="db.js"></script>
+    <script src="order-detail.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .check {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background: #cfe2ff;
+            color: #084298;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 10px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>PWA Installation Debug</h1>
+    <div id="checks"></div>
+    
+    <h2>Install Button</h2>
+    <button id="installBtn" style="padding: 10px 20px; font-size: 16px;">Install App</button>
+    <div id="installStatus"></div>
+
+    <script>
+        const checks = document.getElementById('checks');
+        let deferredPrompt;
+
+        // Check HTTPS
+        function checkHTTPS() {
+            const isSecure = location.protocol === 'https:' || location.hostname === 'localhost';
+            addCheck('HTTPS/Localhost', isSecure, `Protocol: ${location.protocol}, Host: ${location.hostname}`);
+            return isSecure;
+        }
+
+        // Check Service Worker
+        async function checkServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    if (registration) {
+                        addCheck('Service Worker', true, `Registered at scope: ${registration.scope}`);
+                        return true;
+                    } else {
+                        // Try to register
+                        const reg = await navigator.serviceWorker.register('/service-worker.js');
+                        addCheck('Service Worker', true, `Just registered at scope: ${reg.scope}`);
+                        return true;
+                    }
+                } catch (e) {
+                    addCheck('Service Worker', false, `Error: ${e.message}`);
+                    return false;
+                }
+            } else {
+                addCheck('Service Worker', false, 'Not supported in this browser');
+                return false;
+            }
+        }
+
+        // Check Manifest
+        async function checkManifest() {
+            const link = document.querySelector('link[rel="manifest"]');
+            if (!link) {
+                // Add manifest link if missing
+                const newLink = document.createElement('link');
+                newLink.rel = 'manifest';
+                newLink.href = '/manifest.json';
+                document.head.appendChild(newLink);
+                addCheck('Manifest Link', true, 'Added manifest link to page');
+            } else {
+                addCheck('Manifest Link', true, `Found: ${link.href}`);
+            }
+
+            try {
+                const response = await fetch('/manifest.json');
+                const manifest = await response.json();
+                
+                // Check required fields
+                const required = ['name', 'short_name', 'start_url', 'display', 'icons'];
+                const missing = required.filter(field => !manifest[field]);
+                
+                if (missing.length === 0) {
+                    addCheck('Manifest Fields', true, 'All required fields present');
+                } else {
+                    addCheck('Manifest Fields', false, `Missing: ${missing.join(', ')}`);
+                }
+                
+                // Check icons
+                if (manifest.icons && manifest.icons.length > 0) {
+                    const has192 = manifest.icons.some(i => i.sizes.includes('192'));
+                    const has512 = manifest.icons.some(i => i.sizes.includes('512'));
+                    
+                    if (has192 && has512) {
+                        addCheck('Icons', true, `Found ${manifest.icons.length} icons (including 192x192 and 512x512)`);
+                        
+                        // Check if icons actually exist
+                        const icon192 = manifest.icons.find(i => i.sizes === '192x192');
+                        if (icon192) {
+                            try {
+                                const iconResponse = await fetch(icon192.src);
+                                if (iconResponse.ok) {
+                                    addCheck('192x192 Icon File', true, `Found at ${icon192.src}`);
+                                } else {
+                                    addCheck('192x192 Icon File', false, `404 at ${icon192.src}`);
+                                }
+                            } catch (e) {
+                                addCheck('192x192 Icon File', false, `Error loading ${icon192.src}`);
+                            }
+                        }
+                    } else {
+                        addCheck('Icons', false, `Need 192x192 (has: ${has192}) and 512x512 (has: ${has512})`);
+                    }
+                } else {
+                    addCheck('Icons', false, 'No icons defined');
+                }
+                
+                // Show manifest details
+                addCheck('Manifest Content', true, `<pre>${JSON.stringify(manifest, null, 2)}</pre>`);
+                
+            } catch (e) {
+                addCheck('Manifest', false, `Error loading: ${e.message}`);
+            }
+        }
+
+        // Check install prompt
+        function checkInstallPrompt() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                addCheck('Install Prompt', true, 'beforeinstallprompt event fired! App is installable.');
+                document.getElementById('installBtn').style.display = 'block';
+            });
+            
+            // Check if already installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                addCheck('Already Installed', true, 'App is running in standalone mode');
+            }
+            
+            // For Android, check related apps
+            if ('getInstalledRelatedApps' in navigator) {
+                navigator.getInstalledRelatedApps().then(apps => {
+                    if (apps.length > 0) {
+                        addCheck('Related Apps', true, `Found ${apps.length} related apps`);
+                    }
+                });
+            }
+        }
+
+        // Add check result
+        function addCheck(name, passed, details) {
+            const div = document.createElement('div');
+            div.className = `check ${passed ? 'pass' : 'fail'}`;
+            div.innerHTML = `<strong>${name}:</strong> ${passed ? '✓' : '✗'} ${details || ''}`;
+            checks.appendChild(div);
+        }
+
+        // Install button handler
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                document.getElementById('installStatus').textContent = 'No install prompt available. Check the requirements above.';
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            document.getElementById('installStatus').textContent = `User ${outcome} the install`;
+            deferredPrompt = null;
+        });
+
+        // Run all checks
+        async function runChecks() {
+            addCheck('Browser', true, navigator.userAgent);
+            
+            checkHTTPS();
+            await checkServiceWorker();
+            await checkManifest();
+            checkInstallPrompt();
+            
+            // Additional info
+            setTimeout(() => {
+                if (!deferredPrompt) {
+                    addCheck('Install Prompt Status', false, 
+                        'No prompt received after 3 seconds. This could mean:<br>' +
+                        '- The app is already installed<br>' +
+                        '- Browser doesn\'t support PWA installation<br>' +
+                        '- One or more requirements above failed<br>' +
+                        '- Need to interact with the page first (click somewhere)');
+                }
+            }, 3000);
+        }
+
+        // Hide install button initially
+        document.getElementById('installBtn').style.display = 'none';
+
+        // Run checks on load
+        runChecks();
+    </script>
+</body>
+</html>

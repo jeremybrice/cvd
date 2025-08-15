@@ -1,0 +1,717 @@
+asset,device_name,device_type,model,cabinet_type,cabinet_model,cabinet_index,planogram_key,slot_position,product_name,price,capacity
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A1,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A2,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A3,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A4,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A5,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A6,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A7,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,A8,Coca-Cola,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B1,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B2,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B3,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B4,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B5,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B6,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B7,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,B8,Pepsi,2.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C1,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C2,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C3,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C4,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C5,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C6,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C7,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,C8,Monster Zero Ultra,3.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D1,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D2,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D3,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D4,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D5,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D6,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D7,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,D8,Doritos,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E1,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E2,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E3,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E4,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E5,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E6,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E7,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Cooler,Cooler,0,111-Cooler-0,E8,Jumbo,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A1,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A2,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A3,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A4,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A5,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A6,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A7,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,A8,Snickers,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B1,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B2,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B3,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B4,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B5,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B6,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B7,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,B8,Twix,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C1,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C2,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C3,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C4,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C5,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C6,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C7,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,C8,M&M,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D1,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D2,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D3,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D4,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D5,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D6,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D7,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,D8,Hershey’s,1.5,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E1,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E2,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E3,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E4,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E5,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E6,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E7,Pop-tarts,2,10
+111,Near Gate B5,PicoVision,Cooler,Ambient,Ambient,1,111-Ambient-1,E8,Pop-tarts,2,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A1,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A2,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A3,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A4,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A5,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A6,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A7,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,A8,Coca-Cola,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B1,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B2,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B3,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B4,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B5,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B6,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B7,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,B8,Country Time Lemonade,2.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C1,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C2,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C3,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C4,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C5,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C6,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C7,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,C8,Gatorade Fruit Punch,3,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D1,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D2,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D3,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D4,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D5,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D6,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D7,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,D8,Monster Zero Ultra,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E1,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E2,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E3,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E4,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E5,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E6,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E7,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Cooler,Cooler,0,222-Cooler-0,E8,NOS Energy,3.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A1,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A2,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A3,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A4,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A5,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A6,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A7,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,A8,Doritos,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B1,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B2,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B3,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B4,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B5,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B6,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B7,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,B8,Lay’s Chip,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C1,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C2,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C3,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C4,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C5,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C6,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C7,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,C8,Grandma Cookies,2,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D1,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D2,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D3,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D4,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D5,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D6,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D7,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,D8,Hershey’s,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E1,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E2,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E3,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E4,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E5,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E6,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E7,M&M,1.5,10
+222,Near Gate C38,PicoVision,Cooler,Ambient,Ambient,1,222-Ambient-1,E8,M&M,1.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A1,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A2,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A3,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A4,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A5,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A6,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A7,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,A8,Coca-Cola,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B1,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B2,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B3,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B4,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B5,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B6,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B7,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,B8,Pepsi,2.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C1,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C2,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C3,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C4,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C5,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C6,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C7,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,C8,Monster Energy Blue,3.5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D1,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D2,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D3,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D4,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D5,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D6,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D7,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,D8,Chicken Salad,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E1,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E2,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E3,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E4,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E5,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E6,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E7,Turkey Wrap,5,10
+333,Near Gate 24,PicoVision Express,Ambient,Ambient,Ambient,0,333-Ambient-0,E8,Turkey Wrap,5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A1,Coca-Cola,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A2,Coca-Cola,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A3,Coca-Cola,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A4,Pepsi,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A5,Pepsi,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A6,Pepsi,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,A7,Pepsi,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B1,Gatorade Fruit Punch,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B2,Gatorade Fruit Punch,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B3,Gatorade Fruit Punch,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B4,Gatorade Fruit Punch,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B5,Powerade Glacier Cherry,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B6,Powerade Glacier Cherry,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,B7,Powerade Glacier Cherry,3,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C1,Country Time Lemonade,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C2,Country Time Lemonade,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C3,Country Time Lemonade,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C4,Country Time Lemonade,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C5,Country Time Lemonade,2.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C6,Meatloaf,5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,C7,Meatloaf,5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D1,Burrito,4,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D2,Burrito,4,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D3,Lunchables,4,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D4,Lunchables,4,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D5,Meatloaf,5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D6,Meatloaf,5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,444-Stockwell Cooler-0,D7,Meatloaf,5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A1,Lay’s Chip,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A2,Lay’s Chip,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A3,Lay’s Chip,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A4,Lay’s Chip,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A5,Doritos,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A6,Doritos,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,A7,Doritos,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B1,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B2,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B3,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B4,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B5,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B6,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,B7,Grandma Cookies,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C1,Hershey’s,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C2,Hershey’s,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C3,M&M,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C4,M&M,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C5,Snickers,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C6,Snickers,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,C7,Twix,1.5,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D1,Jumbo,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D2,Jumbo,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D3,Jumbo,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D4,Jumbo,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D5,Pop-tarts,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D6,Pop-tarts,2,10
+444,Test Stockwell,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,444-Stockwell Ambient-1,D7,Pop-tarts,2,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A1,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A2,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A3,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A4,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A5,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A6,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A7,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,A8,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B1,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B2,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B3,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B4,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B5,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B6,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B7,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,B8,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C1,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C2,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C3,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C4,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C5,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C6,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C7,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,C8,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D1,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D2,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D3,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D4,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D5,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D6,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D7,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,D8,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E1,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E2,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E3,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E4,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E5,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E6,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E7,Ice Cream,3,10
+5436,Ice Cream Machine,PicoVision Express,Freezer,Freezer,Freezer,0,5436-Freezer-0,E8,Ice Cream,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A1,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A2,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A3,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A4,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A5,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A6,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,A7,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B1,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B2,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B3,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B4,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B5,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B6,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,B7,Gatorade Fruit Punch,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C1,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C2,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C3,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C4,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C5,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C6,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,C7,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D1,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D2,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D3,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D4,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D5,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D6,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,555-Stockwell Cooler-0,D7,Powerade Glacier Cherry,3,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A1,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A2,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A3,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A4,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A5,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A6,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,A7,Burrito,4,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B1,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B2,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B3,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B4,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B5,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B6,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,B7,Chicken Salad,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C1,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C2,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C3,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C4,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C5,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C6,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,C7,Turkey Wrap,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D1,Sandwich,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D2,Sandwich,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D3,Sandwich,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D4,Sandwich,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D5,Sandwich,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D6,Sandwich,5,10
+555,Gym Entrance,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,555-Stockwell Ambient-1,D7,Sandwich,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A1,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A2,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A3,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A4,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A5,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A6,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A7,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A8,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,A9,Doritos,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B1,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B2,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B3,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B4,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B5,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B6,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B7,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B8,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,B9,Grandma Cookies,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C1,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C2,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C3,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C4,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C5,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C6,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C7,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C8,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,C9,Hershey’s,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D1,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D2,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D3,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D4,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D5,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D6,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D7,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D8,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,D9,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E1,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E2,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E3,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E4,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E5,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E6,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E7,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E8,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,E9,M&M,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F1,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F2,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F3,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F4,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F5,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F6,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F7,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F8,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient+,Ambient+,0,666-Ambient+-0,F9,Dole Fruit,3,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A1,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A2,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A3,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A4,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A5,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A6,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A7,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,A8,Country Time Lemonade,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B1,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B2,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B3,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B4,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B5,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B6,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B7,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,B8,Coca-Cola,2.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C1,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C2,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C3,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C4,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C5,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C6,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C7,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,C8,Monster Energy Blue,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D1,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D2,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D3,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D4,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D5,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D6,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D7,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,D8,Monster Energy Original,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E1,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E2,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E3,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E4,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E5,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E6,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E7,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,1,666-Ambient-1,E8,Monster Zero Ultra,3.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A1,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A2,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A3,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A4,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A5,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A6,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A7,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,A8,Turkey Wrap,5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B1,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B2,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B3,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B4,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B5,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B6,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B7,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,B8,Welches,1.5,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C1,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C2,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C3,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C4,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C5,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C6,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C7,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,C8,Lunchables,4,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D1,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D2,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D3,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D4,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D5,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D6,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D7,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,D8,Pop-tarts,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E1,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E2,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E3,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E4,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E5,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E6,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E7,Jumbo,2,10
+666,Snack Galore,PicoVision,Ambient+,Ambient,Ambient,2,666-Ambient-2,E8,Jumbo,2,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A1,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A2,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A3,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A4,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A5,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A6,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A7,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,A8,Coca-Cola,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B1,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B2,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B3,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B4,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B5,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B6,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B7,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,B8,Pepsi,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C1,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C2,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C3,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C4,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C5,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C6,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C7,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,C8,V8 Original,3.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D1,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D2,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D3,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D4,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D5,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D6,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D7,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,D8,Country Time Lemonade,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E1,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E2,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E3,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E4,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E5,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E6,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E7,Vitamin Water,2.5,10
+7875,Visitor Center,PicoVision Express,Cooler,Cooler,Cooler,0,7875-Cooler-0,E8,Vitamin Water,2.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A1,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A2,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A3,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A4,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A5,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A6,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,A7,Monster Energy Blue,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B1,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B2,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B3,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B4,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B5,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B6,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,B7,Monster Energy Original,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C1,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C2,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C3,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C4,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C5,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C6,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,C7,Monster Zero Ultra,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D1,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D2,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D3,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D4,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D5,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D6,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Cooler,Stockwell Cooler,0,888-Stockwell Cooler-0,D7,NOS Energy,3.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A1,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A2,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A3,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A4,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A5,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A6,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,A7,Snickers,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B1,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B2,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B3,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B4,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B5,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B6,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,B7,Hershey’s,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C1,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C2,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C3,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C4,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C5,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C6,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,C7,M&M,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D1,Twix,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D2,Twix,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D3,Twix,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D4,Twix,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D5,Twix,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D6,Twix,1.5,10
+888,Backroom Breakroom,Stockwell,Stockwell Cooler,Stockwell Ambient,Stockwell Ambient,1,888-Stockwell Ambient-1,D7,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A1,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A2,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A3,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A4,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A5,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A6,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A7,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,A8,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B1,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B2,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B3,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B4,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B5,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B6,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B7,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,B8,Burrito,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C1,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C2,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C3,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C4,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C5,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C6,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C7,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,C8,Dole Fruit,3,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D1,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D2,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D3,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D4,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D5,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D6,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D7,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,D8,Chicken Salad,5,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E1,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E2,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E3,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E4,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E5,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E6,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E7,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Cooler,Cooler,0,999-Cooler-0,E8,Lunchables,4,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A1,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A2,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A3,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A4,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A5,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A6,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A7,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A8,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,A9,Hershey’s,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B1,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B2,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B3,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B4,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B5,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B6,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B7,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B8,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,B9,M&M,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C1,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C2,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C3,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C4,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C5,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C6,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C7,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C8,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,C9,Snickers,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D1,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D2,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D3,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D4,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D5,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D6,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D7,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D8,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,D9,Twix,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E1,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E2,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E3,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E4,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E5,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E6,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E7,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E8,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,E9,Welches,1.5,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F1,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F2,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F3,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F4,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F5,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F6,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F7,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F8,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Ambient+,Ambient+,1,999-Ambient+-1,F9,Grandma Cookies,2,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A1,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A2,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A3,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A4,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A5,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A6,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A7,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,A8,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B1,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B2,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B3,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B4,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B5,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B6,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B7,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,B8,NOS Energy,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C1,Monster Zero Ultra,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C2,Monster Energy Blue,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C3,Monster Energy Blue,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C4,Monster Energy Blue,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C5,Monster Energy Blue,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C6,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C7,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,C8,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D1,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D2,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D3,Monster Zero Ultra,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D4,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D5,Monster Zero Ultra,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D6,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D7,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,D8,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E1,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E2,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E3,Monster Zero Ultra,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E4,Monster Zero Ultra,3.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E5,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E6,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E7,Country Time Lemonade,2.5,10
+999,Cafe New Location,PicoVision,Cooler,Freezer,Freezer,2,999-Freezer-2,E8,Country Time Lemonade,2.5,10

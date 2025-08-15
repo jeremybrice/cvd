@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Route Schedule</title>
+</head>
+<body>
+    <h1>Debug Route Schedule API</h1>
+    <button onclick="testAPI()">Test Route 1 API</button>
+    <pre id="output"></pre>
+
+    <script>
+        async function testAPI() {
+            const output = document.getElementById('output');
+            output.textContent = 'Loading...';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/routes/1/devices');
+                const data = await response.json();
+                
+                let debug = 'API Response Analysis:\n\n';
+                debug += `Route Name: ${data.routeName}\n`;
+                debug += `Number of devices: ${data.devices.length}\n\n`;
+                
+                debug += 'First 5 devices:\n';
+                data.devices.slice(0, 5).forEach((device, i) => {
+                    debug += `\nDevice ${i + 1}:\n`;
+                    debug += `  id: ${device.id} (type: ${typeof device.id})\n`;
+                    debug += `  asset: ${device.asset} (type: ${typeof device.asset})\n`;
+                    debug += `  cooler: ${device.cooler}\n`;
+                    debug += `  location: ${device.location}\n`;
+                    
+                    // Check if id equals asset
+                    if (device.id == device.asset) {
+                        debug += `  WARNING: id == asset!\n`;
+                    }
+                    if (device.id === device.asset) {
+                        debug += `  WARNING: id === asset!\n`;
+                    }
+                });
+                
+                // Check for devices where id > 100
+                const suspiciousDevices = data.devices.filter(d => d.id > 100);
+                if (suspiciousDevices.length > 0) {
+                    debug += '\n\nSUSPICIOUS: Devices with ID > 100:\n';
+                    suspiciousDevices.forEach(d => {
+                        debug += `  id: ${d.id}, asset: ${d.asset}\n`;
+                    });
+                }
+                
+                output.textContent = debug;
+                
+                // Also log to console for inspection
+                console.log('Full API response:', data);
+                
+            } catch (error) {
+                output.textContent = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

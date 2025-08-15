@@ -1,0 +1,728 @@
+openapi: 3.0.3
+info:
+  title: CVD AI Planogram Enhancement API
+  description: API specification for AI-powered planogram optimization features
+  version: 1.0.0
+  contact:
+    name: CVD Development Team
+    email: dev@cvd.com
+servers:
+  - url: https://jeremybrice.duckdns.org/api
+    description: Production server
+  - url: http://localhost:5000/api
+    description: Development server
+tags:
+  - name: AI Realtime
+    description: Real-time AI placement analysis
+  - name: AI Prediction
+    description: Revenue and demand predictions
+  - name: AI Optimization
+    description: Planogram optimization endpoints
+  - name: AI Analytics
+    description: AI performance and metrics
+
+paths:
+  /planograms/realtime/score:
+    post:
+      tags:
+        - AI Realtime
+      summary: Get real-time placement score
+      description: Analyzes product placement and returns AI scoring with recommendations
+      operationId: getPlacementScore
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlacementScoreRequest'
+      responses:
+        '200':
+          description: Placement score calculated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlacementScoreResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+      x-rate-limit:
+        requests: 120
+        window: 60
+        
+  /planograms/predict/revenue:
+    post:
+      tags:
+        - AI Prediction
+      summary: Predict revenue impact
+      description: Predicts revenue impact of planogram changes
+      operationId: predictRevenue
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevenuePredictionRequest'
+      responses:
+        '200':
+          description: Revenue prediction calculated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenuePredictionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-rate-limit:
+        requests: 30
+        window: 60
+        
+  /planograms/optimize/heat-zones:
+    get:
+      tags:
+        - AI Optimization
+      summary: Get heat zone analysis
+      description: Returns revenue heat map for device cabinets
+      operationId: getHeatZones
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: device_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Device ID for heat zone analysis
+        - name: cabinet_index
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+          description: Cabinet index (0-2)
+      responses:
+        '200':
+          description: Heat zone data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeatZoneResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-cache:
+        ttl: 86400
+        
+  /planograms/optimize/affinity:
+    post:
+      tags:
+        - AI Optimization
+      summary: Get product affinity recommendations
+      description: Returns products with high affinity to selected product
+      operationId: getProductAffinity
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AffinityRequest'
+      responses:
+        '200':
+          description: Affinity recommendations generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AffinityResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-cache:
+        ttl: 3600
+        
+  /planograms/predict/demand:
+    post:
+      tags:
+        - AI Prediction
+      summary: Forecast product demand
+      description: Predicts demand for products over specified time period
+      operationId: forecastDemand
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DemandForecastRequest'
+      responses:
+        '200':
+          description: Demand forecast generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemandForecastResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-rate-limit:
+        requests: 20
+        window: 60
+        
+  /planograms/optimize/location:
+    post:
+      tags:
+        - AI Optimization
+      summary: Get location-based optimization
+      description: Returns location-specific planogram recommendations
+      operationId: optimizeForLocation
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationOptimizationRequest'
+      responses:
+        '200':
+          description: Location optimization generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationOptimizationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+      x-rate-limit:
+        requests: 10
+        window: 60
+        
+  /ai/metrics:
+    get:
+      tags:
+        - AI Analytics
+      summary: Get AI system metrics
+      description: Returns performance metrics for AI features
+      operationId: getAIMetrics
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Start date for metrics
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: End date for metrics
+      responses:
+        '200':
+          description: AI metrics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIMetricsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-cache:
+        ttl: 300
+
+components:
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: session
+      
+  schemas:
+    PlacementScoreRequest:
+      type: object
+      required:
+        - product_id
+        - slot_position
+        - device_id
+      properties:
+        product_id:
+          type: integer
+          description: Product ID being placed
+          example: 5
+        slot_position:
+          type: string
+          description: Target slot position (e.g., "B4")
+          pattern: '^[A-Z][1-9][0-9]?$'
+          example: "B4"
+        device_id:
+          type: integer
+          description: Device ID
+          example: 123
+        cabinet_index:
+          type: integer
+          description: Cabinet index (0-2)
+          default: 0
+          minimum: 0
+          maximum: 2
+          
+    PlacementScoreResponse:
+      type: object
+      properties:
+        score:
+          type: integer
+          description: Placement score (0-100)
+          minimum: 0
+          maximum: 100
+          example: 85
+        reasoning:
+          type: string
+          description: AI explanation for score
+          example: "Eye-level placement for high-velocity product"
+        constraints_passed:
+          type: boolean
+          description: Whether all constraints are met
+          example: true
+        suggestions:
+          type: array
+          items:
+            type: string
+          description: Improvement suggestions
+          example: ["Consider adjacent affinity products", "Optimize for temperature zone"]
+        response_time_ms:
+          type: integer
+          description: API response time in milliseconds
+          example: 245
+          
+    RevenuePredictionRequest:
+      type: object
+      required:
+        - current_planogram
+        - proposed_planogram
+      properties:
+        current_planogram:
+          $ref: '#/components/schemas/PlanogramData'
+        proposed_planogram:
+          $ref: '#/components/schemas/PlanogramData'
+        forecast_days:
+          type: integer
+          description: Number of days to forecast
+          default: 30
+          minimum: 7
+          maximum: 90
+          
+    RevenuePredictionResponse:
+      type: object
+      properties:
+        baseline_revenue:
+          type: number
+          format: float
+          description: Current planogram daily revenue
+          example: 450.00
+        predicted_revenue:
+          type: number
+          format: float
+          description: Proposed planogram daily revenue
+          example: 495.00
+        lift_percentage:
+          type: number
+          format: float
+          description: Revenue increase percentage
+          example: 10.0
+        confidence_interval:
+          type: object
+          properties:
+            lower:
+              type: number
+              format: float
+              example: 475
+            upper:
+              type: number
+              format: float
+              example: 515
+        break_even_days:
+          type: integer
+          description: Days to recover change cost
+          example: 3
+        factors:
+          type: array
+          items:
+            type: object
+            properties:
+              factor:
+                type: string
+                example: "Improved visibility"
+              impact:
+                type: number
+                format: float
+                example: 5.5
+                
+    HeatZoneResponse:
+      type: object
+      properties:
+        device_id:
+          type: integer
+        cabinet_index:
+          type: integer
+        zones:
+          type: array
+          items:
+            type: object
+            properties:
+              position:
+                type: string
+                example: "A1"
+              revenue_potential:
+                type: integer
+                description: Revenue potential percentage (0-100)
+                example: 85
+              level:
+                type: integer
+                description: Heat level (1-5)
+                minimum: 1
+                maximum: 5
+              color:
+                type: string
+                description: Hex color for visualization
+                example: "#dc3545"
+        generated_at:
+          type: string
+          format: date-time
+          
+    AffinityRequest:
+      type: object
+      required:
+        - product_id
+        - device_id
+      properties:
+        product_id:
+          type: integer
+        device_id:
+          type: integer
+        max_results:
+          type: integer
+          default: 5
+          maximum: 10
+          
+    AffinityResponse:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: integer
+              product_name:
+                type: string
+              affinity_score:
+                type: number
+                format: float
+                description: Affinity score (0-100)
+              lift_percentage:
+                type: number
+                format: float
+                description: Sales lift when placed together
+              co_purchase_count:
+                type: integer
+                description: Number of co-purchases
+              suggested_positions:
+                type: array
+                items:
+                  type: string
+                  
+    DemandForecastRequest:
+      type: object
+      required:
+        - device_id
+        - products
+      properties:
+        device_id:
+          type: integer
+        products:
+          type: array
+          items:
+            type: integer
+        forecast_days:
+          type: integer
+          default: 7
+          minimum: 1
+          maximum: 30
+          
+    DemandForecastResponse:
+      type: object
+      properties:
+        device_id:
+          type: integer
+        forecasts:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: integer
+              product_name:
+                type: string
+              daily_forecast:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                    predicted_units:
+                      type: number
+                      format: float
+                    confidence_lower:
+                      type: number
+                      format: float
+                    confidence_upper:
+                      type: number
+                      format: float
+              stockout_risk:
+                type: string
+                enum: [LOW, MEDIUM, HIGH]
+              suggested_par_level:
+                type: integer
+                
+    LocationOptimizationRequest:
+      type: object
+      required:
+        - device_id
+        - location_id
+      properties:
+        device_id:
+          type: integer
+        location_id:
+          type: integer
+        current_planogram_id:
+          type: integer
+        venue_type_override:
+          type: string
+          enum: [OFFICE, GYM, SCHOOL, HOSPITAL, FACTORY, RETAIL]
+          
+    LocationOptimizationResponse:
+      type: object
+      properties:
+        device_id:
+          type: integer
+        location_characteristics:
+          type: object
+          properties:
+            venue_type:
+              type: string
+            peak_hours:
+              type: array
+              items:
+                type: string
+            demographics:
+              type: object
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              slot_position:
+                type: string
+              current_product_id:
+                type: integer
+              recommended_product_id:
+                type: integer
+              reasoning:
+                type: string
+              expected_lift:
+                type: number
+                format: float
+        confidence_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          
+    AIMetricsResponse:
+      type: object
+      properties:
+        period:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date
+            end:
+              type: string
+              format: date
+        usage:
+          type: object
+          properties:
+            total_requests:
+              type: integer
+            total_tokens:
+              type: integer
+            estimated_cost:
+              type: number
+              format: float
+        performance:
+          type: object
+          properties:
+            average_response_time_ms:
+              type: integer
+            p95_response_time_ms:
+              type: integer
+            p99_response_time_ms:
+              type: integer
+            cache_hit_rate:
+              type: number
+              format: float
+        accuracy:
+          type: object
+          properties:
+            revenue_prediction_mape:
+              type: number
+              format: float
+            demand_forecast_mape:
+              type: number
+              format: float
+            placement_recommendation_acceptance:
+              type: number
+              format: float
+              
+    PlanogramData:
+      type: object
+      properties:
+        planogram_id:
+          type: integer
+        device_id:
+          type: integer
+        slots:
+          type: array
+          items:
+            type: object
+            properties:
+              position:
+                type: string
+              product_id:
+                type: integer
+              par_level:
+                type: integer
+                
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+        timestamp:
+          type: string
+          format: date-time
+        request_id:
+          type: string
+          description: Request tracking ID
+          
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Invalid slot position format"
+            code: "INVALID_PARAMS"
+            
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Authentication required"
+            code: "UNAUTHORIZED"
+            
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Device not found"
+            code: "NOT_FOUND"
+            
+    RateLimited:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "Rate limit exceeded. Try again in 60 seconds"
+            code: "RATE_LIMITED"
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Request limit per window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Remaining requests in window
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix timestamp when limit resets
+            
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "An unexpected error occurred"
+            code: "INTERNAL_ERROR"
+            
+    ServiceUnavailable:
+      description: AI service temporarily unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error: "AI service is temporarily unavailable"
+            code: "SERVICE_UNAVAILABLE"
+      headers:
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds until service available

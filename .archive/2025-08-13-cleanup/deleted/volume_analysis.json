@@ -1,0 +1,2758 @@
+{
+  "activity_alerts": {
+    "row_count": 24,
+    "column_count": 13,
+    "foreign_key_count": 3,
+    "index_count": 3,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-08-06 22:00:14",
+      "last_record": "2025-08-08 18:15:32",
+      "last_30_days": 24,
+      "last_7_days": 24,
+      "last_24_hours": 4,
+      "avg_daily_growth": 0.8
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "alert_type",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "severity",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "user_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "session_id",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "metadata",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "status",
+        "type": "TEXT",
+        "nullable": true,
+        "default": "'pending'",
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "acknowledged_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "acknowledged_by",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "resolved_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "resolved_by",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "users",
+        "from": "resolved_by",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "users",
+        "from": "acknowledged_by",
+        "to": "id"
+      },
+      {
+        "id": 2,
+        "table": "users",
+        "from": "user_id",
+        "to": "id"
+      }
+    ]
+  },
+  "activity_summary_daily": {
+    "row_count": 2,
+    "column_count": 12,
+    "foreign_key_count": 0,
+    "index_count": 2,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-08-07 04:00:02",
+      "last_record": "2025-08-08 11:58:00",
+      "last_30_days": 2,
+      "last_7_days": 2,
+      "last_24_hours": 1,
+      "avg_daily_growth": 0.06666666666666667
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "date",
+        "type": "DATE",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "unique_users",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "total_sessions",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "total_page_views",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "total_api_calls",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "avg_session_duration_seconds",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "peak_concurrent_users",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "peak_hour",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "top_pages",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "user_distribution",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "audit_log": {
+    "row_count": 2350,
+    "column_count": 8,
+    "foreign_key_count": 1,
+    "index_count": 2,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-08-01 17:43:33",
+      "last_record": "2025-08-08 18:15:23",
+      "last_30_days": 2350,
+      "last_7_days": 2346,
+      "last_24_hours": 792,
+      "avg_daily_growth": 78.33333333333333
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "user_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "action",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "resource_type",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "resource_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "details",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "ip_address",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "users",
+        "from": "user_id",
+        "to": "id"
+      }
+    ]
+  },
+  "cabinet_configurations": {
+    "row_count": 44,
+    "column_count": 8,
+    "foreign_key_count": 2,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "device_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cabinet_type_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "model_name",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "is_parent",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "cabinet_index",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "rows",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "columns",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "cabinet_types",
+        "from": "cabinet_type_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "devices",
+        "from": "device_id",
+        "to": "id"
+      }
+    ]
+  },
+  "cabinet_types": {
+    "row_count": 6,
+    "column_count": 6,
+    "foreign_key_count": 0,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "rows",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cols",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "icon",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "device_metrics": {
+    "row_count": 14,
+    "column_count": 7,
+    "foreign_key_count": 1,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "device_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "sold_out_count",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "days_remaining_inventory",
+        "type": "REAL",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "data_collection_rate",
+        "type": "REAL",
+        "nullable": true,
+        "default": "100.0",
+        "pk": 0
+      },
+      {
+        "name": "product_level_percent",
+        "type": "REAL",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "units_to_par",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "last_calculated",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "devices",
+        "from": "device_id",
+        "to": "id"
+      }
+    ]
+  },
+  "device_routes": {
+    "row_count": 7,
+    "column_count": 2,
+    "foreign_key_count": 2,
+    "index_count": 2,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "device_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "route_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 2
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "routes",
+        "from": "route_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "devices",
+        "from": "device_id",
+        "to": "id"
+      }
+    ]
+  },
+  "device_types": {
+    "row_count": 3,
+    "column_count": 4,
+    "foreign_key_count": 0,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "allows_additional_cabinets",
+        "type": "BOOLEAN",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "devices": {
+    "row_count": 20,
+    "column_count": 11,
+    "foreign_key_count": 3,
+    "index_count": 3,
+    "has_created_at": true,
+    "has_updated_at": true,
+    "growth_info": {
+      "first_record": "2025-07-06 02:21:49",
+      "last_record": "2025-08-05 21:27:56",
+      "last_30_days": 3,
+      "last_7_days": 1,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0.1
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "asset",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cooler",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "location_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": "1",
+        "pk": 0
+      },
+      {
+        "name": "model",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "device_type_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "route_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "deleted_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "NULL",
+        "pk": 0
+      },
+      {
+        "name": "deleted_by",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "NULL",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "locations",
+        "from": "location_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "routes",
+        "from": "route_id",
+        "to": "id"
+      },
+      {
+        "id": 2,
+        "table": "device_types",
+        "from": "device_type_id",
+        "to": "id"
+      }
+    ]
+  },
+  "dex_pa_records": {
+    "row_count": 603,
+    "column_count": 20,
+    "foreign_key_count": 1,
+    "index_count": 5,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-07-11 15:36:12",
+      "last_record": "2025-08-06 20:00:33",
+      "last_30_days": 603,
+      "last_7_days": 341,
+      "last_24_hours": 0,
+      "avg_daily_growth": 20.1
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "dex_read_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "record_subtype",
+        "type": "VARCHAR(10)",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "selection_number",
+        "type": "VARCHAR(10)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "price_cents",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "capacity",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "units_sold",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "revenue_cents",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "test_vends",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "free_vends",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cash_sales",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cash_sales_cents",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cashless_sales",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cashless_sales_cents",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "discount_sales",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "discount_sales_cents",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "line_number",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "DATETIME",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "row",
+        "type": "VARCHAR(10)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "column",
+        "type": "VARCHAR(10)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "dex_reads",
+        "from": "dex_read_id",
+        "to": "id"
+      }
+    ]
+  },
+  "dex_reads": {
+    "row_count": 23,
+    "column_count": 12,
+    "foreign_key_count": 0,
+    "index_count": 2,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "filename",
+        "type": "VARCHAR(255)",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "machine_serial",
+        "type": "VARCHAR(50)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "manufacturer",
+        "type": "VARCHAR(10)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "dex_version",
+        "type": "VARCHAR(20)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "upload_timestamp",
+        "type": "DATETIME",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "raw_content",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "total_records",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "parsed_successfully",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "FALSE",
+        "pk": 0
+      },
+      {
+        "name": "error_message",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "error_line",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "error_field",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "dex_records": {
+    "row_count": 1682,
+    "column_count": 8,
+    "foreign_key_count": 1,
+    "index_count": 2,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-07-11 15:36:12",
+      "last_record": "2025-08-06 20:00:33",
+      "last_30_days": 1682,
+      "last_7_days": 901,
+      "last_24_hours": 0,
+      "avg_daily_growth": 56.06666666666667
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "dex_read_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "record_type",
+        "type": "VARCHAR(10)",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "record_subtype",
+        "type": "VARCHAR(10)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "line_number",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "raw_record",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "parsed_data",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "DATETIME",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "dex_reads",
+        "from": "dex_read_id",
+        "to": "id"
+      }
+    ]
+  },
+  "driver_routes": {
+    "row_count": 0,
+    "column_count": 3,
+    "foreign_key_count": 2,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "user_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "route_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 2
+      },
+      {
+        "name": "assigned_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "routes",
+        "from": "route_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "users",
+        "from": "user_id",
+        "to": "id"
+      }
+    ]
+  },
+  "knowledge_base_articles": {
+    "row_count": 9,
+    "column_count": 14,
+    "foreign_key_count": 0,
+    "index_count": 5,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "title",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "author",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "category",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "tags",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "difficulty",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "word_count",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "read_time_minutes",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "file_path",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "file_modified_time",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "last_indexed",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "content_preview",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "search_content",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "content_hash",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "knowledge_base_categories": {
+    "row_count": 5,
+    "column_count": 5,
+    "foreign_key_count": 0,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "icon",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "color",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "sort_order",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "locations": {
+    "row_count": 10,
+    "column_count": 7,
+    "foreign_key_count": 0,
+    "index_count": 0,
+    "has_created_at": true,
+    "has_updated_at": true,
+    "growth_info": {
+      "first_record": "2025-07-06 01:36:06",
+      "last_record": "2025-08-05 21:08:42",
+      "last_30_days": 1,
+      "last_7_days": 1,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0.03333333333333333
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "address",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "latitude",
+        "type": "REAL",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "longitude",
+        "type": "REAL",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "migrations": {
+    "row_count": 1,
+    "column_count": 3,
+    "foreign_key_count": 0,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "applied_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "planogram_slots": {
+    "row_count": 1658,
+    "column_count": 12,
+    "foreign_key_count": 2,
+    "index_count": 3,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "planogram_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "slot_position",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "product_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "product_name",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "quantity",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "capacity",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "par_level",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "price",
+        "type": "DECIMAL(10,2)",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cleared_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "NULL",
+        "pk": 0
+      },
+      {
+        "name": "cleared_by",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "NULL",
+        "pk": 0
+      },
+      {
+        "name": "previous_product_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "NULL",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "products",
+        "from": "product_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "planograms",
+        "from": "planogram_id",
+        "to": "id"
+      }
+    ]
+  },
+  "planograms": {
+    "row_count": 44,
+    "column_count": 4,
+    "foreign_key_count": 1,
+    "index_count": 2,
+    "has_created_at": false,
+    "has_updated_at": true,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "cabinet_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "planogram_key",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "cabinet_configurations",
+        "from": "cabinet_id",
+        "to": "id"
+      }
+    ]
+  },
+  "products": {
+    "row_count": 32,
+    "column_count": 7,
+    "foreign_key_count": 0,
+    "index_count": 1,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-07-02 18:08:37",
+      "last_record": "2025-07-06 23:42:34",
+      "last_30_days": 0,
+      "last_7_days": 0,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "category",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "price",
+        "type": "DECIMAL(10,2)",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "image",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "is_system",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "FALSE",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "route_planning_config": {
+    "row_count": 1,
+    "column_count": 6,
+    "foreign_key_count": 0,
+    "index_count": 0,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "critical_dri_threshold",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "1",
+        "pk": 0
+      },
+      {
+        "name": "warning_dri_threshold",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "3",
+        "pk": 0
+      },
+      {
+        "name": "ok_dri_threshold",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "7",
+        "pk": 0
+      },
+      {
+        "name": "auto_select_critical",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "TRUE",
+        "pk": 0
+      },
+      {
+        "name": "metrics_cache_ttl_minutes",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "15",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "routes": {
+    "row_count": 3,
+    "column_count": 6,
+    "foreign_key_count": 1,
+    "index_count": 1,
+    "has_created_at": true,
+    "has_updated_at": true,
+    "growth_info": {
+      "first_record": "2025-07-06 03:02:33",
+      "last_record": "2025-08-07 00:25:35",
+      "last_30_days": 1,
+      "last_7_days": 1,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0.03333333333333333
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "name",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "route_number",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "driver_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "users",
+        "from": "driver_id",
+        "to": "id"
+      }
+    ]
+  },
+  "sales": {
+    "row_count": 2731,
+    "column_count": 7,
+    "foreign_key_count": 2,
+    "index_count": 4,
+    "has_created_at": true,
+    "has_updated_at": true,
+    "growth_info": {
+      "first_record": "2024-12-15 07:05:00",
+      "last_record": "2025-08-05 22:45:00",
+      "last_30_days": 383,
+      "last_7_days": 205,
+      "last_24_hours": 0,
+      "avg_daily_growth": 12.766666666666667
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "device_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "product_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "sale_units",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "sale_cash",
+        "type": "DECIMAL(10,2)",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "products",
+        "from": "product_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "devices",
+        "from": "device_id",
+        "to": "id"
+      }
+    ]
+  },
+  "service_order_cabinet_items": {
+    "row_count": 170,
+    "column_count": 5,
+    "foreign_key_count": 2,
+    "index_count": 2,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-07-24 22:27:53",
+      "last_record": "2025-08-07 12:00:27",
+      "last_30_days": 170,
+      "last_7_days": 102,
+      "last_24_hours": 0,
+      "avg_daily_growth": 5.666666666666667
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "service_order_cabinet_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "product_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "quantity_needed",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "products",
+        "from": "product_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "service_order_cabinets",
+        "from": "service_order_cabinet_id",
+        "to": "id"
+      }
+    ]
+  },
+  "service_order_cabinets": {
+    "row_count": 34,
+    "column_count": 8,
+    "foreign_key_count": 3,
+    "index_count": 2,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-07-24 22:27:53",
+      "last_record": "2025-08-07 12:00:27",
+      "last_30_days": 34,
+      "last_7_days": 20,
+      "last_24_hours": 0,
+      "avg_daily_growth": 1.1333333333333333
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "service_order_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "cabinet_configuration_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "last_modified",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "executed_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "executed_by",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "status",
+        "type": "TEXT",
+        "nullable": true,
+        "default": "'pending'",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "cabinet_configurations",
+        "from": "cabinet_configuration_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "service_orders",
+        "from": "service_order_id",
+        "to": "id"
+      },
+      {
+        "id": 2,
+        "table": "users",
+        "from": "executed_by",
+        "to": "id"
+      }
+    ]
+  },
+  "service_order_photos": {
+    "row_count": 0,
+    "column_count": 7,
+    "foreign_key_count": 2,
+    "index_count": 0,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "service_order_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "filename",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "photo_type",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "uploaded_by",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "uploaded_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "capture_timestamp",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "users",
+        "from": "uploaded_by",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "service_orders",
+        "from": "service_order_id",
+        "to": "id"
+      }
+    ]
+  },
+  "service_orders": {
+    "row_count": 9,
+    "column_count": 10,
+    "foreign_key_count": 2,
+    "index_count": 1,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-07-24 22:27:53",
+      "last_record": "2025-08-07 12:00:27",
+      "last_30_days": 9,
+      "last_7_days": 5,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0.3
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "route_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "created_by",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "status",
+        "type": "TEXT",
+        "nullable": true,
+        "default": "'pending'",
+        "pk": 0
+      },
+      {
+        "name": "total_units",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "estimated_duration_minutes",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "driver_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "sync_version",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "1",
+        "pk": 0
+      },
+      {
+        "name": "last_modified",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "routes",
+        "from": "route_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "users",
+        "from": "driver_id",
+        "to": "id"
+      }
+    ]
+  },
+  "service_visit_items": {
+    "row_count": 10,
+    "column_count": 5,
+    "foreign_key_count": 2,
+    "index_count": 2,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-08-05 17:53:08",
+      "last_record": "2025-08-05 17:56:45",
+      "last_30_days": 10,
+      "last_7_days": 10,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0.3333333333333333
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "service_visit_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "product_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "quantity_filled",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "products",
+        "from": "product_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "service_visits",
+        "from": "service_visit_id",
+        "to": "id"
+      }
+    ]
+  },
+  "service_visits": {
+    "row_count": 2,
+    "column_count": 10,
+    "foreign_key_count": 3,
+    "index_count": 3,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "device_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "route_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "service_date",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "units_restocked",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "service_type",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "technician_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "duration_minutes",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "notes",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "service_order_cabinet_id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "routes",
+        "from": "route_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "devices",
+        "from": "device_id",
+        "to": "id"
+      },
+      {
+        "id": 2,
+        "table": "service_order_cabinets",
+        "from": "service_order_cabinet_id",
+        "to": "id"
+      }
+    ]
+  },
+  "sessions": {
+    "row_count": 1,
+    "column_count": 11,
+    "foreign_key_count": 1,
+    "index_count": 5,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-08-08 16:15:22",
+      "last_record": "2025-08-08 16:15:22",
+      "last_30_days": 1,
+      "last_7_days": 1,
+      "last_24_hours": 1,
+      "avg_daily_growth": 0.03333333333333333
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "user_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "expires_at",
+        "type": "TIMESTAMP",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "ip_address",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "user_agent",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "last_activity",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "last_page",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "last_api_endpoint",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "activity_count",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "device_type",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "users",
+        "from": "user_id",
+        "to": "id"
+      }
+    ]
+  },
+  "slot_metrics": {
+    "row_count": 1146,
+    "column_count": 12,
+    "foreign_key_count": 1,
+    "index_count": 3,
+    "has_created_at": false,
+    "has_updated_at": false,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "planogram_slot_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "is_sold_out",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "days_remaining_inventory",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "product_level_percent",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "units_to_par",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "sales_28_day",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "sales_all_time",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "days_with_sales",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "daily_velocity",
+        "type": "REAL",
+        "nullable": true,
+        "default": "0.0",
+        "pk": 0
+      },
+      {
+        "name": "last_calculated",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "calculation_version",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "1",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "planogram_slots",
+        "from": "planogram_slot_id",
+        "to": "id"
+      }
+    ]
+  },
+  "system_config": {
+    "row_count": 9,
+    "column_count": 4,
+    "foreign_key_count": 0,
+    "index_count": 1,
+    "has_created_at": false,
+    "has_updated_at": true,
+    "growth_info": {},
+    "columns": [
+      {
+        "name": "key",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "value",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  },
+  "user_activity_log": {
+    "row_count": 5653,
+    "column_count": 13,
+    "foreign_key_count": 2,
+    "index_count": 5,
+    "has_created_at": true,
+    "has_updated_at": false,
+    "growth_info": {
+      "first_record": "2025-08-06 22:00:14",
+      "last_record": "2025-08-08 18:15:53",
+      "last_30_days": 5653,
+      "last_7_days": 5653,
+      "last_24_hours": 1783,
+      "avg_daily_growth": 188.43333333333334
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "session_id",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "user_id",
+        "type": "INTEGER",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "timestamp",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "page_url",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "page_title",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "action_type",
+        "type": "TEXT",
+        "nullable": true,
+        "default": "'page_view'",
+        "pk": 0
+      },
+      {
+        "name": "duration_ms",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "referrer",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "ip_address",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "user_agent",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "metadata",
+        "type": "TEXT",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "id": 0,
+        "table": "sessions",
+        "from": "session_id",
+        "to": "id"
+      },
+      {
+        "id": 1,
+        "table": "users",
+        "from": "user_id",
+        "to": "id"
+      }
+    ]
+  },
+  "users": {
+    "row_count": 6,
+    "column_count": 11,
+    "foreign_key_count": 0,
+    "index_count": 4,
+    "has_created_at": true,
+    "has_updated_at": true,
+    "growth_info": {
+      "first_record": "2025-08-01 16:26:25.537214",
+      "last_record": "2025-08-07 07:48:44.048684",
+      "last_30_days": 6,
+      "last_7_days": 3,
+      "last_24_hours": 0,
+      "avg_daily_growth": 0.2
+    },
+    "columns": [
+      {
+        "name": "id",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": null,
+        "pk": 1
+      },
+      {
+        "name": "username",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "email",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "password_hash",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "role",
+        "type": "TEXT",
+        "nullable": false,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "is_active",
+        "type": "BOOLEAN",
+        "nullable": true,
+        "default": "TRUE",
+        "pk": 0
+      },
+      {
+        "name": "created_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "updated_at",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": "CURRENT_TIMESTAMP",
+        "pk": 0
+      },
+      {
+        "name": "last_login",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "name": "failed_login_attempts",
+        "type": "INTEGER",
+        "nullable": true,
+        "default": "0",
+        "pk": 0
+      },
+      {
+        "name": "locked_until",
+        "type": "TIMESTAMP",
+        "nullable": true,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "foreign_keys": []
+  }
+}

@@ -1,0 +1,294 @@
+/* Order Detail Styles */
+.back-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.sync-indicator {
+    font-size: 12px;
+    color: #4CAF50;
+}
+
+.sync-indicator.offline {
+    color: #FFC107;
+}
+
+.sync-indicator.error {
+    color: #F44336;
+}
+
+.order-content {
+    padding: 76px 16px 20px;
+}
+
+.order-summary {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.order-summary h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.order-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.location-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.location-card h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.location-info {
+    margin-bottom: 16px;
+}
+
+.location-name {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.location-address {
+    color: #666;
+    font-size: 14px;
+}
+
+.navigate-button {
+    width: 100%;
+    background: #f0f0f0;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.device-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 100px; /* Space for fixed action buttons */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.device-section h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.device-item {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.device-asset {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.device-model {
+    color: #666;
+    font-size: 14px;
+}
+
+.cabinet-list {
+    margin-top: 12px;
+}
+
+.cabinet-item {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+}
+
+.cabinet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.cabinet-name {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.cabinet-status {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: #e5e5e5;
+}
+
+.cabinet-status.delivered {
+    background: #d4edda;
+    color: #155724;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.product-item {
+    font-size: 12px;
+    color: #666;
+}
+
+.action-section {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 16px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.action-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.action-button.primary {
+    background: #006dfe;
+    color: white;
+}
+
+.action-button.secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.action-button.success {
+    background: #28a745;
+    color: white;
+}
+
+/* Photo Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.modal-body {
+    padding: 16px;
+}
+
+#camera, #photoPreview {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.photo-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.capture-button, .retake-button, .save-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.capture-button {
+    background: #006dfe;
+    color: white;
+}
+
+.retake-button {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.save-button {
+    background: #28a745;
+    color: white;
+}

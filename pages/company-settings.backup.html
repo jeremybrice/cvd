@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Settings - Vision Device Configuration Tool</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+            color: #333;
+        }
+        
+        .page-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0 0 1rem 0;
+            font-size: 1.875rem;
+            color: #1e293b;
+            font-weight: 600;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid #006dfe;
+        }
+        
+        .header-subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+        
+        /* Tab System */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #e2e8f0;
+            margin: 1rem -2rem 0;
+            padding: 0 2rem;
+            background: linear-gradient(to bottom, white, #f8fafc);
+        }
+        
+        .tab {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-icon {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-icon {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .tab:hover {
+            color: #006dfe;
+            background: rgba(0, 109, 254, 0.05);
+        }
+        
+        .tab.active {
+            color: #006dfe;
+            border-bottom-color: #006dfe;
+            background: white;
+        }
+        
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .action-bar h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .action-bar p {
+            margin: 0.5rem 0 0 0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        /* Enhanced Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #006dfe, #0056cc);
+            color: white;
+            border-color: #006dfe;
+            box-shadow: 0 2px 4px rgba(0, 109, 254, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #0056cc, #004499);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 109, 254, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border-color: #d1d5db;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+            transform: translateY(-1px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border-color: #dc3545;
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Enhanced Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem;
+        }
+        
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f8fafc;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+            border-bottom: 2px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover:not(.filter-row) {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+        
+        /* Enhanced Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+        
+        .empty-state-icon {
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state-icon svg {
+            width: 4rem;
+            height: 4rem;
+            color: #cbd5e1;
+        }
+        
+        .empty-state h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.25rem;
+            color: #374151;
+        }
+        
+        .empty-state p {
+            margin: 0 0 1.5rem 0;
+            color: #64748b;
+        }
+        
+        /* Enhanced Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-50px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-footer {
+            padding: 1rem 2rem 2rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: #fafbfc;
+        }
+        
+        /* Enhanced Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #006dfe;
+            box-shadow: 0 0 0 3px rgba(0, 109, 254, 0.1);
+            background: #fefffe;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+        
+        .spinner {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #006dfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Status Messages */
+        .status-message {
+            padding: 1rem 1.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        
+        .status-info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-icon {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .table-icon {
+            width: 1rem;
+            height: 1rem;
+            margin-right: 0.25rem;
+            vertical-align: middle;
+        }
+        
+        /* Filter Row */
+        .filter-row td {
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.8125rem;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #006dfe;
+            box-shadow: 0 0 0 2px rgba(0, 109, 254, 0.1);
+        }
+        
+        /* Image Preview */
+        .image-preview {
+            width: 3rem;
+            height: 3rem;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .image-placeholder {
+            width: 3rem;
+            height: 3rem;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Geocoding specific styles */
+        .geocode-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .geocode-section h4 {
+            margin: 0 0 1rem 0;
+            color: #374151;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-icon {
+            width: 1rem;
+            height: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .geocode-button {
+            margin-bottom: 1rem;
+        }
+        
+        .coordinate-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .coordinate-inputs input {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+        
+        #mapPreview {
+            height: 200px;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            border: 2px solid #e2e8f0;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .tabs {
+                margin: 1rem -1rem 0;
+                padding: 0 1rem;
+            }
+            
+            .tab-content {
+                padding: 1rem;
+            }
+            
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            
+            .action-buttons {
+                justify-content: stretch;
+            }
+            
+            .btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .modal-body,
+            .modal-header,
+            .modal-footer {
+                padding: 1.5rem;
+            }
+            
+            .coordinate-inputs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="header">
+            <h1>Company Settings</h1>
+            <p class="header-subtitle">Manage your company's locations, routes, and products</p>
+            <div class="tabs">
+                <button class="tab active" data-tab="locations">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    Locations
+                </button>
+                <button class="tab" data-tab="routes">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M1 3h15v13H1z"></path>
+                        <path d="m16 8 4-4-4-4"></path>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                    </svg>
+                    Routes
+                </button>
+                <button class="tab" data-tab="products">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"></path>
+                        <polyline points="3.29,7 12,12 20.71,7"></polyline>
+                        <line x1="12" y1="22" x2="12" y2="12"></line>
+                    </svg>
+                    Products
+                </button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Locations Tab -->
+            <div id="locations" class="tab-content active">
+                <div class="action-bar">
+                    <div>
+                        <h2>Locations</h2>
+                        <p>Manage your vending machine locations with geocoding support</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('location')">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create New Location
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="locationsLoading" class="loading">
+                        <div class="spinner"></div>
+                        Loading locations...
+                    </div>
+                    <table id="locationsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th width="150">Created Date</th>
+                                <th width="180">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="locationsTableBody">
+                        </tbody>
+                    </table>
+                    <div id="locationsEmpty" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <h3>No locations found</h3>
+                        <p>Start by adding your first vending machine location</p>
+                        <button class="btn btn-primary" onclick="openModal('location')">Create Your First Location</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Routes Tab -->
+            <div id="routes" class="tab-content">
+                <div class="action-bar">
+                    <div>
+                        <h2>Routes</h2>
+                        <p>Organize locations into delivery routes with driver assignments</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('route')">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create New Route
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="routesLoading" class="loading">
+                        <div class="spinner"></div>
+                        Loading routes...
+                    </div>
+                    <table id="routesTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="120">Route Number</th>
+                                <th width="180">Assigned Driver</th>
+                                <th width="150">Created Date</th>
+                                <th width="180">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="routesTableBody">
+                        </tbody>
+                    </table>
+                    <div id="routesEmpty" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M1 3h15v13H1z"></path>
+                                <path d="m16 8 4-4-4-4"></path>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                        </div>
+                        <h3>No routes found</h3>
+                        <p>Create routes to organize your service locations efficiently</p>
+                        <button class="btn btn-primary" onclick="openModal('route')">Create Your First Route</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <div class="action-bar">
+                    <div>
+                        <h2>Products</h2>
+                        <p>Manage your product catalog with pricing and categorization</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal('product')">
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create New Product
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="productsLoading" class="loading">
+                        <div class="spinner"></div>
+                        Loading products...
+                    </div>
+                    <table id="productsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th width="80">Image</th>
+                                <th>Name</th>
+                                <th width="150">Category</th>
+                                <th width="100">Price</th>
+                                <th width="150">Created Date</th>
+                                <th width="180">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                        </tbody>
+                    </table>
+                    <div id="productsEmpty" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8z"></path>
+                                <polyline points="3.29,7 12,12 20.71,7"></polyline>
+                                <line x1="12" y1="22" x2="12" y2="12"></line>
+                            </svg>
+                        </div>
+                        <h3>No products found</h3>
+                        <p>Add products to build your vending machine catalog</p>
+                        <button class="btn btn-primary" onclick="openModal('product')">Add Your First Product</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Location Modal -->
+    <div id="locationModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="locationModalTitle">Create New Location</h3>
+            </div>
+            <div class="modal-body">
+                <form id="locationForm">
+                    <input type="hidden" id="locationId" name="id">
+                    <div class="form-group">
+                        <label for="locationName">Location Name <span class="required">*</span></label>
+                        <input type="text" id="locationName" name="name" required placeholder="Enter location name">
+                    </div>
+                    <div class="form-group">
+                        <label for="locationAddress">Address <span class="required">*</span></label>
+                        <textarea id="locationAddress" name="address" required placeholder="Enter full address including city, state, and zip code"></textarea>
+                    </div>
+                    
+                    <div class="geocode-section">
+                        <h4>
+                            <svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            Geocoding
+                        </h4>
+                        <button type="button" class="btn btn-secondary geocode-button" onclick="geocodeAddress()">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            Geocode Address
+                        </button>
+                        <div id="geocodeStatus" style="display: none;"></div>
+                        
+                        <div class="coordinate-inputs">
+                            <div class="form-group">
+                                <label for="locationLatitude">Latitude</label>
+                                <input type="text" id="locationLatitude" name="latitude" readonly placeholder="Auto-filled from geocoding">
+                            </div>
+                            <div class="form-group">
+                                <label for="locationLongitude">Longitude</label>
+                                <input type="text" id="locationLongitude" name="longitude" readonly placeholder="Auto-filled from geocoding">
+                            </div>
+                        </div>
+                        
+                        <div id="mapPreview" style="display: none;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('location')">Cancel</button>
+                <button class="btn btn-primary" id="locationSaveBtn" onclick="saveLocation()">Save Location</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Route Modal -->
+    <div id="routeModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="routeModalTitle">Create New Route</h3>
+            </div>
+            <div class="modal-body">
+                <form id="routeForm">
+                    <input type="hidden" id="routeId" name="id">
+                    <div class="form-group">
+                        <label for="routeName">Route Name <span class="required">*</span></label>
+                        <input type="text" id="routeName" name="name" required placeholder="Enter route name">
+                    </div>
+                    <div class="form-group">
+                        <label for="routeNumber">Route Number</label>
+                        <input type="number" id="routeNumber" name="routeNumber" placeholder="Optional route number">
+                    </div>
+                    <div class="form-group">
+                        <label for="routeDriver">Assigned Driver</label>
+                        <select id="routeDriver" name="driverId">
+                            <option value="">No driver assigned</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('route')">Cancel</button>
+                <button class="btn btn-primary" id="routeSaveBtn" onclick="saveRoute()">Save Route</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Modal -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="productModalTitle">Create New Product</h3>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <input type="hidden" id="productId" name="id">
+                    <div class="form-group">
+                        <label for="productName">Product Name <span class="required">*</span></label>
+                        <input type="text" id="productName" name="name" required placeholder="Enter product name">
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category <span class="required">*</span></label>
+                        <select id="productCategory" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="water">Water</option>
+                            <option value="soda">Soda</option>
+                            <option value="juice">Juice</option>
+                            <option value="sports">Sports Drinks</option>
+                            <option value="energy">Energy Drinks</option>
+                            <option value="snacks">Snacks</option>
+                            <option value="candy">Candy</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Price <span class="required">*</span></label>
+                        <input type="number" id="productPrice" name="price" step="0.01" min="0" required placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage">Image URL</label>
+                        <input type="text" id="productImage" name="image" placeholder="https://example.com/image.jpg">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('product')">Cancel</button>
+                <button class="btn btn-primary" id="productSaveBtn" onclick="saveProduct()">Save Product</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="confirmTitle">Confirm Delete</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Are you sure you want to delete this item?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/api.js"></script>
+    <script src="/auth-check.js"></script>
+    <script>
+        // Initialize API client
+        const api = new CVDApi();
+        
+        // Map instance for location preview
+        let locationMap = null;
+        let locationMarker = null;
+        
+        // State management
+        const state = {
+            currentTab: 'locations',
+            locations: [],
+            routes: [],
+            products: [],
+            drivers: [],
+            editingId: null,
+            deleteCallback: null,
+            activeFilters: {},
+            sortConfigs: {
+                locations: { column: 'name', direction: 'asc' },
+                routes: { column: 'name', direction: 'asc' },
+                products: { column: 'name', direction: 'asc' }
+            }
+        };
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setupTabHandlers();
+            setupFilterHandlers();
+            loadTabData('locations');
+        });
+        
+        // Tab switching
+        function setupTabHandlers() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const tabName = this.dataset.tab;
+                    document.getElementById(tabName).classList.add('active');
+                    
+                    state.currentTab = tabName;
+                    loadTabData(tabName);
+                });
+            });
+        }
+        
+        // Load data for current tab
+        async function loadTabData(tabName) {
+            switch(tabName) {
+                case 'locations':
+                    await loadLocations();
+                    break;
+                case 'routes':
+                    await loadRoutes();
+                    break;
+                case 'products':
+                    await loadProducts();
+                    break;
+            }
+        }
+        
+        // Load locations
+        async function loadLocations() {
+            const loading = document.getElementById('locationsLoading');
+            const table = document.getElementById('locationsTable');
+            const empty = document.getElementById('locationsEmpty');
+            const tbody = document.getElementById('locationsTableBody');
+            
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            
+            try {
+                const locations = await api.getLocations();
+                state.locations = locations;
+                
+                loading.style.display = 'none';
+                
+                if (locations.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    table.style.display = 'table';
+                    renderLocationsTable(locations);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Failed to load locations: ' + error.message);
+            }
+        }
+        
+        // Load routes
+        async function loadRoutes() {
+            const loading = document.getElementById('routesLoading');
+            const table = document.getElementById('routesTable');
+            const empty = document.getElementById('routesEmpty');
+            const tbody = document.getElementById('routesTableBody');
+            
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            
+            try {
+                const routes = await api.getRoutes();
+                state.routes = routes;
+                
+                loading.style.display = 'none';
+                
+                if (routes.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    table.style.display = 'table';
+                    renderRoutesTable(routes);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Failed to load routes: ' + error.message);
+            }
+        }
+        
+        // Load products
+        async function loadProducts() {
+            const loading = document.getElementById('productsLoading');
+            const table = document.getElementById('productsTable');
+            const empty = document.getElementById('productsEmpty');
+            const tbody = document.getElementById('productsTableBody');
+            
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            
+            try {
+                const products = await api.getProducts();
+                state.products = products;
+                
+                loading.style.display = 'none';
+                
+                if (products.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    table.style.display = 'table';
+                    renderProductsTable(products);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Failed to load products: ' + error.message);
+            }
+        }
+        
+        // Load drivers
+        async function loadDrivers() {
+            try {
+                const drivers = await api.getDrivers();
+                state.drivers = drivers;
+                
+                // Update driver dropdown
+                const driverSelect = document.getElementById('routeDriver');
+                const currentValue = driverSelect.value;
+                
+                driverSelect.innerHTML = '<option value="">No driver assigned</option>';
+                drivers.forEach(driver => {
+                    const option = document.createElement('option');
+                    option.value = driver.id;
+                    option.textContent = `${driver.username} (${driver.email})`;
+                    driverSelect.appendChild(option);
+                });
+                
+                // Restore previous value if it exists
+                if (currentValue) {
+                    driverSelect.value = currentValue;
+                }
+            } catch (error) {
+                showError('Failed to load drivers: ' + error.message);
+            }
+        }
+        
+        // Modal functions
+        async function openModal(type) {
+            const modal = document.getElementById(`${type}Modal`);
+            modal.classList.add('active');
+            
+            // Reset form and set to create mode
+            const form = document.getElementById(`${type}Form`);
+            form.reset();
+            state.editingId = null;
+            
+            // Update modal title and button text
+            document.getElementById(`${type}ModalTitle`).textContent = `Create New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            document.getElementById(`${type}SaveBtn`).textContent = `Save ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            
+            // Load drivers if opening route modal
+            if (type === 'route') {
+                await loadDrivers();
+            }
+            
+            // Reset location modal specific elements
+            if (type === 'location') {
+                document.getElementById('geocodeStatus').style.display = 'none';
+                document.getElementById('mapPreview').style.display = 'none';
+                if (locationMap) {
+                    locationMap.remove();
+                    locationMap = null;
+                    locationMarker = null;
+                }
+            }
+        }
+        
+        function closeModal(type) {
+            const modal = document.getElementById(`${type}Modal`);
+            modal.classList.remove('active');
+            state.editingId = null;
+            
+            // Clean up location map
+            if (type === 'location' && locationMap) {
+                locationMap.remove();
+                locationMap = null;
+                locationMarker = null;
+            }
+        }
+        
+        // Edit functions
+        function editLocation(location) {
+            state.editingId = location.id;
+            document.getElementById('locationId').value = location.id;
+            document.getElementById('locationName').value = location.name;
+            document.getElementById('locationAddress').value = location.address || '';
+            document.getElementById('locationLatitude').value = location.latitude || '';
+            document.getElementById('locationLongitude').value = location.longitude || '';
+            document.getElementById('locationModalTitle').textContent = 'Edit Location';
+            document.getElementById('locationSaveBtn').textContent = 'Update Location';
+            document.getElementById('locationModal').classList.add('active');
+            
+            // Reset geocode status
+            document.getElementById('geocodeStatus').style.display = 'none';
+            
+            // Show map if coordinates exist
+            if (location.latitude && location.longitude) {
+                showMapPreview(location.latitude, location.longitude);
+            } else {
+                document.getElementById('mapPreview').style.display = 'none';
+            }
+        }
+        
+        async function editRoute(id, name, routeNumber, driverId) {
+            state.editingId = id;
+            await loadDrivers();
+            document.getElementById('routeId').value = id;
+            document.getElementById('routeName').value = name;
+            document.getElementById('routeNumber').value = routeNumber || '';
+            document.getElementById('routeDriver').value = driverId || '';
+            document.getElementById('routeModalTitle').textContent = 'Edit Route';
+            document.getElementById('routeSaveBtn').textContent = 'Update Route';
+            document.getElementById('routeModal').classList.add('active');
+        }
+        
+        function editProduct(id, name, category, price, image) {
+            state.editingId = id;
+            document.getElementById('productId').value = id;
+            document.getElementById('productName').value = name;
+            document.getElementById('productCategory').value = category;
+            document.getElementById('productPrice').value = price;
+            document.getElementById('productImage').value = image || '';
+            document.getElementById('productModalTitle').textContent = 'Edit Product';
+            document.getElementById('productSaveBtn').textContent = 'Update Product';
+            document.getElementById('productModal').classList.add('active');
+        }
+        
+        // Delete functions
+        function deleteLocation(id, name) {
+            showConfirmDialog(
+                'Delete Location',
+                `Are you sure you want to delete "${name}"?`,
+                async () => {
+                    try {
+                        await api.deleteLocation(id);
+                        showSuccess('Location deleted successfully');
+                        loadLocations();
+                    } catch (error) {
+                        showError('Failed to delete location: ' + error.message);
+                    }
+                }
+            );
+        }
+        
+        function deleteRoute(id, name) {
+            showConfirmDialog(
+                'Delete Route',
+                `Are you sure you want to delete "${name}"?`,
+                async () => {
+                    try {
+                        await api.deleteRoute(id);
+                        showSuccess('Route deleted successfully');
+                        loadRoutes();
+                    } catch (error) {
+                        showError('Failed to delete route: ' + error.message);
+                    }
+                }
+            );
+        }
+        
+        function deleteProduct(id, name) {
+            showConfirmDialog(
+                'Delete Product',
+                `Are you sure you want to delete "${name}"?`,
+                async () => {
+                    try {
+                        await api.deleteProduct(id);
+                        showSuccess('Product deleted successfully');
+                        loadProducts();
+                    } catch (error) {
+                        showError('Failed to delete product: ' + error.message);
+                    }
+                }
+            );
+        }
+        
+        // Confirmation dialog
+        function showConfirmDialog(title, message, callback) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            state.deleteCallback = callback;
+            document.getElementById('confirmModal').classList.add('active');
+            
+            // Set up delete button handler
+            document.getElementById('confirmDeleteBtn').onclick = async () => {
+                closeConfirmModal();
+                if (state.deleteCallback) {
+                    await state.deleteCallback();
+                }
+            };
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            state.deleteCallback = null;
+        }
+        
+        // Save functions
+        async function saveLocation() {
+            const nameInput = document.getElementById('locationName');
+            const addressInput = document.getElementById('locationAddress');
+            const latitudeInput = document.getElementById('locationLatitude');
+            const longitudeInput = document.getElementById('locationLongitude');
+            
+            const name = nameInput.value.trim();
+            const address = addressInput.value.trim();
+            const latitude = latitudeInput.value ? parseFloat(latitudeInput.value) : null;
+            const longitude = longitudeInput.value ? parseFloat(longitudeInput.value) : null;
+            
+            if (!name) {
+                showError('Please enter a location name');
+                return;
+            }
+            
+            if (!address) {
+                showError('Please enter an address');
+                return;
+            }
+            
+            const locationData = { name, address, latitude, longitude };
+            
+            try {
+                if (state.editingId) {
+                    await api.updateLocation(state.editingId, locationData);
+                    showSuccess('Location updated successfully');
+                } else {
+                    await api.createLocation(locationData);
+                    showSuccess('Location created successfully');
+                }
+                closeModal('location');
+                loadLocations();
+            } catch (error) {
+                showError('Failed to save location: ' + error.message);
+            }
+        }
+        
+        async function saveRoute() {
+            const nameInput = document.getElementById('routeName');
+            const numberInput = document.getElementById('routeNumber');
+            const driverInput = document.getElementById('routeDriver');
+            
+            const name = nameInput.value.trim();
+            const routeNumber = numberInput.value ? parseInt(numberInput.value) : null;
+            const driverId = driverInput.value ? parseInt(driverInput.value) : null;
+            
+            if (!name) {
+                showError('Please enter a route name');
+                return;
+            }
+            
+            try {
+                if (state.editingId) {
+                    await api.updateRoute(state.editingId, { name, routeNumber, driverId });
+                    showSuccess('Route updated successfully');
+                } else {
+                    await api.createRoute({ name, routeNumber, driverId });
+                    showSuccess('Route created successfully');
+                }
+                closeModal('route');
+                loadRoutes();
+            } catch (error) {
+                showError('Failed to save route: ' + error.message);
+            }
+        }
+        
+        async function saveProduct() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
+            
+            const product = {
+                name: formData.get('name').trim(),
+                category: formData.get('category'),
+                price: parseFloat(formData.get('price')),
+                image: formData.get('image').trim() || null
+            };
+            
+            if (!product.name || !product.category || isNaN(product.price)) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                if (state.editingId) {
+                    await api.updateProduct(state.editingId, product);
+                    showSuccess('Product updated successfully');
+                } else {
+                    await api.createProduct(product);
+                    showSuccess('Product created successfully');
+                }
+                closeModal('product');
+                loadProducts();
+            } catch (error) {
+                showError('Failed to save product: ' + error.message);
+            }
+        }
+        
+        // Geocoding function
+        async function geocodeAddress() {
+            const addressInput = document.getElementById('locationAddress');
+            const address = addressInput.value.trim();
+            
+            if (!address) {
+                showError('Please enter an address before geocoding');
+                return;
+            }
+            
+            const statusDiv = document.getElementById('geocodeStatus');
+            statusDiv.style.display = 'block';
+            statusDiv.innerHTML = '<div class="status-info"><svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a9 9 0 11-6.219-8.56"></path></svg> Geocoding address...</div>';
+            
+            try {
+                // Call backend geocoding endpoint
+                const response = await fetch(`${api.baseUrl}/geocode`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ address })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Geocoding failed');
+                }
+                
+                const data = await response.json();
+                
+                if (data.latitude && data.longitude) {
+                    // Update coordinate fields
+                    document.getElementById('locationLatitude').value = data.latitude;
+                    document.getElementById('locationLongitude').value = data.longitude;
+                    
+                    // Show success message
+                    statusDiv.innerHTML = '<div class="status-success"><svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20,6 9,17 4,12"></polyline></svg> Address geocoded successfully!</div>';
+                    
+                    // Show map preview
+                    showMapPreview(data.latitude, data.longitude);
+                } else {
+                    throw new Error('No coordinates returned');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<div class="status-error"><svg class="status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Failed to geocode address. Please check the address and try again.</div>';
+                console.error('Geocoding error:', error);
+            }
+        }
+        
+        // Show map preview
+        function showMapPreview(lat, lng) {
+            const mapDiv = document.getElementById('mapPreview');
+            mapDiv.style.display = 'block';
+            
+            // Remove existing map if any
+            if (locationMap) {
+                locationMap.remove();
+                locationMap = null;
+                locationMarker = null;
+            }
+            
+            // Create new map
+            locationMap = L.map('mapPreview').setView([lat, lng], 15);
+            
+            // Add tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(locationMap);
+            
+            // Add marker
+            locationMarker = L.marker([lat, lng]).addTo(locationMap);
+            
+            // Fix map display issues
+            setTimeout(() => {
+                if (locationMap) {
+                    locationMap.invalidateSize();
+                }
+            }, 100);
+        }
+        
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showError(message) {
+            alert('Error: ' + message);
+        }
+        
+        function showSuccess(message) {
+            alert(message);
+        }
+        
+        // API extensions
+        if (!api.getRoutes) {
+            api.getRoutes = async function() {
+                const response = await fetch(`${this.baseUrl}/routes`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.createRoute) {
+            api.createRoute = async function(route) {
+                const response = await fetch(`${this.baseUrl}/routes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(route)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.updateRoute) {
+            api.updateRoute = async function(id, route) {
+                const response = await fetch(`${this.baseUrl}/routes/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(route)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.deleteRoute) {
+            api.deleteRoute = async function(id) {
+                const response = await fetch(`${this.baseUrl}/routes/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.getLocations) {
+            api.getLocations = async function() {
+                const response = await fetch(`${this.baseUrl}/locations`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.createLocation) {
+            api.createLocation = async function(location) {
+                const response = await fetch(`${this.baseUrl}/locations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(location)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.updateLocation) {
+            api.updateLocation = async function(id, location) {
+                const response = await fetch(`${this.baseUrl}/locations/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(location)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.deleteLocation) {
+            api.deleteLocation = async function(id) {
+                const response = await fetch(`${this.baseUrl}/locations/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.getDrivers) {
+            api.getDrivers = async function() {
+                const response = await fetch(`${this.baseUrl}/drivers`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.createProduct) {
+            api.createProduct = async function(product) {
+                const response = await fetch(`${this.baseUrl}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.updateProduct) {
+            api.updateProduct = async function(id, product) {
+                const response = await fetch(`${this.baseUrl}/products/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.deleteProduct) {
+            api.deleteProduct = async function(id) {
+                const response = await fetch(`${this.baseUrl}/products/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        // Filter functionality
+        function setupFilterHandlers() {
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('filter-input')) {
+                    const filterKey = e.target.dataset.filter;
+                    const filterValue = e.target.value.toLowerCase();
+                    
+                    if (!state.activeFilters[state.currentTab]) {
+                        state.activeFilters[state.currentTab] = {};
+                    }
+                    
+                    state.activeFilters[state.currentTab][filterKey] = filterValue;
+                    applyFilters();
+                }
+            });
+        }
+        
+        function applyFilters() {
+            const currentFilters = state.activeFilters[state.currentTab] || {};
+            let dataToFilter = [];
+            
+            switch(state.currentTab) {
+                case 'locations':
+                    dataToFilter = state.locations;
+                    break;
+                case 'routes':
+                    dataToFilter = state.routes;
+                    break;
+                case 'products':
+                    dataToFilter = state.products;
+                    break;
+            }
+            
+            if (!dataToFilter.length) return;
+            
+            const filteredData = dataToFilter.filter(item => {
+                for (const [key, value] of Object.entries(currentFilters)) {
+                    if (!value || value.trim() === '') continue;
+                    
+                    let itemValue = '';
+                    switch(key) {
+                        case 'name':
+                            itemValue = item.name || '';
+                            break;
+                        case 'address':
+                            itemValue = item.address || '';
+                            break;
+                        case 'category':
+                            itemValue = item.category || '';
+                            break;
+                        case 'price':
+                            itemValue = item.price ? `$${item.price.toFixed(2)}` : '';
+                            break;
+                        case 'route_number':
+                            itemValue = item.route_number ? item.route_number.toString() : '';
+                            break;
+                        case 'driver_name':
+                            itemValue = item.driver_name || '';
+                            break;
+                        case 'created_at':
+                            itemValue = formatDate(item.created_at);
+                            break;
+                    }
+                    
+                    if (!itemValue.toLowerCase().includes(value.toLowerCase())) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            
+            renderFilteredData(filteredData);
+        }
+        
+        function renderFilteredData(data) {
+            switch(state.currentTab) {
+                case 'locations':
+                    renderLocationsTable(data);
+                    break;
+                case 'routes':
+                    renderRoutesTable(data);
+                    break;
+                case 'products':
+                    renderProductsTable(data);
+                    break;
+            }
+        }
+        
+        function renderLocationsTable(data) {
+            const tbody = document.getElementById('locationsTableBody');
+            const filterRow = `
+                <tr class="filter-row">
+                    <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter by name..."></td>
+                    <td><input type="text" class="filter-input" data-filter="address" placeholder="Filter by address..."></td>
+                    <td></td>
+                    <td></td>
+                    <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter by date..."></td>
+                    <td></td>
+                </tr>
+            `;
+            const dataRows = data.map(location => {
+                const locationJson = JSON.stringify({
+                    id: location.id,
+                    name: location.name,
+                    address: location.address,
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                }).replace(/"/g, '&quot;');
+                
+                return `
+                    <tr>
+                        <td><strong>${escapeHtml(location.name)}</strong></td>
+                        <td>${escapeHtml(location.address || '-')}</td>
+                        <td>${location.latitude || '-'}</td>
+                        <td>${location.longitude || '-'}</td>
+                        <td>${formatDate(location.created_at)}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-secondary btn-sm" onclick='editLocation(${locationJson})'>
+                                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="m18.5 2.5 a2.12 2.12 0 0 1 3 3l-8 8-4 1 1-4z"></path>
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteLocation(${location.id}, '${escapeHtml(location.name).replace(/'/g, '\\\'')}')">                                 <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <polyline points="3,6 5,6 21,6"></polyline>
+                                        <path d="m19,6 v14a2,2 0 01-2,2H7a2,2 0 01-2,-2V6m3,0V4a2,2 0 012,-2h4a2,2 0 012,2v2"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            tbody.innerHTML = filterRow + dataRows;
+        }
+        
+        function renderRoutesTable(data) {
+            const tbody = document.getElementById('routesTableBody');
+            const filterRow = `
+                <tr class="filter-row">
+                    <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter by name..."></td>
+                    <td><input type="text" class="filter-input" data-filter="route_number" placeholder="Filter by number..."></td>
+                    <td><input type="text" class="filter-input" data-filter="driver_name" placeholder="Filter by driver..."></td>
+                    <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter by date..."></td>
+                    <td></td>
+                </tr>
+            `;
+            const dataRows = data.map(route => `
+                <tr>
+                    <td><strong>${escapeHtml(route.name)}</strong></td>
+                    <td>${route.route_number || '-'}</td>
+                    <td>${route.driver_name ? `<svg class="table-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ${escapeHtml(route.driver_name)}` : '<span style="color: #9ca3af;">Unassigned</span>'}</td>
+                    <td>${formatDate(route.created_at)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editRoute(${route.id}, '${escapeHtml(route.name).replace(/'/g, '\\\'')}', ${route.route_number || 'null'}, ${route.driver_id || 'null'})">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="m18.5 2.5 a2.12 2.12 0 0 1 3 3l-8 8-4 1 1-4z"></path>
+                                </svg>
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRoute(${route.id}, '${escapeHtml(route.name).replace(/'/g, '\\\'')}')">                             <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="m19,6 v14a2,2 0 01-2,2H7a2,2 0 01-2,-2V6m3,0V4a2,2 0 012,-2h4a2,2 0 012,2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            tbody.innerHTML = filterRow + dataRows;
+        }
+        
+        function renderProductsTable(data) {
+            const tbody = document.getElementById('productsTableBody');
+            const filterRow = `
+                <tr class="filter-row">
+                    <td></td>
+                    <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter by name..."></td>
+                    <td><input type="text" class="filter-input" data-filter="category" placeholder="Filter by category..."></td>
+                    <td><input type="text" class="filter-input" data-filter="price" placeholder="Filter by price..."></td>
+                    <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter by date..."></td>
+                    <td></td>
+                </tr>
+            `;
+            const dataRows = data.map(product => `
+                <tr>
+                    <td>
+                        ${product.image 
+                            ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="image-preview" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div class="image-placeholder" style="display:none;">No Image</div>`
+                            : '<div class="image-placeholder">No Image</div>'}
+                    </td>
+                    <td><strong>${escapeHtml(product.name)}</strong></td>
+                    <td><span style="background: #e2e8f0; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; text-transform: uppercase;">${escapeHtml(product.category)}</span></td>
+                    <td><strong style="color: #059669;">$${product.price.toFixed(2)}</strong></td>
+                    <td>${formatDate(product.created_at)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id}, '${escapeHtml(product.name).replace(/'/g, '\\\'')}, '${product.category}', ${product.price}, '${escapeHtml(product.image || '').replace(/'/g, '\\\'')}')">                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="m18.5 2.5 a2.12 2.12 0 0 1 3 3l-8 8-4 1 1-4z"></path>
+                                </svg>
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id}, '${escapeHtml(product.name).replace(/'/g, '\\\'')}')">                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <polyline points="3,6 5,6 21,6"></polyline>
+                                    <path d="m19,6 v14a2,2 0 01-2,2H7a2,2 0 01-2,-2V6m3,0V4a2,2 0 012,-2h4a2,2 0 012,2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                                Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            tbody.innerHTML = filterRow + dataRows;
+        }
+    </script>
+</body>
+</html>

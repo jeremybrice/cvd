@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base Authentication Debug</title>
+</head>
+<body>
+    <h1>Knowledge Base Authentication Debug</h1>
+    <div id="results"></div>
+    
+    <script src="/api.js"></script>
+    <script>
+        async function debugAuth() {
+            const results = document.getElementById('results');
+            
+            try {
+                results.innerHTML += '<h2>Testing Authentication Context</h2>';
+                
+                // Test 1: Check current user endpoint directly
+                results.innerHTML += '<h3>1. Testing /api/auth/current-user</h3>';
+                const authResponse = await fetch('/api/auth/current-user', {
+                    credentials: 'include'
+                });
+                results.innerHTML += `<p>Status: ${authResponse.status}</p>`;
+                if (authResponse.ok) {
+                    const authData = await authResponse.json();
+                    results.innerHTML += `<p>User: ${JSON.stringify(authData)}</p>`;
+                } else {
+                    results.innerHTML += `<p>Error: ${authResponse.statusText}</p>`;
+                }
+                
+                // Test 2: Test CVDApi instantiation
+                results.innerHTML += '<h3>2. Testing CVDApi Class</h3>';
+                try {
+                    const api = new CVDApi();
+                    results.innerHTML += '<p>CVDApi instantiated successfully</p>';
+                    
+                    // Test 3: Test knowledge base articles endpoint via CVDApi
+                    results.innerHTML += '<h3>3. Testing Knowledge Base API via CVDApi</h3>';
+                    const articlesResponse = await api.get('/api/knowledge-base/articles');
+                    results.innerHTML += `<p>Articles Response: ${JSON.stringify(articlesResponse)}</p>`;
+                    
+                } catch (apiError) {
+                    results.innerHTML += `<p>CVDApi Error: ${apiError.message}</p>`;
+                }
+                
+                // Test 4: Direct knowledge base API test
+                results.innerHTML += '<h3>4. Testing Knowledge Base API Directly</h3>';
+                const kbResponse = await fetch('/api/knowledge-base/articles', {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                results.innerHTML += `<p>KB Status: ${kbResponse.status}</p>`;
+                if (kbResponse.ok) {
+                    const kbData = await kbResponse.json();
+                    results.innerHTML += `<p>KB Articles Count: ${kbData.articles?.length || 0}</p>`;
+                } else {
+                    const kbError = await kbResponse.text();
+                    results.innerHTML += `<p>KB Error: ${kbError}</p>`;
+                }
+                
+            } catch (error) {
+                results.innerHTML += `<p style="color: red">Debug Error: ${error.message}</p>`;
+            }
+        }
+        
+        // Run debug on page load
+        document.addEventListener('DOMContentLoaded', debugAuth);
+    </script>
+</body>
+</html>

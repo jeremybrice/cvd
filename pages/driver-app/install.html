@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Install CVD Driver App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .install-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            background: #006dfe;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #006dfe;
+            margin-bottom: 8px;
+        }
+
+        .tagline {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .install-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .install-card h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .install-button {
+            width: 100%;
+            background: #006dfe;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .install-button:active {
+            background: #0056d3;
+        }
+
+        .install-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .install-status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-info {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .instructions {
+            margin-top: 24px;
+        }
+
+        .instructions h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .device-instructions {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .device-instructions h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #006dfe;
+        }
+
+        .device-instructions ol {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .device-instructions li {
+            margin-bottom: 8px;
+        }
+
+        .benefits {
+            background: #e8f4fd;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .benefits h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #006dfe;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: start;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .benefit-icon {
+            color: #28a745;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .browser-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 375px) {
+            body {
+                padding: 16px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="install-container">
+        <div class="logo-section">
+            <div class="app-icon">🚚</div>
+            <h1>CVD Driver App</h1>
+            <p class="tagline">Your mobile companion for efficient deliveries</p>
+        </div>
+
+        <div class="install-card">
+            <h2>Install the App</h2>
+            
+            <div id="browserWarning" class="browser-warning hidden">
+                ⚠️ Please open this page in Chrome, Safari, or Edge to install the app.
+            </div>
+
+            <div id="installStatus" class="install-status hidden"></div>
+
+            <button id="installButton" class="install-button">
+                <span>📲</span>
+                <span>Install CVD Driver</span>
+            </button>
+
+            <div class="instructions">
+                <h3>Installation Instructions</h3>
+                
+                <div id="iosInstructions" class="device-instructions hidden">
+                    <h4>📱 For iPhone/iPad:</h4>
+                    <ol>
+                        <li>Open this page in Safari</li>
+                        <li>Tap the Share button <span style="color: #006dfe;">⬆️</span></li>
+                        <li>Scroll down and tap "Add to Home Screen"</li>
+                        <li>Tap "Add" in the top right corner</li>
+                    </ol>
+                </div>
+
+                <div id="androidInstructions" class="device-instructions hidden">
+                    <h4>📱 For Android:</h4>
+                    <ol>
+                        <li>Open this page in Chrome</li>
+                        <li>Tap the menu button <span style="color: #006dfe;">⋮</span></li>
+                        <li>Tap "Add to Home screen"</li>
+                        <li>Tap "Add" to confirm</li>
+                    </ol>
+                </div>
+
+                <div id="desktopInstructions" class="device-instructions hidden">
+                    <h4>💻 For Desktop:</h4>
+                    <ol>
+                        <li>Look for the install icon in the address bar</li>
+                        <li>Click "Install" when prompted</li>
+                        <li>The app will open in its own window</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="benefits">
+                <h3>Why Install?</h3>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Works offline - no connection needed</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Quick access from your home screen</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Push notifications for new orders</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Full screen experience</span>
+                </div>
+                <div class="benefit-item">
+                    <span class="benefit-icon">✓</span>
+                    <span>Automatic updates</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detect device type and browser
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isIOS = /iphone|ipad|ipod/.test(userAgent);
+            const isAndroid = /android/.test(userAgent);
+            const isSafari = /safari/.test(userAgent) && !/chrome/.test(userAgent);
+            const isChrome = /chrome/.test(userAgent) && !/edg/.test(userAgent);
+            const isEdge = /edg/.test(userAgent);
+            
+            return {
+                isIOS,
+                isAndroid,
+                isSafari,
+                isChrome,
+                isEdge,
+                isDesktop: !isIOS && !isAndroid,
+                isSupportedBrowser: isSafari || isChrome || isEdge
+            };
+        }
+
+        // Show appropriate instructions
+        function showInstructions() {
+            const device = detectDevice();
+            
+            if (!device.isSupportedBrowser) {
+                document.getElementById('browserWarning').classList.remove('hidden');
+            }
+            
+            if (device.isIOS) {
+                document.getElementById('iosInstructions').classList.remove('hidden');
+            } else if (device.isAndroid) {
+                document.getElementById('androidInstructions').classList.remove('hidden');
+            } else {
+                document.getElementById('desktopInstructions').classList.remove('hidden');
+            }
+        }
+
+        // PWA install prompt
+        let deferredPrompt;
+        const installButton = document.getElementById('installButton');
+        const installStatus = document.getElementById('installStatus');
+
+        // Check if already installed
+        function checkInstalled() {
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                installStatus.textContent = '✓ App is already installed!';
+                installStatus.className = 'install-status status-success';
+                installStatus.classList.remove('hidden');
+                installButton.disabled = true;
+                installButton.textContent = 'Already Installed';
+                return true;
+            }
+            return false;
+        }
+
+        // Listen for install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Show install button for supported browsers
+            installButton.style.display = 'flex';
+        });
+
+        // Handle install button click
+        installButton.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                const device = detectDevice();
+                
+                if (device.isIOS) {
+                    installStatus.textContent = 'Please follow the instructions below to install on iOS';
+                    installStatus.className = 'install-status status-info';
+                } else {
+                    installStatus.textContent = 'Installation prompt not available. Please check your browser settings.';
+                    installStatus.className = 'install-status status-error';
+                }
+                installStatus.classList.remove('hidden');
+                return;
+            }
+
+            // Show the install prompt
+            deferredPrompt.prompt();
+            
+            // Wait for the user to respond
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                installStatus.textContent = '✓ Installing app...';
+                installStatus.className = 'install-status status-success';
+            } else {
+                installStatus.textContent = 'Installation cancelled';
+                installStatus.className = 'install-status status-error';
+            }
+            installStatus.classList.remove('hidden');
+            
+            // Clear the deferred prompt
+            deferredPrompt = null;
+        });
+
+        // Listen for successful install
+        window.addEventListener('appinstalled', () => {
+            installStatus.textContent = '✓ App installed successfully!';
+            installStatus.className = 'install-status status-success';
+            installStatus.classList.remove('hidden');
+            installButton.disabled = true;
+            installButton.textContent = 'Installed';
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showInstructions();
+            checkInstalled();
+            
+            // Hide install button initially if not installable
+            const device = detectDevice();
+            if (device.isIOS || !device.isSupportedBrowser) {
+                installButton.style.display = 'none';
+            }
+        });
+
+        // Register service worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered');
+                    
+                    // For Android Chrome, check if we meet PWA criteria
+                    if (/Android/i.test(navigator.userAgent) && /Chrome/i.test(navigator.userAgent)) {
+                        // Check PWA installability criteria
+                        window.addEventListener('load', () => {
+                            // Log manifest validation
+                            fetch('/manifest.json')
+                                .then(response => response.json())
+                                .then(manifest => {
+                                    console.log('Manifest loaded:', manifest);
+                                    console.log('Start URL:', manifest.start_url);
+                                    console.log('Display mode:', manifest.display);
+                                    console.log('Icons count:', manifest.icons ? manifest.icons.length : 0);
+                                })
+                                .catch(error => console.error('Manifest error:', error));
+                        });
+                    }
+                })
+                .catch(error => console.error('Service Worker registration failed:', error));
+        }
+    </script>
+</body>
+</html>

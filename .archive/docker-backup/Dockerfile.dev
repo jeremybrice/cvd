@@ -1,0 +1,56 @@
+# Development Dockerfile for CVD AI Planogram System
+# Optimized for hot reloading and debugging
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies including development tools
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    postgresql-client \
+    git \
+    curl \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user for development
+RUN useradd -m -u 1000 cvddev && \
+    mkdir -p /app/logs /app/data /app/backups && \
+    chown -R cvddev:cvddev /app
+
+# Install Python dependencies
+COPY requirements.txt requirements-dev.txt* ./
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    if [ -f requirements-dev.txt ]; then pip install --no-cache-dir -r requirements-dev.txt; fi
+
+# Install additional development tools
+RUN pip install --no-cache-dir \
+    ipython \
+    ipdb \
+    flask-shell-ipython \
+    watchdog \
+    pytest \
+    pytest-cov \
+    black \
+    flake8
+
+# Copy application code (will be overridden by volume mount in dev)
+COPY --chown=cvddev:cvddev . .
+
+# Switch to non-root user
+USER cvddev
+
+# Development environment variables
+ENV FLASK_ENV=development
+ENV FLASK_DEBUG=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Expose Flask development server port
+EXPOSE 5000
+
+# Use Flask development server with auto-reload
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000", "--reload", "--debugger"]

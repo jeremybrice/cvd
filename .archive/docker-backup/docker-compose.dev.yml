@@ -1,0 +1,198 @@
+version: '3.8'
+
+services:
+  # Flask Application Server
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: cvd-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app  # Mount entire project for hot reload
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - cvd-venv:/app/venv  # Preserve virtual environment
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - DATABASE_URL=postgresql://cvd:cvd123@db:5432/cvd_dev
+      - REDIS_URL=redis://redis:6379/0
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SESSION_SECRET=dev-secret-key-change-in-production
+      - VAPID_PUBLIC_KEY=${VAPID_PUBLIC_KEY}
+      - VAPID_PRIVATE_KEY=${VAPID_PRIVATE_KEY}
+      - VAPID_SUBJECT=${VAPID_SUBJECT}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+  # Frontend Static Server
+  frontend:
+    image: nginx:alpine
+    container_name: cvd-frontend
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/usr/share/nginx/html:ro
+      - ./config/nginx-dev.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: cvd-db
+    environment:
+      - POSTGRES_DB=cvd_dev
+      - POSTGRES_USER=cvd
+      - POSTGRES_PASSWORD=cvd123
+      - POSTGRES_HOST_AUTH_METHOD=md5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migration/init_dev.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - ./backups:/backups  # For database backups
+    ports:
+      - "5432:5432"
+    networks:
+      - cvd-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cvd -d cvd_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: cvd-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - cvd-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # AI Worker Service (Celery)
+  ai-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: cvd-ai-worker
+    command: celery -A ai_services.tasks worker --loglevel=info --concurrency=2
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    environment:
+      - DATABASE_URL=postgresql://cvd:cvd123@db:5432/cvd_dev
+      - REDIS_URL=redis://redis:6379/0
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    depends_on:
+      - db
+      - redis
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+  # Celery Beat Scheduler (for periodic tasks)
+  ai-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: cvd-ai-beat
+    command: celery -A ai_services.tasks beat --loglevel=info
+    volumes:
+      - .:/app
+      - ./logs:/app/logs
+    environment:
+      - DATABASE_URL=postgresql://cvd:cvd123@db:5432/cvd_dev
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+    depends_on:
+      - db
+      - redis
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+  # Flower - Celery monitoring tool
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: cvd-flower
+    command: celery -A ai_services.tasks flower --port=5555
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    depends_on:
+      - redis
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+  # pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: cvd-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@cvd.local
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_CONFIG_SERVER_MODE=False
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+  # Redis Commander for Redis management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: cvd-redis-commander
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - cvd-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  cvd-venv:
+    driver: local
+
+networks:
+  cvd-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16

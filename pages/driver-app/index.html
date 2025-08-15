@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#006dfe">
+    <title>CVD Driver App</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1>CVD Driver</h1>
+                <div class="header-actions">
+                    <button class="sync-button" id="syncButton">
+                        <span class="sync-icon">🔄</span>
+                        <span class="sync-status">Synced</span>
+                    </button>
+                    <button class="menu-button" id="menuButton">☰</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <nav class="bottom-nav">
+            <a href="#dashboard" class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="#routes" class="nav-item">
+                <span class="nav-icon">🚚</span>
+                <span class="nav-label">Routes</span>
+            </a>
+            <a href="#orders" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">Orders</span>
+            </a>
+            <a href="#profile" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-content" id="appContent">
+            <!-- Dashboard View -->
+            <div id="dashboard" class="view active">
+                <div class="welcome-card">
+                    <h2>Welcome, <span id="driverName">Driver</span></h2>
+                    <p class="date" id="currentDate"></p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="todayOrders">0</div>
+                        <div class="stat-label">Today's Orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="completedOrders">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="pendingOrders">0</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalStops">0</div>
+                        <div class="stat-label">Total Stops</div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <button class="action-button" onclick="startRoute()">
+                        <span class="action-icon">▶️</span>
+                        Start Today's Route
+                    </button>
+                    <button class="action-button" onclick="viewPendingOrders()">
+                        <span class="action-icon">📋</span>
+                        View Pending Orders
+                    </button>
+                </div>
+            </div>
+
+            <!-- Routes View -->
+            <div id="routes" class="view">
+                <div class="route-list" id="routeList">
+                    <!-- Routes will be dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Orders View -->
+            <div id="orders" class="view">
+                <div class="orders-filter">
+                    <select id="orderFilter">
+                        <option value="all">All Orders</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="order-list" id="orderList">
+                    <!-- Orders will be dynamically loaded -->
+                </div>
+            </div>
+
+            <!-- Profile View -->
+            <div id="profile" class="view">
+                <div class="profile-card">
+                    <div class="profile-avatar">👤</div>
+                    <h2 id="profileName">Loading...</h2>
+                    <p id="profileEmail">Loading...</p>
+                    <p id="profileRole">Driver</p>
+                </div>
+                
+                <!-- Settings Section -->
+                <div class="settings-section">
+                    <h3>Settings</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Push Notifications</h4>
+                            <p>Receive alerts for new orders and route updates</p>
+                        </div>
+                        <button class="setting-toggle" id="notificationToggle" onclick="toggleNotifications()">
+                            Enable
+                        </button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Location Tracking</h4>
+                            <p>Share your location for route optimization</p>
+                            <small id="locationStatus">Status: Unknown</small>
+                        </div>
+                        <button class="setting-toggle" id="locationToggle" onclick="toggleLocation()">
+                            Enable
+                        </button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Test Notification</h4>
+                            <p>Send a test push notification</p>
+                        </div>
+                        <button class="setting-action" onclick="sendTestNotification()">
+                            Send Test
+                        </button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Install App</h4>
+                            <p>Install the app on your device for offline access</p>
+                        </div>
+                        <button class="setting-action" onclick="window.location.href='/pages/driver-app/install.html'">
+                            Install Guide
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="profile-actions">
+                    <button onclick="logout()" class="logout-button">Logout</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Offline Indicator -->
+        <div class="offline-indicator" id="offlineIndicator">
+            <span>Offline Mode</span>
+        </div>
+    </div>
+
+    <script src="/api.js"></script>
+    <script src="db.js"></script>
+    <script src="sync-manager.js"></script>
+    <script src="push-manager.js"></script>
+    <script src="location-tracker.js"></script>
+    <script src="secure-storage.js"></script>
+    <script src="monitoring.js"></script>
+    <script src="app.js"></script>
+    <script src="android-nav-fix.js"></script>
+    <script src="standalone-fix.js"></script>
+    <script src="ios-pwa-nav.js"></script>
+    <script src="ios-auth-fix.js"></script>
+</body>
+</html>

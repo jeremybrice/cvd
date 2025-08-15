@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Planogram Tool</title>
+    <style>
+        /* Color Scheme - Integrated with SFW */
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Light Theme (Default) */
+        body {
+            --accent-color: #333;
+            --background-color: #ffffff;
+            --bg-light: #f7fafc;
+            --border-color: #e1e5e8;
+            --text-color: #333;
+            --text-light: #666;
+            --hover-bg: #f0f4f8;
+            --slot-bg: #f9fafb;
+            --card-bg: #ffffff;
+        }
+
+        /* Dark Theme */
+        body.dark-theme {
+            --accent-color: #f0f0f0;
+            --background-color: #2d2d2d;
+            --bg-light: #1a1a1a;
+            --border-color: #404040;
+            --text-color: #f0f0f0;
+            --text-light: #ccc;
+            --hover-bg: #3a3a3a;
+            --slot-bg: #333333;
+            --card-bg: #2d2d2d;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .app-header {
+            background-color: var(--accent-color);
+            color: var(--background-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Fixed Toolbar */
+        .toolbar {
+            background-color: var(--background-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background: var(--border-color);
+            margin: 0 8px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn.active {
+            background-color: var(--accent-color);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Panels */
+        .left-panel, .center-panel, .right-panel {
+            background-color: var(--background-color);
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .left-panel {
+            width: 320px;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .center-panel {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            width: 320px;
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            margin-bottom: 16px;
+        }
+
+        .accordion-header {
+            font-weight: 600;
+            padding: 12px;
+            cursor: pointer;
+            background-color: var(--bg-light);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .accordion-header:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .accordion-header::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .accordion-header.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .accordion-content {
+            padding: 12px;
+            display: block;
+        }
+
+        .accordion-content.collapsed {
+            display: none;
+        }
+
+        /* Location List */
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .location-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .location-item.selected {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+        }
+
+        .location-name {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .location-assets {
+            display: flex;
+            gap: 4px;
+            font-size: 16px;
+        }
+
+        /* Asset Tree */
+        .asset-tree ul {
+            list-style: none;
+            padding-left: 15px;
+            margin: 0;
+        }
+
+        .asset-tree li {
+            padding: 2px 0;
+        }
+
+        .asset-item {
+            display: block;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .asset-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .asset-item.selected {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+        }
+
+        /* Search and Filter */
+        .search-input, .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 109, 255, 0.1);
+        }
+
+        /* Product Library */
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .product-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: move;
+            background: var(--background-color);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .product-card.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .product-emoji {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .product-meta {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .product-stats {
+            display: flex;
+            gap: 8px;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .velocity {
+            color: var(--success-color);
+        }
+
+        .price {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Planogram Grid */
+        .planogram-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            flex: 1;
+            overflow: auto;
+        }
+
+        .machine-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .grid-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .row-label {
+            width: 40px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .slot {
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--slot-bg);
+            position: relative;
+        }
+
+        .slot.filled {
+            background: var(--background-color);
+            border-color: var(--primary-color);
+        }
+
+        .slot.selected, .slot.multi-selected {
+            box-shadow: 0 0 0 3px rgba(0, 109, 255, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        .slot.drag-over, .slot.drag-over-valid {
+            background: rgba(0, 109, 255, 0.1);
+            border-color: var(--primary-color);
+            border-style: dashed;
+        }
+
+        .slot.drag-over-invalid {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: var(--danger-color);
+            border-style: dashed;
+        }
+
+        /* Layout Mode Slots */
+        .layout-slot {
+            background-color: #dce1e4;
+            color: var(--text-light);
+            border: 2px solid #dce1e4;
+            cursor: pointer;
+        }
+
+        .layout-slot.visible {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--background-color);
+        }
+
+        /* Slot Issues */
+        .slot.poor-performance {
+            box-shadow: 0 0 0 3px var(--danger-color);
+        }
+
+        .slot.high-stockouts {
+            box-shadow: 0 0 0 3px var(--warning-color);
+        }
+
+        .slot-emoji {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .slot-name {
+            font-size: 10px;
+            text-align: center;
+            line-height: 1.1;
+            color: var(--text-color);
+        }
+
+        .slot-price {
+            font-size: 10px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .performance-indicator {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 12px;
+        }
+
+        /* Slot Details */
+        .slot-details {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            background: var(--bg-light);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .detail-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .detail-value {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .detail-input {
+            width: 120px;
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .detail-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 109, 255, 0.1);
+        }
+
+        /* Analytics */
+        .analytics-section {
+            margin-top: 20px;
+        }
+
+        .analytics-card {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .analytics-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        /* Note/Tip Box */
+        .note {
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .note strong {
+            color: var(--primary-color);
+        }
+
+        .note.warning {
+            background: #fff3cd;
+            border-left-color: var(--warning-color);
+        }
+
+        .note.warning strong {
+            color: #856404;
+        }
+
+        /* Chart */
+        .chart-container {
+            height: 100px;
+            background: var(--bg-light);
+            border-radius: 6px;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            padding: 8px;
+            margin-top: 12px;
+        }
+
+        .chart-bar {
+            width: 20px;
+            background: var(--primary-color);
+            border-radius: 2px 2px 0 0;
+            min-height: 4px;
+        }
+
+        /* Field Activity */
+        .field-activity-item {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-light);
+        }
+
+        .field-activity-item.alert {
+            border-left: 3px solid var(--danger-color);
+        }
+
+        .field-activity-item.success {
+            border-left: 3px solid var(--success-color);
+        }
+
+        .view-photo-link {
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 16px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-body {
+            display: flex;
+            gap: 20px;
+        }
+
+        .modal-section {
+            flex: 1;
+        }
+
+        .modal-section h4 {
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .planogram-preview {
+            font-family: monospace;
+            line-height: 1.5;
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .photo-placeholder {
+            border: 1px solid var(--border-color);
+            background: var(--slot-bg);
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--text-light);
+            border-radius: 4px;
+        }
+
+        /* Unsaved Changes Modal */
+        .unsaved-changes-modal .modal-content {
+            max-width: 500px;
+        }
+
+        .changes-summary {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .change-item {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .change-item:last-child {
+            border-bottom: none;
+        }
+
+        .change-item-header {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .change-details {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Fixed Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-group">
+                <button class="btn btn-secondary" id="undoBtn" disabled>
+                    ↶ Undo
+                </button>
+                <button class="btn btn-secondary" id="redoBtn" disabled>
+                    ↷ Redo
+                </button>
+                <div class="toolbar-divider"></div>
+                <button class="btn" id="layoutModeBtn">
+                    📐 Edit Layout
+                </button>
+                <button class="btn" id="aiOptimizeBtn">
+                    ⚡ AI Optimize
+                </button>
+                <button class="btn btn-secondary" id="highlightBtn">
+                    ⚠️ Highlight Issues
+                </button>
+            </div>
+            <div class="toolbar-group">
+                <button class="btn btn-secondary" id="clearAllBtn">
+                    🗑️ Clear All
+                </button>
+                <button class="btn btn-success" id="saveBtn">
+                    💾 Save
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel: Locations, Assets & Product Library -->
+            <aside class="left-panel">
+                <div class="accordion">
+                    <!-- Locations Section -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-target="location-content">
+                            LOCATIONS
+                        </div>
+                        <div class="accordion-content" id="location-content">
+                            <input type="text" id="locationSearch" placeholder="Search locations..." class="search-input">
+                            <div id="locationList">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assets Section -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-target="asset-content">
+                            ASSETS
+                        </div>
+                        <div class="accordion-content" id="asset-content">
+                            <nav class="asset-tree">
+                                <ul id="assetList">
+                                    <!-- Will be populated based on selected location -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Product Library Section -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" data-target="library-content">
+                            PRODUCT LIBRARY
+                        </div>
+                        <div class="accordion-content" id="library-content">
+                            <input type="text" id="searchInput" placeholder="Search products..." class="search-input">
+                            
+                            <select id="categoryFilter" class="filter-select">
+                                <option value="all">All Categories</option>
+                                <option value="beverages">Beverages</option>
+                                <option value="snacks">Snacks</option>
+                                <option value="candy">Candy</option>
+                                <option value="healthy">Healthy Options</option>
+                            </select>
+
+                            <div id="productGrid" class="product-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: Planogram Grid -->
+            <section class="center-panel">
+                <div class="planogram-container">
+                    <h2 class="machine-title" id="machineTitle">Select a location and asset to begin</h2>
+                    
+                    <div id="planogramGrid" class="grid-container"></div>
+
+                    <div class="legend" id="legend" style="display: none;">
+                        <div class="legend-title">Slot Restrictions:</div>
+                        <div>Row A: Small/Cans only • Rows B-D: All sizes • Rows E-F: Medium/Tall only</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Details & Analytics -->
+            <aside class="right-panel">
+                <div id="rightPanelContent">
+                    <div class="empty-state">
+                        Select a location and asset to view details
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Compliance Modal -->
+    <div class="modal-overlay" id="complianceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="panel-title">Compliance Check</h2>
+                <button class="btn btn-secondary" id="closeModalBtn">Close</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h4>Reference Planogram</h4>
+                    <div class="planogram-preview" id="planogramPreview">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h4>Field Submission Photo</h4>
+                    <div class="photo-placeholder">
+                        <div>
+                            📷<br>
+                            Photo of vending machine<br>
+                            submitted by field technician
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unsaved Changes Modal -->
+    <div class="modal-overlay unsaved-changes-modal" id="unsavedChangesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="panel-title">Unsaved Changes</h2>
+            </div>
+            <p>You have unsaved changes that will be lost if you switch locations.</p>
+            <div class="changes-summary" id="changesSummary">
+                <!-- Will be populated dynamically -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelSwitch">Cancel</button>
+                <button class="btn btn-danger" id="discardChanges">Discard Changes</button>
+                <button class="btn btn-success" id="saveAndContinue">Save & Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            currentLocation: null,
+            currentAsset: null,
+            planogramData: {},
+            selectedSlots: new Set(),
+            history: [],
+            historyIndex: -1,
+            draggedProduct: null,
+            isLayoutMode: false,
+            highlightIssues: false,
+            slotVisibility: {},
+            recentLocations: [],
+            unsavedChanges: {},
+            pendingLocationSwitch: null
+        };
+
+        // Location Data
+        const locations = {
+            'loc-downtown': {
+                id: 'loc-downtown',
+                name: 'Downtown Mall',
+                assets: [
+                    { id: 'v103', name: 'V-103 - Drink Machine', type: 'drink' },
+                    { id: 'v104', name: 'V-104 - Snack Machine', type: 'snack' },
+                    { id: 'sc201', name: 'SC-201 - Smart Cooler', type: 'cooler' }
+                ]
+            },
+            'loc-airport': {
+                id: 'loc-airport',
+                name: 'Airport Terminal 2',
+                assets: [
+                    { id: 'v201', name: 'V-201 - Drink Machine', type: 'drink' },
+                    { id: 'v202', name: 'V-202 - Drink Machine', type: 'drink' },
+                    { id: 'v203', name: 'V-203 - Food Machine', type: 'food' }
+                ]
+            },
+            'loc-office': {
+                id: 'loc-office',
+                name: 'Office Building Lobby',
+                assets: [
+                    { id: 'v301', name: 'V-301 - Drink Machine', type: 'drink' },
+                    { id: 'dc401', name: 'DC-401 - Dumb Cooler', type: 'cooler' }
+                ]
+            },
+            'loc-hospital': {
+                id: 'loc-hospital',
+                name: 'Hospital Cafeteria',
+                assets: [
+                    { id: 'v401', name: 'V-401 - Healthy Snacks', type: 'snack' },
+                    { id: 'v402', name: 'V-402 - Beverages', type: 'drink' },
+                    { id: 'sr501', name: 'SR-501 - Snack Rack', type: 'rack' }
+                ]
+            },
+            'loc-school': {
+                id: 'loc-school',
+                name: 'University Student Center',
+                assets: [
+                    { id: 'v501', name: 'V-501 - Energy Drinks', type: 'drink' },
+                    { id: 'v502', name: 'V-502 - Snacks', type: 'snack' },
+                    { id: 'v503', name: 'V-503 - Fresh Food', type: 'food' },
+                    { id: 'sc601', name: 'SC-601 - Smart Cooler', type: 'cooler' }
+                ]
+            }
+        };
+
+        // Machine Configurations
+        const machineLayouts = {
+            // Drink machines
+            v103: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5'], ['D1','D2','D3','D4','D5'], ['E1','E2','E3','E4','E5'], ['F1','F2','F3','F4','F5']] },
+            v201: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5'], ['D1','D2','D3','D4','D5'], ['E1','E2','E3','E4','E5'], ['F1','F2','F3','F4','F5']] },
+            v202: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5'], ['D1','D2','D3','D4','D5'], ['E1','E2','E3','E4','E5'], ['F1','F2','F3','F4','F5']] },
+            v301: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5'], ['D1','D2','D3','D4','D5'], ['E1','E2','E3','E4','E5'], ['F1','F2','F3','F4','F5']] },
+            v402: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5'], ['D1','D2','D3','D4','D5'], ['E1','E2','E3','E4','E5'], ['F1','F2','F3','F4','F5']] },
+            v501: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5'], ['D1','D2','D3','D4','D5'], ['E1','E2','E3','E4','E5'], ['F1','F2','F3','F4','F5']] },
+            
+            // Snack machines (wider)
+            v104: { layout: [['A1','A2','A3','A4','A5','A6','A7','A8'], ['B1','B2','B3','B4','B5','B6','B7','B8'], ['C1','C2','C3','C4','C5','C6','C7','C8'], ['D1','D2','D3','D4','D5','D6','D7','D8']] },
+            v401: { layout: [['A1','A2','A3','A4','A5','A6'], ['B1','B2','B3','B4','B5','B6'], ['C1','C2','C3','C4','C5','C6'], ['D1','D2','D3','D4','D5','D6']] },
+            v502: { layout: [['A1','A2','A3','A4','A5','A6','A7','A8'], ['B1','B2','B3','B4','B5','B6','B7','B8'], ['C1','C2','C3','C4','C5','C6','C7','C8'], ['D1','D2','D3','D4','D5','D6','D7','D8']] },
+            
+            // Food machines
+            v203: { layout: [['A1','A2','A3','A4'], ['B1','B2','B3','B4'], ['C1','C2','C3','C4'], ['D1','D2','D3','D4']] },
+            v503: { layout: [['A1','A2','A3','A4'], ['B1','B2','B3','B4'], ['C1','C2','C3','C4'], ['D1','D2','D3','D4']] },
+            
+            // Coolers
+            sc201: { layout: [['A1','A2','A3'], ['B1','B2','B3'], ['C1','C2','C3']] },
+            sc601: { layout: [['A1','A2','A3'], ['B1','B2','B3'], ['C1','C2','C3']] },
+            dc401: { layout: [['A1','A2'], ['B1','B2']] },
+            
+            // Racks
+            sr501: { layout: [['A1','A2','A3','A4','A5'], ['B1','B2','B3','B4','B5'], ['C1','C2','C3','C4','C5']] }
+        };
+
+        // Product Library Data
+        const products = [
+            { id: 'coke', name: 'Coca-Cola', category: 'beverages', size: 'can', price: 2.00, emoji: '🥤', velocity: 85, margin: 0.45 },
+            { id: 'pepsi', name: 'Pepsi', category: 'beverages', size: 'can', price: 2.00, emoji: '🥤', velocity: 75, margin: 0.42 },
+            { id: 'sprite', name: 'Sprite', category: 'beverages', size: 'can', price: 2.00, emoji: '🥤', velocity: 65, margin: 0.40 },
+            { id: 'water', name: 'Dasani Water', category: 'beverages', size: 'bottle', price: 2.50, emoji: '💧', velocity: 90, margin: 0.60 },
+            { id: 'energy', name: 'Monster Energy', category: 'beverages', size: 'tall', price: 3.50, emoji: '⚡', velocity: 70, margin: 0.55 },
+            { id: 'juice', name: 'Apple Juice', category: 'beverages', size: 'bottle', price: 2.50, emoji: '🧃', velocity: 60, margin: 0.52 },
+            { id: 'snickers', name: 'Snickers', category: 'candy', size: 'small', price: 1.50, emoji: '🍫', velocity: 88, margin: 0.38 },
+            { id: 'twix', name: 'Twix', category: 'candy', size: 'small', price: 1.50, emoji: '🍫', velocity: 72, margin: 0.36 },
+            { id: 'kitkat', name: 'Kit Kat', category: 'candy', size: 'small', price: 1.50, emoji: '🍫', velocity: 80, margin: 0.40 },
+            { id: 'doritos', name: 'Doritos', category: 'snacks', size: 'medium', price: 2.00, emoji: '🌮', velocity: 82, margin: 0.48 },
+            { id: 'lays', name: 'Lays Classic', category: 'snacks', size: 'medium', price: 2.00, emoji: '🥔', velocity: 78, margin: 0.46 },
+            { id: 'cheetos', name: 'Cheetos', category: 'snacks', size: 'medium', price: 2.00, emoji: '🧀', velocity: 76, margin: 0.44 },
+            { id: 'pretzels', name: 'Pretzels', category: 'snacks', size: 'medium', price: 1.75, emoji: '🥨', velocity: 60, margin: 0.35 },
+            { id: 'oreos', name: 'Oreos', category: 'snacks', size: 'medium', price: 2.50, emoji: '🍪', velocity: 68, margin: 0.50 },
+            { id: 'nuts', name: 'Mixed Nuts', category: 'healthy', size: 'small', price: 3.00, emoji: '🥜', velocity: 45, margin: 0.50 },
+            { id: 'granola', name: 'Granola Bar', category: 'healthy', size: 'small', price: 2.25, emoji: '🍯', velocity: 55, margin: 0.45 },
+            { id: 'crackers', name: 'Crackers', category: 'snacks', size: 'medium', price: 1.75, emoji: '🍘', velocity: 50, margin: 0.40 }
+        ];
+
+        // Asset Type Icons
+        const assetIcons = {
+            drink: '🥤',
+            snack: '🍫',
+            food: '🍕',
+            cooler: '❄️',
+            rack: '📦'
+        };
+
+        // Initialize the application
+        function init() {
+            loadRecentLocations();
+            renderLocationList();
+            renderProductLibrary();
+            setupEventListeners();
+            
+            // If there are recent locations, load the first one
+            if (state.recentLocations.length > 0) {
+                loadLocation(state.recentLocations[0]);
+            }
+        }
+
+        // Load recent locations from localStorage
+        function loadRecentLocations() {
+            const saved = localStorage.getItem('recentLocations');
+            if (saved) {
+                state.recentLocations = JSON.parse(saved);
+            } else {
+                // Default recent locations
+                state.recentLocations = ['loc-downtown', 'loc-airport', 'loc-office'];
+            }
+        }
+
+        // Save recent locations to localStorage
+        function saveRecentLocations() {
+            localStorage.setItem('recentLocations', JSON.stringify(state.recentLocations));
+        }
+
+        // Update recent locations list
+        function updateRecentLocations(locationId) {
+            // Remove if already in list
+            state.recentLocations = state.recentLocations.filter(id => id !== locationId);
+            // Add to front
+            state.recentLocations.unshift(locationId);
+            // Keep only 3 most recent
+            state.recentLocations = state.recentLocations.slice(0, 3);
+            saveRecentLocations();
+        }
+
+        // Check for unsaved changes
+        function hasUnsavedChanges() {
+            return Object.keys(state.unsavedChanges).length > 0;
+        }
+
+        // Track changes
+        function trackChange(assetId, slotId, changeType, details) {
+            if (!state.unsavedChanges[assetId]) {
+                state.unsavedChanges[assetId] = {};
+            }
+            state.unsavedChanges[assetId][slotId] = { type: changeType, details };
+        }
+
+        // Clear unsaved changes
+        function clearUnsavedChanges() {
+            state.unsavedChanges = {};
+        }
+
+        // Generate changes summary
+        function generateChangesSummary() {
+            const summary = document.getElementById('changesSummary');
+            summary.innerHTML = '';
+            
+            Object.entries(state.unsavedChanges).forEach(([assetId, changes]) => {
+                const asset = locations[state.currentLocation].assets.find(a => a.id === assetId);
+                const changeCount = Object.keys(changes).length;
+                
+                const changeTypes = {};
+                Object.values(changes).forEach(change => {
+                    changeTypes[change.type] = (changeTypes[change.type] || 0) + 1;
+                });
+                
+                const details = Object.entries(changeTypes)
+                    .map(([type, count]) => `${type} (${count} slots)`)
+                    .join(', ');
+                
+                summary.innerHTML += `
+                    <div class="change-item">
+                        <div class="change-item-header">${asset.name}</div>
+                        <div class="change-details">${details}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Show unsaved changes modal
+        function showUnsavedChangesModal(pendingLocationId) {
+            state.pendingLocationSwitch = pendingLocationId;
+            generateChangesSummary();
+            document.getElementById('unsavedChangesModal').style.display = 'flex';
+        }
+
+        // Load location
+        function loadLocation(locationId) {
+            if (state.currentLocation && hasUnsavedChanges()) {
+                showUnsavedChangesModal(locationId);
+                return;
+            }
+            
+            state.currentLocation = locationId;
+            state.currentAsset = null;
+            state.selectedSlots.clear();
+            updateRecentLocations(locationId);
+            renderLocationList();
+            renderAssetList();
+            renderPlanogramGrid();
+            updateRightPanel();
+            
+            // Auto-select first asset if available
+            const location = locations[locationId];
+            if (location.assets.length > 0) {
+                loadAsset(location.assets[0].id);
+            }
+        }
+
+        // Load asset
+        function loadAsset(assetId) {
+            state.currentAsset = assetId;
+            state.selectedSlots.clear();
+            
+            // Initialize data for this asset if needed
+            if (!state.planogramData[assetId]) {
+                state.planogramData[assetId] = {};
+            }
+            if (!state.slotVisibility[assetId]) {
+                state.slotVisibility[assetId] = {};
+            }
+            
+            const layout = machineLayouts[assetId];
+            if (layout) {
+                layout.layout.flat().forEach(slotId => {
+                    if (state.slotVisibility[assetId][slotId] === undefined) {
+                        state.slotVisibility[assetId][slotId] = true;
+                    }
+                    if (!state.planogramData[assetId][slotId]) {
+                        state.planogramData[assetId][slotId] = {};
+                    }
+                });
+            }
+            
+            // Load demo data for specific assets if they're empty
+            if (assetId === 'v103' && Object.values(state.planogramData[assetId]).every(slot => !slot.productId)) {
+                // Downtown Mall - Drink Machine
+                state.planogramData[assetId]['A1'] = { productId: 'coke', price: 2.00, capacity: 10, parLevel: 8, currentStock: 7 };
+                state.planogramData[assetId]['A2'] = { productId: 'pepsi', price: 2.00, capacity: 10, parLevel: 8, currentStock: 5 };
+                state.planogramData[assetId]['A3'] = { productId: 'sprite', price: 2.00, capacity: 10, parLevel: 8, currentStock: 8 };
+                state.planogramData[assetId]['B1'] = { productId: 'water', price: 2.50, capacity: 12, parLevel: 10, currentStock: 8 };
+                state.planogramData[assetId]['B2'] = { productId: 'energy', price: 3.50, capacity: 8, parLevel: 6, currentStock: 4 };
+                state.planogramData[assetId]['C1'] = { productId: 'juice', price: 2.50, capacity: 8, parLevel: 6, currentStock: 5 };
+            } else if (assetId === 'v104' && Object.values(state.planogramData[assetId]).every(slot => !slot.productId)) {
+                // Downtown Mall - Snack Machine
+                state.planogramData[assetId]['A1'] = { productId: 'snickers', price: 1.50, capacity: 12, parLevel: 10, currentStock: 9 };
+                state.planogramData[assetId]['A2'] = { productId: 'twix', price: 1.50, capacity: 12, parLevel: 10, currentStock: 7 };
+                state.planogramData[assetId]['A3'] = { productId: 'kitkat', price: 1.50, capacity: 12, parLevel: 10, currentStock: 11 };
+                state.planogramData[assetId]['B1'] = { productId: 'doritos', price: 2.00, capacity: 10, parLevel: 8, currentStock: 6 };
+                state.planogramData[assetId]['B2'] = { productId: 'lays', price: 2.00, capacity: 10, parLevel: 8, currentStock: 5 };
+                state.planogramData[assetId]['B3'] = { productId: 'cheetos', price: 2.00, capacity: 10, parLevel: 8, currentStock: 7 };
+                state.planogramData[assetId]['C1'] = { productId: 'oreos', price: 2.50, capacity: 8, parLevel: 6, currentStock: 4 };
+                state.planogramData[assetId]['C2'] = { productId: 'pretzels', price: 1.75, capacity: 10, parLevel: 8, currentStock: 8 };
+            } else if (assetId === 'sc201' && Object.values(state.planogramData[assetId]).every(slot => !slot.productId)) {
+                // Downtown Mall - Smart Cooler
+                state.planogramData[assetId]['A1'] = { productId: 'water', price: 2.50, capacity: 20, parLevel: 18, currentStock: 15 };
+                state.planogramData[assetId]['A2'] = { productId: 'juice', price: 2.50, capacity: 15, parLevel: 12, currentStock: 10 };
+                state.planogramData[assetId]['B1'] = { productId: 'energy', price: 3.50, capacity: 15, parLevel: 12, currentStock: 8 };
+            } else if (assetId === 'v201' && Object.values(state.planogramData[assetId]).every(slot => !slot.productId)) {
+                // Airport - Drink Machine 1
+                state.planogramData[assetId]['A1'] = { productId: 'water', price: 3.00, capacity: 12, parLevel: 10, currentStock: 10 };
+                state.planogramData[assetId]['A2'] = { productId: 'water', price: 3.00, capacity: 12, parLevel: 10, currentStock: 11 };
+                state.planogramData[assetId]['A3'] = { productId: 'coke', price: 2.50, capacity: 10, parLevel: 8, currentStock: 6 };
+                state.planogramData[assetId]['B1'] = { productId: 'energy', price: 4.00, capacity: 8, parLevel: 6, currentStock: 5 };
+                state.planogramData[assetId]['B2'] = { productId: 'juice', price: 3.00, capacity: 8, parLevel: 6, currentStock: 4 };
+            } else if (assetId === 'v401' && Object.values(state.planogramData[assetId]).every(slot => !slot.productId)) {
+                // Hospital - Healthy Snacks
+                state.planogramData[assetId]['A1'] = { productId: 'granola', price: 2.25, capacity: 12, parLevel: 10, currentStock: 8 };
+                state.planogramData[assetId]['A2'] = { productId: 'nuts', price: 3.00, capacity: 10, parLevel: 8, currentStock: 6 };
+                state.planogramData[assetId]['B1'] = { productId: 'crackers', price: 1.75, capacity: 10, parLevel: 8, currentStock: 7 };
+            }
+            
+            // Reset history for new asset
+            state.history = [];
+            state.historyIndex = -1;
+            saveState();
+            
+            renderAssetList();
+            renderPlanogramGrid();
+            updateRightPanel();
+        }
+
+        // Render location list
+        function renderLocationList() {
+            const searchTerm = document.getElementById('locationSearch').value.toLowerCase();
+            const locationList = document.getElementById('locationList');
+            
+            // Filter locations
+            let filteredLocations = state.recentLocations.map(id => locations[id]);
+            if (searchTerm) {
+                filteredLocations = Object.values(locations).filter(loc => 
+                    loc.name.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            locationList.innerHTML = filteredLocations.map(location => {
+                const locationAssetIcons = location.assets.map(a => assetIcons[a.type]).join('');
+                const isSelected = location.id === state.currentLocation;
+                
+                return `
+                    <div class="location-item ${isSelected ? 'selected' : ''}" data-location-id="${location.id}">
+                        <span class="location-name">${location.name}</span>
+                        <span class="location-assets">${locationAssetIcons}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add click listeners
+            locationList.querySelectorAll('.location-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const locationId = item.dataset.locationId;
+                    loadLocation(locationId);
+                });
+            });
+        }
+
+        // Render asset list
+        function renderAssetList() {
+            const assetList = document.getElementById('assetList');
+            
+            if (!state.currentLocation) {
+                assetList.innerHTML = '<li class="empty-state">Select a location</li>';
+                return;
+            }
+            
+            const location = locations[state.currentLocation];
+            assetList.innerHTML = location.assets.map(asset => {
+                const isSelected = asset.id === state.currentAsset;
+                return `
+                    <li>
+                        <span class="asset-item ${isSelected ? 'selected' : ''}" data-asset-id="${asset.id}">
+                            ${assetIcons[asset.type]} ${asset.name}
+                        </span>
+                    </li>
+                `;
+            }).join('');
+            
+            // Add click listeners
+            assetList.querySelectorAll('.asset-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const assetId = item.dataset.assetId;
+                    loadAsset(assetId);
+                });
+            });
+        }
+
+        // State Management
+        function saveState() {
+            if (!state.currentAsset) return;
+            
+            const stateSnapshot = {
+                planogramData: JSON.parse(JSON.stringify(state.planogramData[state.currentAsset])),
+                slotVisibility: JSON.parse(JSON.stringify(state.slotVisibility[state.currentAsset]))
+            };
+            state.history = state.history.slice(0, state.historyIndex + 1);
+            state.history.push(stateSnapshot);
+            state.historyIndex++;
+            updateUndoRedoButtons();
+        }
+
+        function undo() {
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                const snapshot = state.history[state.historyIndex];
+                state.planogramData[state.currentAsset] = JSON.parse(JSON.stringify(snapshot.planogramData));
+                state.slotVisibility[state.currentAsset] = JSON.parse(JSON.stringify(snapshot.slotVisibility));
+                renderPlanogramGrid();
+                updateRightPanel();
+                updateUndoRedoButtons();
+            }
+        }
+
+        function redo() {
+            if (state.historyIndex < state.history.length - 1) {
+                state.historyIndex++;
+                const snapshot = state.history[state.historyIndex];
+                state.planogramData[state.currentAsset] = JSON.parse(JSON.stringify(snapshot.planogramData));
+                state.slotVisibility[state.currentAsset] = JSON.parse(JSON.stringify(snapshot.slotVisibility));
+                renderPlanogramGrid();
+                updateRightPanel();
+                updateUndoRedoButtons();
+            }
+        }
+
+        function updateUndoRedoButtons() {
+            document.getElementById('undoBtn').disabled = state.historyIndex <= 0;
+            document.getElementById('redoBtn').disabled = state.historyIndex >= state.history.length - 1;
+        }
+
+        // Render Functions
+        function renderProductLibrary() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            
+            const filteredProducts = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                return matchesSearch && matchesCategory;
+            });
+
+            const productGrid = document.getElementById('productGrid');
+            productGrid.innerHTML = filteredProducts.map(product => `
+                <div class="product-card" draggable="true" data-product-id="${product.id}">
+                    <div class="product-emoji">${product.emoji}</div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-meta">${product.category} • ${product.size}</div>
+                        <div class="product-stats">
+                            <span class="velocity">↑${product.velocity}</span>
+                            <span class="price">$${product.price.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add drag event listeners
+            productGrid.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        function renderPlanogramGrid() {
+            const grid = document.getElementById('planogramGrid');
+            const legend = document.getElementById('legend');
+            
+            if (!state.currentAsset || !machineLayouts[state.currentAsset]) {
+                grid.innerHTML = '<div class="empty-state">Select an asset to view its planogram</div>';
+                legend.style.display = 'none';
+                return;
+            }
+            
+            const machine = machineLayouts[state.currentAsset];
+            const asset = locations[state.currentLocation].assets.find(a => a.id === state.currentAsset);
+            document.getElementById('machineTitle').textContent = `${asset.name} - ${locations[state.currentLocation].name}`;
+            
+            // Show legend for vending machines
+            legend.style.display = ['drink', 'snack', 'food'].includes(asset.type) ? 'block' : 'none';
+            
+            grid.innerHTML = machine.layout.map((row, rowIndex) => {
+                const rowLabel = String.fromCharCode(65 + rowIndex);
+                const visibleSlots = state.isLayoutMode ? row : row.filter(slotId => state.slotVisibility[state.currentAsset][slotId]);
+                
+                if (!state.isLayoutMode && visibleSlots.length === 0) return '';
+                
+                const slots = visibleSlots.map(slotId => {
+                    const slotData = state.planogramData[state.currentAsset][slotId];
+                    const product = slotData?.productId ? products.find(p => p.id === slotData.productId) : null;
+                    const performance = getSlotPerformance(slotData, product);
+                    
+                    let slotClasses = 'slot';
+                    if (state.isLayoutMode) {
+                        slotClasses += ' layout-slot';
+                        if (state.slotVisibility[state.currentAsset][slotId]) slotClasses += ' visible';
+                    } else {
+                        if (product) slotClasses += ' filled';
+                        if (state.selectedSlots.has(slotId)) slotClasses += ' multi-selected';
+                        if (state.highlightIssues && performance === 'poor') slotClasses += ' poor-performance';
+                        if (state.highlightIssues && slotData?.stockouts > 3) slotClasses += ' high-stockouts';
+                    }
+                    
+                    let slotContent = '';
+                    if (state.isLayoutMode) {
+                        slotContent = slotId;
+                    } else if (product) {
+                        slotContent = `
+                            <div class="performance-indicator">${getPerformanceIndicator(product.velocity)}</div>
+                            <div class="slot-emoji">${product.emoji}</div>
+                            <div class="slot-name">${product.name}</div>
+                            <div class="slot-price">$${slotData.price.toFixed(2)}</div>
+                        `;
+                    } else {
+                        slotContent = `<div class="slot-name">${slotId}</div><div class="empty-state">Empty</div>`;
+                    }
+                    
+                    // Only make slots draggable if they have a product AND we're not in multi-select mode
+                    const isDraggable = product && state.selectedSlots.size <= 1 && !state.isLayoutMode;
+                    
+                    return `<div class="${slotClasses}" data-slot-id="${slotId}" ${isDraggable ? 'draggable="true"' : ''}>${slotContent}</div>`;
+                }).join('');
+                
+                return `
+                    <div class="grid-row">
+                        <div class="row-label">${rowLabel}</div>
+                        ${slots}
+                    </div>
+                `;
+            }).join('');
+
+            addSlotEventListeners();
+        }
+
+        function updateRightPanel() {
+            const rightPanel = document.getElementById('rightPanelContent');
+            
+            if (!state.currentAsset) {
+                rightPanel.innerHTML = '<div class="empty-state">Select an asset to view details</div>';
+                return;
+            }
+            
+            if (state.selectedSlots.size === 0) {
+                // Default view - Asset details
+                const asset = locations[state.currentLocation].assets.find(a => a.id === state.currentAsset);
+                rightPanel.innerHTML = `
+                    <h2 class="panel-title">ASSET DETAILS</h2>
+                    <div class="slot-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Asset:</span>
+                            <span class="detail-value">${asset.name}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Type:</span>
+                            <span class="detail-value">${assetIcons[asset.type]} ${asset.type}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">${locations[state.currentLocation].name}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value">Live</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Compliance:</span>
+                            <span class="detail-value">95%</span>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <div class="analytics-card">
+                            <h3 class="analytics-title">Machine Analytics</h3>
+                            <div class="stat-row">
+                                <span class="stat-label">Total Slots:</span>
+                                <span class="stat-value" id="totalSlots">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Filled Slots:</span>
+                                <span class="stat-value" id="filledSlots">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Empty Slots:</span>
+                                <span class="stat-value" id="emptySlots">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Fill Rate:</span>
+                                <span class="stat-value" id="fillRate">0%</span>
+                            </div>
+                        </div>
+
+                        <h3 class="analytics-title">Recent Field Activity</h3>
+                        <div class="field-activity-item success">
+                            <strong>Compliance Check</strong><br>
+                            <small>2 hours ago by Tech #4521</small><br>
+                            <span class="view-photo-link" id="viewCompliancePhoto">View Photo</span>
+                        </div>
+                        <div class="field-activity-item alert">
+                            <strong>Low Stock Alert</strong><br>
+                            <small>5 hours ago - Multiple slots</small>
+                        </div>
+                    </div>
+                `;
+                
+                updateAnalytics();
+                document.getElementById('viewCompliancePhoto')?.addEventListener('click', showComplianceModal);
+                
+            } else if (state.selectedSlots.size === 1) {
+                // Single slot selected
+                const slotId = Array.from(state.selectedSlots)[0];
+                const slotData = state.planogramData[state.currentAsset][slotId];
+                const product = slotData?.productId ? products.find(p => p.id === slotData.productId) : null;
+                
+                rightPanel.innerHTML = `
+                    <h2 class="panel-title">SLOT DETAILS: ${slotId}</h2>
+                    ${product ? `
+                        <div class="slot-details">
+                            <div style="text-align: center; margin-bottom: 16px;">
+                                <div style="font-size: 48px; margin-bottom: 8px;">${product.emoji}</div>
+                                <div style="font-weight: 600; font-size: 16px;">${product.name}</div>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Price:</span>
+                                <input type="number" class="detail-input" value="${slotData.price.toFixed(2)}" 
+                                       step="0.25" min="0" data-field="price">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Capacity:</span>
+                                <input type="number" class="detail-input" value="${slotData.capacity}" 
+                                       min="1" max="20" data-field="capacity">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Par Level:</span>
+                                <input type="number" class="detail-input" value="${slotData.parLevel}" 
+                                       min="1" max="${slotData.capacity}" data-field="parLevel">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Current Stock:</span>
+                                <span class="detail-value">${slotData.currentStock || 0}</span>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Velocity:</span>
+                                <span class="detail-value">${product.velocity}% ${getPerformanceIndicator(product.velocity)}</span>
+                            </div>
+                            
+                            <button class="btn btn-danger" onclick="clearSlot('${slotId}')" style="width: 100%; margin-top: 16px;">
+                                Remove Product
+                            </button>
+                        </div>
+
+                        <div class="analytics-card">
+                            <h3 class="analytics-title">Sales History</h3>
+                            <div class="chart-container">
+                                ${generateMockChart()}
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <div class="stat-row">
+                                    <span class="stat-label">Weekly Sales:</span>
+                                    <span class="stat-value">${Math.floor(product.velocity * 0.8)} units</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span class="stat-label">Revenue:</span>
+                                    <span class="stat-value">$${(Math.floor(product.velocity * 0.8) * slotData.price).toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="empty-state">Empty slot</div>
+                        <button class="btn btn-secondary" onclick="clearSlot('${slotId}')" style="width: 100%; margin-top: 16px;">
+                            Clear Slot
+                        </button>
+                    `}
+                `;
+                
+                // Add input event listeners
+                rightPanel.querySelectorAll('.detail-input').forEach(input => {
+                    input.addEventListener('change', handleDetailChange);
+                });
+                
+            } else {
+                // Multiple slots selected - bulk edit
+                rightPanel.innerHTML = `
+                    <h2 class="panel-title">BULK EDIT</h2>
+                    <p>${state.selectedSlots.size} slots selected</p>
+                    
+                    <div class="note">
+                        <strong>Tip:</strong> Drag a product from the library to any selected slot to apply it to all compatible slots.
+                    </div>
+                    
+                    <form id="bulkEditForm">
+                        <div class="slot-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Price:</span>
+                                <input type="number" class="detail-input" name="price" placeholder="Leave unchanged" step="0.25">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Capacity:</span>
+                                <input type="number" class="detail-input" name="capacity" placeholder="Leave unchanged">
+                            </div>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Par Level:</span>
+                                <input type="number" class="detail-input" name="parLevel" placeholder="Leave unchanged">
+                            </div>
+                            
+                            <button type="submit" class="btn" style="width: 100%; margin-top: 16px;">
+                                Apply to Selected
+                            </button>
+                        </div>
+                    </form>
+                `;
+                
+                document.getElementById('bulkEditForm').addEventListener('submit', handleBulkEdit);
+            }
+        }
+
+        // Helper Functions
+        function getPerformanceIndicator(velocity) {
+            if (velocity >= 80) return '🔥';
+            if (velocity >= 60) return '🟢';
+            if (velocity >= 40) return '🟡';
+            return '❄️';
+        }
+
+        function getSlotPerformance(slotData, product) {
+            if (!product) return 'empty';
+            const performanceScore = (slotData.currentStock / slotData.capacity) * product.velocity / 100;
+            if (performanceScore > 0.7) return 'good';
+            if (performanceScore > 0.4) return 'moderate';
+            return 'poor';
+        }
+
+        function generateMockChart() {
+            const bars = [];
+            for (let i = 0; i < 7; i++) {
+                const height = Math.random() * 80 + 10;
+                bars.push(`<div class="chart-bar" style="height: ${height}px;"></div>`);
+            }
+            return bars.join('');
+        }
+
+        function updateAnalytics() {
+            if (!state.currentAsset || !machineLayouts[state.currentAsset]) return;
+            
+            const machine = machineLayouts[state.currentAsset];
+            const allSlots = machine.layout.flat();
+            const visibleSlots = allSlots.filter(id => state.slotVisibility[state.currentAsset][id]);
+            const filledSlots = visibleSlots.filter(id => state.planogramData[state.currentAsset][id]?.productId);
+            
+            document.getElementById('totalSlots').textContent = visibleSlots.length;
+            document.getElementById('filledSlots').textContent = filledSlots.length;
+            document.getElementById('emptySlots').textContent = visibleSlots.length - filledSlots.length;
+            document.getElementById('fillRate').textContent = 
+                Math.round((filledSlots.length / visibleSlots.length) * 100) + '%';
+        }
+
+        // Event Handlers
+        function handleDragStart(e) {
+            state.draggedProduct = e.target.dataset.productId;
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            state.draggedProduct = null;
+        }
+
+        function handleSlotDragStart(e) {
+            const slotId = e.target.dataset.slotId;
+            const slotData = state.planogramData[state.currentAsset][slotId];
+            
+            // Prevent slot-to-slot dragging when in bulk mode
+            if (state.selectedSlots.size > 1) {
+                e.preventDefault();
+                return;
+            }
+            
+            if (slotData?.productId) {
+                e.dataTransfer.setData('slotId', slotId);
+                e.target.style.opacity = '0.5';
+            }
+        }
+
+        function handleSlotDragEnd(e) {
+            e.target.style.opacity = '';
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const slotId = e.currentTarget.dataset.slotId;
+            const rowIndex = slotId.charCodeAt(0) - 65;
+            const asset = locations[state.currentLocation].assets.find(a => a.id === state.currentAsset);
+            
+            // Check if we're in bulk edit mode
+            const isBulkMode = state.selectedSlots.size > 1 && state.selectedSlots.has(slotId);
+            
+            if (isBulkMode && state.draggedProduct) {
+                // In bulk mode, highlight all selected slots
+                const product = products.find(p => p.id === state.draggedProduct);
+                
+                state.selectedSlots.forEach(selectedSlotId => {
+                    const selectedSlotElement = document.querySelector(`[data-slot-id="${selectedSlotId}"]`);
+                    if (selectedSlotElement) {
+                        const selectedRowIndex = selectedSlotId.charCodeAt(0) - 65;
+                        let isValidForSlot = true;
+                        
+                        // Check restrictions for vending machines
+                        if (['drink', 'snack', 'food'].includes(asset.type)) {
+                            if (selectedRowIndex === 0 && !['small', 'can'].includes(product.size)) {
+                                isValidForSlot = false;
+                            } else if (selectedRowIndex >= 4 && !['medium', 'tall', 'bottle'].includes(product.size)) {
+                                isValidForSlot = false;
+                            }
+                        }
+                        
+                        selectedSlotElement.classList.add(isValidForSlot ? 'drag-over-valid' : 'drag-over-invalid');
+                    }
+                });
+            } else {
+                // Single slot mode - original behavior
+                let isValid = true;
+                if (state.draggedProduct && ['drink', 'snack', 'food'].includes(asset.type)) {
+                    const product = products.find(p => p.id === state.draggedProduct);
+                    if (rowIndex === 0 && !['small', 'can'].includes(product.size)) {
+                        isValid = false;
+                    } else if (rowIndex >= 4 && !['medium', 'tall', 'bottle'].includes(product.size)) {
+                        isValid = false;
+                    }
+                }
+                
+                e.currentTarget.classList.add(isValid ? 'drag-over-valid' : 'drag-over-invalid');
+            }
+        }
+
+        function handleDragLeave(e) {
+            const slotId = e.currentTarget.dataset.slotId;
+            const isBulkMode = state.selectedSlots.size > 1 && state.selectedSlots.has(slotId);
+            
+            if (isBulkMode) {
+                // In bulk mode, clear all selected slots
+                state.selectedSlots.forEach(selectedSlotId => {
+                    const selectedSlotElement = document.querySelector(`[data-slot-id="${selectedSlotId}"]`);
+                    if (selectedSlotElement) {
+                        selectedSlotElement.classList.remove('drag-over-valid', 'drag-over-invalid');
+                    }
+                });
+            } else {
+                // Single slot mode
+                e.currentTarget.classList.remove('drag-over-valid', 'drag-over-invalid');
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            
+            const targetSlotId = e.currentTarget.dataset.slotId;
+            const rowIndex = targetSlotId.charCodeAt(0) - 65;
+            const asset = locations[state.currentLocation].assets.find(a => a.id === state.currentAsset);
+            const isBulkMode = state.selectedSlots.size > 1 && state.selectedSlots.has(targetSlotId);
+            
+            // Clear all drag indicators first
+            if (isBulkMode) {
+                state.selectedSlots.forEach(selectedSlotId => {
+                    const selectedSlotElement = document.querySelector(`[data-slot-id="${selectedSlotId}"]`);
+                    if (selectedSlotElement) {
+                        selectedSlotElement.classList.remove('drag-over-valid', 'drag-over-invalid');
+                    }
+                });
+            } else {
+                e.currentTarget.classList.remove('drag-over-valid', 'drag-over-invalid');
+            }
+            
+            if (state.draggedProduct) {
+                // Dropping from product library
+                const product = products.find(p => p.id === state.draggedProduct);
+                
+                if (isBulkMode) {
+                    // Bulk mode - apply to all compatible selected slots
+                    const bulkChanges = [];
+                    let incompatibleSlots = [];
+                    
+                    state.selectedSlots.forEach(slotId => {
+                        const slotRowIndex = slotId.charCodeAt(0) - 65;
+                        let isCompatible = true;
+                        
+                        // Check restrictions for vending machines
+                        if (['drink', 'snack', 'food'].includes(asset.type)) {
+                            if (slotRowIndex === 0 && !['small', 'can'].includes(product.size)) {
+                                isCompatible = false;
+                            } else if (slotRowIndex >= 4 && !['medium', 'tall', 'bottle'].includes(product.size)) {
+                                isCompatible = false;
+                            }
+                        }
+                        
+                        if (isCompatible) {
+                            const oldData = state.planogramData[state.currentAsset][slotId];
+                            state.planogramData[state.currentAsset][slotId] = {
+                                productId: product.id,
+                                price: product.price,
+                                capacity: product.size === 'small' ? 12 : 10,
+                                parLevel: product.size === 'small' ? 10 : 8,
+                                currentStock: Math.floor(Math.random() * 10) + 1
+                            };
+                            
+                            bulkChanges.push({
+                                slotId,
+                                changeType: oldData?.productId ? 'Product changed' : 'New product',
+                                productName: product.name
+                            });
+                        } else {
+                            incompatibleSlots.push(slotId);
+                        }
+                    });
+                    
+                    // Track all changes as a single bulk operation
+                    if (bulkChanges.length > 0) {
+                        bulkChanges.forEach(change => {
+                            trackChange(state.currentAsset, change.slotId, change.changeType, `${change.productName} (bulk)`);
+                        });
+                    }
+                    
+                    // Show warning for incompatible slots if any
+                    if (incompatibleSlots.length > 0) {
+                        const rowInfo = incompatibleSlots.map(id => `${id} (Row ${id.charAt(0)})`).join(', ');
+                        alert(`${product.name} (${product.size}) could not be placed in: ${rowInfo}`);
+                    }
+                } else {
+                    // Single slot mode - original behavior
+                    // Check restrictions for vending machines
+                    if (['drink', 'snack', 'food'].includes(asset.type)) {
+                        if (rowIndex === 0 && !['small', 'can'].includes(product.size)) {
+                            alert(`${product.name} (${product.size}) cannot be placed in row A`);
+                            return;
+                        } else if (rowIndex >= 4 && !['medium', 'tall', 'bottle'].includes(product.size)) {
+                            alert(`${product.name} (${product.size}) cannot be placed in rows E-F`);
+                            return;
+                        }
+                    }
+                    
+                    const oldData = state.planogramData[state.currentAsset][targetSlotId];
+                    state.planogramData[state.currentAsset][targetSlotId] = {
+                        productId: product.id,
+                        price: product.price,
+                        capacity: product.size === 'small' ? 12 : 10,
+                        parLevel: product.size === 'small' ? 10 : 8,
+                        currentStock: Math.floor(Math.random() * 10) + 1
+                    };
+                    
+                    trackChange(state.currentAsset, targetSlotId, oldData?.productId ? 'Product changed' : 'New product', product.name);
+                }
+            } else {
+                // Slot to slot swap - only works in single selection mode
+                if (!isBulkMode) {
+                    const sourceSlotId = e.dataTransfer.getData('slotId');
+                    if (sourceSlotId && sourceSlotId !== targetSlotId) {
+                        const temp = state.planogramData[state.currentAsset][targetSlotId];
+                        state.planogramData[state.currentAsset][targetSlotId] = state.planogramData[state.currentAsset][sourceSlotId];
+                        state.planogramData[state.currentAsset][sourceSlotId] = temp;
+                        
+                        trackChange(state.currentAsset, targetSlotId, 'Swapped', `with ${sourceSlotId}`);
+                        trackChange(state.currentAsset, sourceSlotId, 'Swapped', `with ${targetSlotId}`);
+                    }
+                }
+            }
+            
+            saveState();
+            renderPlanogramGrid();
+            updateRightPanel();
+        }
+
+        function handleSlotClick(e) {
+            const slotId = e.currentTarget.dataset.slotId;
+            
+            if (state.isLayoutMode) {
+                // Toggle slot visibility
+                state.slotVisibility[state.currentAsset][slotId] = !state.slotVisibility[state.currentAsset][slotId];
+                saveState();
+                renderPlanogramGrid();
+            } else {
+                // Select/deselect slot
+                if (e.ctrlKey || e.metaKey) {
+                    if (state.selectedSlots.has(slotId)) {
+                        state.selectedSlots.delete(slotId);
+                    } else {
+                        state.selectedSlots.add(slotId);
+                    }
+                } else {
+                    state.selectedSlots.clear();
+                    state.selectedSlots.add(slotId);
+                }
+                renderPlanogramGrid();
+                updateRightPanel();
+            }
+        }
+
+        function handleDetailChange(e) {
+            const field = e.target.dataset.field;
+            const value = parseFloat(e.target.value);
+            
+            if (!isNaN(value) && state.selectedSlots.size === 1) {
+                const slotId = Array.from(state.selectedSlots)[0];
+                const oldValue = state.planogramData[state.currentAsset][slotId][field];
+                state.planogramData[state.currentAsset][slotId][field] = value;
+                
+                trackChange(state.currentAsset, slotId, 'Price changed', `${field}: ${oldValue} → ${value}`);
+                saveState();
+                renderPlanogramGrid();
+            }
+        }
+
+        function handleBulkEdit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const updates = {};
+            
+            ['price', 'capacity', 'parLevel'].forEach(field => {
+                const value = parseFloat(form[field].value);
+                if (!isNaN(value)) {
+                    updates[field] = value;
+                }
+            });
+            
+            state.selectedSlots.forEach(slotId => {
+                Object.entries(updates).forEach(([field, value]) => {
+                    const oldValue = state.planogramData[state.currentAsset][slotId][field];
+                    state.planogramData[state.currentAsset][slotId][field] = value;
+                    trackChange(state.currentAsset, slotId, 'Bulk edit', `${field}: ${oldValue} → ${value}`);
+                });
+            });
+            
+            saveState();
+            renderPlanogramGrid();
+            updateRightPanel();
+        }
+
+        // Slot Actions
+        window.clearSlot = function(slotId) {
+            const product = state.planogramData[state.currentAsset][slotId]?.productId ? 
+                products.find(p => p.id === state.planogramData[state.currentAsset][slotId].productId) : null;
+            
+            state.planogramData[state.currentAsset][slotId] = {};
+            if (product) {
+                trackChange(state.currentAsset, slotId, 'Product removed', product.name);
+            }
+            
+            state.selectedSlots.clear();
+            saveState();
+            renderPlanogramGrid();
+            updateRightPanel();
+        };
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all slots?')) {
+                const machine = machineLayouts[state.currentAsset];
+                machine.layout.flat().forEach(slotId => {
+                    if (state.planogramData[state.currentAsset][slotId]?.productId) {
+                        const product = products.find(p => p.id === state.planogramData[state.currentAsset][slotId].productId);
+                        trackChange(state.currentAsset, slotId, 'Cleared', product.name);
+                    }
+                    state.planogramData[state.currentAsset][slotId] = {};
+                });
+                state.selectedSlots.clear();
+                saveState();
+                renderPlanogramGrid();
+                updateRightPanel();
+            }
+        }
+
+        function aiOptimize() {
+            if (confirm('AI will optimize the planogram based on sales data. Continue?')) {
+                const machine = machineLayouts[state.currentAsset];
+                const allSlots = machine.layout.flat();
+                const visibleSlots = allSlots.filter(id => state.slotVisibility[state.currentAsset][id]);
+                const asset = locations[state.currentLocation].assets.find(a => a.id === state.currentAsset);
+                
+                // Clear visible slots
+                visibleSlots.forEach(slotId => {
+                    state.planogramData[state.currentAsset][slotId] = {};
+                });
+                
+                // Sort products by performance
+                const sortedProducts = [...products].sort((a, b) => 
+                    (b.velocity * b.margin) - (a.velocity * a.margin)
+                );
+                
+                // Place products optimally
+                let productIndex = 0;
+                for (let rowIndex = 0; rowIndex < machine.layout.length && productIndex < sortedProducts.length; rowIndex++) {
+                    const row = machine.layout[rowIndex];
+                    for (const slotId of row) {
+                        if (!state.slotVisibility[state.currentAsset][slotId]) continue;
+                        
+                        // Find suitable product for this row
+                        let placed = false;
+                        for (let i = productIndex; i < sortedProducts.length; i++) {
+                            const product = sortedProducts[i];
+                            
+                            // Check restrictions for vending machines
+                            if (['drink', 'snack', 'food'].includes(asset.type)) {
+                                if (rowIndex === 0 && !['small', 'can'].includes(product.size)) continue;
+                                if (rowIndex >= 4 && !['medium', 'tall', 'bottle'].includes(product.size)) continue;
+                            }
+                            
+                            state.planogramData[state.currentAsset][slotId] = {
+                                productId: product.id,
+                                price: product.price,
+                                capacity: product.size === 'small' ? 12 : 10,
+                                parLevel: product.size === 'small' ? 10 : 8,
+                                currentStock: Math.floor(Math.random() * 10) + 1
+                            };
+                            
+                            trackChange(state.currentAsset, slotId, 'AI optimized', product.name);
+                            
+                            // Remove from available products
+                            sortedProducts.splice(i, 1);
+                            placed = true;
+                            break;
+                        }
+                        
+                        if (!placed) break;
+                    }
+                }
+                
+                state.selectedSlots.clear();
+                saveState();
+                renderPlanogramGrid();
+                updateRightPanel();
+                alert('AI optimization complete! High-velocity products placed in optimal positions.');
+            }
+        }
+
+        function toggleHighlightIssues() {
+            state.highlightIssues = !state.highlightIssues;
+            const btn = document.getElementById('highlightBtn');
+            if (state.highlightIssues) {
+                btn.classList.remove('btn-secondary');
+                btn.classList.add('btn-warning');
+            } else {
+                btn.classList.remove('btn-warning');
+                btn.classList.add('btn-secondary');
+            }
+            renderPlanogramGrid();
+        }
+
+        function toggleLayoutMode() {
+            state.isLayoutMode = !state.isLayoutMode;
+            state.selectedSlots.clear();
+            const btn = document.getElementById('layoutModeBtn');
+            if (state.isLayoutMode) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+            renderPlanogramGrid();
+            updateRightPanel();
+        }
+
+        function showComplianceModal() {
+            const modal = document.getElementById('complianceModal');
+            const preview = document.getElementById('planogramPreview');
+            
+            if (!state.currentAsset || !machineLayouts[state.currentAsset]) return;
+            
+            // Generate planogram preview
+            const machine = machineLayouts[state.currentAsset];
+            preview.innerHTML = machine.layout.map((row, rowIndex) => {
+                const rowLabel = String.fromCharCode(65 + rowIndex);
+                const slots = row.map(slotId => {
+                    const data = state.planogramData[state.currentAsset][slotId];
+                    const product = data?.productId ? products.find(p => p.id === data.productId) : null;
+                    return product ? product.emoji : '[]';
+                }).join('');
+                return `${rowLabel} ${slots}`;
+            }).join('<br>');
+            
+            modal.style.display = 'flex';
+        }
+
+        function saveAllChanges() {
+            // In a real app, this would save to a backend
+            clearUnsavedChanges();
+            localStorage.setItem('planogramState', JSON.stringify(state));
+            alert('All changes saved successfully!');
+        }
+
+        // Event Listener Setup
+        function addSlotEventListeners() {
+            document.querySelectorAll('.slot').forEach(slot => {
+                slot.addEventListener('click', handleSlotClick);
+                
+                if (!state.isLayoutMode && state.slotVisibility[state.currentAsset][slot.dataset.slotId]) {
+                    slot.addEventListener('dragover', handleDragOver);
+                    slot.addEventListener('drop', handleDrop);
+                    slot.addEventListener('dragleave', handleDragLeave);
+                    
+                    // Only make slots draggable if they have a product AND we're not in multi-select mode
+                    if (state.planogramData[state.currentAsset][slot.dataset.slotId]?.productId && state.selectedSlots.size <= 1) {
+                        slot.draggable = true;
+                        slot.addEventListener('dragstart', handleSlotDragStart);
+                        slot.addEventListener('dragend', handleSlotDragEnd);
+                    } else {
+                        slot.draggable = false;
+                    }
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Accordion
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('collapsed');
+                    document.getElementById(header.dataset.target).classList.toggle('collapsed');
+                });
+            });
+
+            // Location search
+            document.getElementById('locationSearch').addEventListener('input', renderLocationList);
+
+            // Product search and filter
+            document.getElementById('searchInput').addEventListener('input', renderProductLibrary);
+            document.getElementById('categoryFilter').addEventListener('change', renderProductLibrary);
+
+            // Toolbar buttons
+            document.getElementById('undoBtn').addEventListener('click', undo);
+            document.getElementById('redoBtn').addEventListener('click', redo);
+            document.getElementById('layoutModeBtn').addEventListener('click', toggleLayoutMode);
+            document.getElementById('aiOptimizeBtn').addEventListener('click', aiOptimize);
+            document.getElementById('highlightBtn').addEventListener('click', toggleHighlightIssues);
+            document.getElementById('clearAllBtn').addEventListener('click', clearAll);
+            document.getElementById('saveBtn').addEventListener('click', saveAllChanges);
+
+            // Modal buttons
+            document.getElementById('closeModalBtn').addEventListener('click', () => {
+                document.getElementById('complianceModal').style.display = 'none';
+            });
+
+            // Unsaved changes modal
+            document.getElementById('cancelSwitch').addEventListener('click', () => {
+                document.getElementById('unsavedChangesModal').style.display = 'none';
+                state.pendingLocationSwitch = null;
+            });
+
+            document.getElementById('discardChanges').addEventListener('click', () => {
+                document.getElementById('unsavedChangesModal').style.display = 'none';
+                clearUnsavedChanges();
+                if (state.pendingLocationSwitch) {
+                    loadLocation(state.pendingLocationSwitch);
+                    state.pendingLocationSwitch = null;
+                }
+            });
+
+            document.getElementById('saveAndContinue').addEventListener('click', () => {
+                document.getElementById('unsavedChangesModal').style.display = 'none';
+                saveAllChanges();
+                if (state.pendingLocationSwitch) {
+                    loadLocation(state.pendingLocationSwitch);
+                    state.pendingLocationSwitch = null;
+                }
+            });
+
+            // Theme change listener for parent VMS communication
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'theme-change') {
+                    document.body.classList.toggle('dark-theme', event.data.isDark);
+                }
+            });
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

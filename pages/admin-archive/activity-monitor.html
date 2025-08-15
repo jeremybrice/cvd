@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity Monitor Enhanced - CVD Admin</title>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+    
+    <style>
+        /* Activity Monitor Enhancement Specific Variables */
+        :root {
+            /* Primary Palette - Activity Monitor Specific */
+            --am-primary: #006dfe;
+            --am-primary-dark: #0056cc;
+            --am-primary-light: #4d9fff;
+            --am-primary-pale: #e7f3ff;
+            
+            /* Metric Colors */
+            --am-metric-users: #006dfe;      /* Blue - Active Users */
+            --am-metric-views: #28a745;      /* Green - Page Views */
+            --am-metric-session: #ffc107;    /* Amber - Session Duration */
+            --am-metric-api: #17a2b8;        /* Cyan - API Calls */
+            
+            /* Status Colors */
+            --am-status-active: #28a745;
+            --am-status-idle: #ffc107;
+            --am-status-inactive: #6c757d;
+            
+            /* Chart Gradients */
+            --am-gradient-users-start: rgba(0, 109, 254, 0.4);
+            --am-gradient-users-end: rgba(0, 109, 254, 0.05);
+            --am-gradient-views-start: rgba(40, 167, 69, 0.4);
+            --am-gradient-views-end: rgba(40, 167, 69, 0.05);
+            
+            /* Shadows */
+            --am-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+            --am-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.08);
+            --am-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+            --am-shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.15);
+            
+            /* Spacing */
+            --space-xs: 4px;
+            --space-sm: 8px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+            --space-3xl: 64px;
+            
+            /* Z-Index Scale */
+            --z-base: 0;
+            --z-dropdown: 100;
+            --z-sticky: 200;
+            --z-fixed: 300;
+            --z-modal-backdrop: 400;
+            --z-modal: 500;
+            --z-tooltip: 600;
+            --z-notification: 700;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f7fa;
+            color: #1a1a1a;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Skip to Content for Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Main Layout Grid */
+        .activity-monitor-enhanced {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-xl);
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-xl);
+            animation: pageLoad 0.5s ease;
+        }
+
+        @keyframes pageLoad {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Trends Section */
+        .trends-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--am-shadow-md);
+            overflow: hidden;
+            animation: panelSlideUp 0.5s ease;
+        }
+
+        @keyframes panelSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .trends-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg);
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #fafbfc, #ffffff);
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+
+        .trends-title {
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: #1a1a1a;
+        }
+
+        .trends-controls {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Date Range Selector */
+        .date-range-selector {
+            display: inline-flex;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .date-preset {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .date-preset:hover:not(.active) {
+            color: #374151;
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .date-preset.active {
+            background: white;
+            color: var(--am-primary);
+            box-shadow: var(--am-shadow-sm);
+        }
+
+        .date-input {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-left: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: var(--am-primary);
+            box-shadow: 0 0 0 3px rgba(0, 109, 254, 0.1);
+        }
+
+        .date-input.hidden {
+            display: none;
+        }
+
+        /* Metric Toggles */
+        .metric-toggles {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .metric-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #64748b;
+            transition: color 0.2s ease;
+        }
+
+        .metric-toggle:hover {
+            color: #374151;
+        }
+
+        .metric-toggle input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            user-select: none;
+        }
+
+        /* Trends Graph Wrapper */
+        .trends-graph-wrapper {
+            position: relative;
+            padding: var(--space-lg);
+            min-height: 450px;
+        }
+
+        #trendsChart {
+            max-width: 100%;
+            height: 400px !important;
+        }
+
+        /* Loading Overlay */
+        .graph-loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-md);
+            z-index: var(--z-dropdown);
+            backdrop-filter: blur(4px);
+        }
+
+        .graph-loading-overlay.hidden {
+            display: none;
+        }
+
+        .spinner-large {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid var(--am-primary);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(0.95); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .loading-text {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            animation: loadingPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Custom Legend */
+        .trends-legend {
+            padding: 0 var(--space-lg) var(--space-lg);
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* Enhanced Active Users Table */
+        .users-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--am-shadow-md);
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg);
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(180deg, #fafbfc, #ffffff);
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.01em;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        /* Enhanced Table Styles */
+        .users-table-enhanced {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .users-table-enhanced thead {
+            position: sticky;
+            top: 0;
+            z-index: var(--z-sticky);
+            background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+        }
+
+        .users-table-enhanced th {
+            padding: 16px 24px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .users-table-enhanced td {
+            padding: 16px 24px;
+            font-size: 14px;
+            color: #1a1a1a;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .users-table-enhanced tbody tr {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .users-table-enhanced tbody tr:hover {
+            background: linear-gradient(90deg, 
+                rgba(0, 109, 254, 0.03) 0%, 
+                rgba(0, 109, 254, 0.05) 50%, 
+                rgba(0, 109, 254, 0.03) 100%);
+        }
+
+        /* Activity Score Visual */
+        .activity-score {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .activity-score-bar {
+            width: 100px;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .activity-score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--am-metric-users), var(--am-metric-views));
+            transition: width 0.3s ease;
+        }
+
+        .activity-score-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        /* User History Button */
+        .view-history-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .view-history-btn:hover {
+            background: var(--am-primary-pale);
+            border-color: var(--am-primary);
+            color: var(--am-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--am-shadow-sm);
+        }
+
+        /* Export Button */
+        .export-trends-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .export-trends-btn:hover {
+            background: linear-gradient(135deg, #ffffff, #f9fafb);
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            box-shadow: var(--am-shadow-sm);
+        }
+
+        /* User History Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: var(--z-modal-backdrop);
+            animation: modalBackdropFade 200ms ease-out;
+            padding: var(--space-xl);
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        @keyframes modalBackdropFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--am-shadow-modal);
+            width: 100%;
+            max-width: 900px;
+            max-height: 80vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            z-index: var(--z-modal);
+            animation: modalSlideUp 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(100px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title-section {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            color: #1a1a1a;
+        }
+
+        .user-info-badge {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border-radius: 20px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--am-primary), var(--am-primary-dark));
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+            color: #1a1a1a;
+        }
+
+        .modal-body {
+            padding: var(--space-xl);
+            overflow-y: auto;
+        }
+
+        .history-filters {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            flex-wrap: wrap;
+        }
+
+        .date-filter,
+        .action-filter {
+            padding: 10px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .date-filter:focus,
+        .action-filter:focus {
+            outline: none;
+            border-color: var(--am-primary);
+            box-shadow: 0 0 0 3px rgba(0, 109, 254, 0.1);
+        }
+
+        .history-timeline-enhanced {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .timeline-item-enhanced {
+            display: flex;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid var(--am-primary);
+            transition: all 0.2s ease;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .timeline-item-enhanced:hover {
+            background: white;
+            box-shadow: var(--am-shadow-sm);
+            transform: translateX(4px);
+        }
+
+        .timeline-time {
+            min-width: 150px;
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-action {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .timeline-details {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .history-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .pagination-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--am-primary-pale);
+            border-color: var(--am-primary);
+            color: var(--am-primary);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .modal-footer {
+            padding: var(--space-lg);
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            gap: var(--space-md);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--am-primary), var(--am-primary-dark));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 8px rgba(0, 109, 254, 0.25);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 109, 254, 0.35);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border-color: #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: linear-gradient(135deg, #ffffff, #f9fafb);
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Error Notification Container */
+        .error-notification-container {
+            position: fixed;
+            top: var(--space-lg);
+            right: var(--space-lg);
+            z-index: var(--z-notification);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .error-notification {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md) var(--space-lg);
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--am-shadow-lg);
+            min-width: 320px;
+            max-width: 480px;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .error-notification--visible {
+            transform: translateX(0);
+        }
+
+        .error-notification--error {
+            border-left: 4px solid #dc3545;
+        }
+
+        .error-notification--success {
+            border-left: 4px solid #28a745;
+        }
+
+        .error-notification--warning {
+            border-left: 4px solid #ffc107;
+        }
+
+        .error-notification--info {
+            border-left: 4px solid #17a2b8;
+        }
+
+        .error-notification__icon {
+            flex-shrink: 0;
+        }
+
+        .error-notification__content {
+            flex: 1;
+        }
+
+        .error-notification__title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 2px;
+        }
+
+        .error-notification__message {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .error-notification__close {
+            flex-shrink: 0;
+            background: transparent;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s ease;
+        }
+
+        .error-notification__close:hover {
+            color: #1a1a1a;
+        }
+
+        /* Last Refresh Indicator */
+        #lastRefresh {
+            font-size: 12px;
+            color: #64748b;
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl) var(--space-xl);
+            color: #64748b;
+        }
+
+        .empty-state-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-message {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .activity-monitor-enhanced {
+                padding: var(--space-lg);
+            }
+
+            .modal-container {
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .trends-header,
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .trends-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .date-range-selector,
+            .metric-toggles {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .users-table-enhanced {
+                font-size: 13px;
+            }
+
+            .users-table-enhanced th,
+            .users-table-enhanced td {
+                padding: 12px 16px;
+            }
+        }
+
+        /* Reduce motion for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <section class="activity-monitor-enhanced" role="region" aria-label="Activity Analytics">
+        
+        <!-- Trends Section -->
+        <article class="trends-section" role="article" aria-label="Activity Trends">
+            <header class="trends-header">
+                <h2 class="trends-title" id="trends-title">Activity Trends</h2>
+                <nav class="trends-controls" role="navigation" aria-label="Trend controls">
+                    <!-- Date Range Controls -->
+                    <fieldset class="date-range-selector" role="group" aria-label="Date range selection">
+                        <legend class="sr-only">Select date range</legend>
+                        <button class="date-preset active" data-range="7d">7 Days</button>
+                        <button class="date-preset" data-range="30d">30 Days</button>
+                        <button class="date-preset" data-range="90d">90 Days</button>
+                        <button class="date-preset" data-range="custom">Custom</button>
+                        <input type="date" class="date-input hidden" id="customStartDate" aria-label="Start date">
+                        <input type="date" class="date-input hidden" id="customEndDate" aria-label="End date">
+                    </fieldset>
+                    
+                    <!-- Metric Toggles -->
+                    <fieldset class="metric-toggles" role="group" aria-label="Metric selection">
+                        <legend class="sr-only">Toggle metrics</legend>
+                        <label class="metric-toggle">
+                            <input type="checkbox" checked data-metric="active_users">
+                            <span class="toggle-label">Active Users</span>
+                        </label>
+                        <label class="metric-toggle">
+                            <input type="checkbox" checked data-metric="page_views">
+                            <span class="toggle-label">Page Views</span>
+                        </label>
+                        <label class="metric-toggle">
+                            <input type="checkbox" data-metric="avg_session">
+                            <span class="toggle-label">Avg Session</span>
+                        </label>
+                        <label class="metric-toggle">
+                            <input type="checkbox" data-metric="api_calls">
+                            <span class="toggle-label">API Calls</span>
+                        </label>
+                    </fieldset>
+                    
+                    <!-- Export Button -->
+                    <button class="export-trends-btn" onclick="exportTrends()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path>
+                        </svg>
+                        Export
+                    </button>
+                </nav>
+            </header>
+            
+            <div class="trends-graph-wrapper">
+                <canvas id="trendsChart" role="img" aria-describedby="chart-description"></canvas>
+                <p id="chart-description" class="sr-only">
+                    Interactive line chart showing activity trends over time
+                </p>
+                <div class="graph-loading-overlay hidden" id="graphLoadingOverlay">
+                    <div class="spinner-large"></div>
+                    <span class="loading-text">Loading trends data...</span>
+                </div>
+            </div>
+            
+            <div class="trends-legend" id="customLegend"></div>
+            
+            <div style="padding: 0 var(--space-lg) var(--space-lg); text-align: right;">
+                <span id="lastRefresh">Last updated: Never</span>
+            </div>
+        </article>
+        
+        <!-- Enhanced Active Users Table -->
+        <article class="users-section" role="article" aria-label="Active Users">
+            <header class="section-header">
+                <h2 class="section-title">Active Users with Activity Scores</h2>
+                <div class="section-actions">
+                    <input type="text" placeholder="Search users..." id="userSearch" class="date-filter" style="width: 200px;">
+                    <select class="action-filter" id="roleFilter">
+                        <option value="">All Roles</option>
+                        <option value="admin">Admin</option>
+                        <option value="manager">Manager</option>
+                        <option value="driver">Driver</option>
+                        <option value="viewer">Viewer</option>
+                    </select>
+                </div>
+            </header>
+            <div style="overflow-x: auto;">
+                <table class="users-table-enhanced" role="table" aria-label="Active users with history">
+                    <caption class="sr-only">List of currently active users with session details and activity scores</caption>
+                    <thead>
+                        <tr role="row">
+                            <th role="columnheader">User</th>
+                            <th role="columnheader">Role</th>
+                            <th role="columnheader">Activity Score</th>
+                            <th role="columnheader">Current Page</th>
+                            <th role="columnheader">Last Action</th>
+                            <th role="columnheader">Session Duration</th>
+                            <th role="columnheader">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody role="rowgroup" id="activeUsersBody">
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="spinner-large"></div>
+                                    <div class="empty-state-message">Loading active users...</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+    
+    <!-- User History Modal -->
+    <div class="modal-overlay hidden" id="userHistoryModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h2 class="modal-title">User Activity History</h2>
+                    <div class="user-info-badge" id="modalUserInfo">
+                        <div class="user-avatar"></div>
+                        <div class="user-details">
+                            <span class="user-name" id="modalUserName">-</span>
+                            <span class="user-role" id="modalUserRole">-</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="modal-close" aria-label="Close" onclick="closeUserHistoryModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="history-filters">
+                    <input type="date" class="date-filter" id="historyStartDate" aria-label="History start date">
+                    <input type="date" class="date-filter" id="historyEndDate" aria-label="History end date">
+                    <select class="action-filter" id="actionTypeFilter">
+                        <option value="">All Actions</option>
+                        <option value="page_view">Page Views</option>
+                        <option value="api_call">API Calls</option>
+                        <option value="login">Logins</option>
+                        <option value="logout">Logouts</option>
+                        <option value="data_change">Data Changes</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="applyHistoryFilters()">Apply Filters</button>
+                </div>
+                <div class="history-timeline-enhanced" id="historyTimeline">
+                    <!-- Timeline items dynamically inserted here -->
+                </div>
+                <div class="history-pagination">
+                    <button class="pagination-btn" id="prevPage" onclick="previousPage()">Previous</button>
+                    <span class="pagination-info">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                    <button class="pagination-btn" id="nextPage" onclick="nextPage()">Next</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="exportUserHistory()">
+                    Export Full History
+                </button>
+                <button class="btn btn-secondary" onclick="closeUserHistoryModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="/api.js"></script>
+    <script src="/pages/activity-monitor-enhanced.js"></script>
+</body>
+</html>

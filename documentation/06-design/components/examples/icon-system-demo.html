@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVD Icon System Demo - User Management</title>
+    <link rel="stylesheet" href="/css/design-system.css">
+    <style>
+        /* Demo-specific styles */
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            font-family: var(--font-sans);
+        }
+        
+        .demo-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--color-neutral-0);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .demo-title {
+            margin-bottom: 1rem;
+            color: var(--color-neutral-900);
+            border-bottom: 2px solid var(--color-primary-500);
+            padding-bottom: 0.5rem;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .demo-item {
+            padding: 1rem;
+            background: var(--color-neutral-50);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        
+        .demo-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .demo-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        .demo-table th,
+        .demo-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--color-neutral-200);
+        }
+        
+        .demo-table th {
+            background: var(--color-neutral-50);
+            font-weight: var(--font-semibold);
+        }
+        
+        .code-block {
+            background: var(--color-neutral-900);
+            color: var(--color-neutral-100);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Icon Sprite - Include at beginning of body -->
+    <svg style="display: none;" aria-hidden="true">
+        <use href="/icons/svg-sprite.svg"></use>
+    </svg>
+
+    <div class="demo-container">
+        <h1>CVD Icon System Demo - User Management</h1>
+        <p>This page demonstrates the complete SVG icon system implementation for the CVD application's user management features.</p>
+
+        <!-- Icon Sizes Demo -->
+        <div class="demo-section">
+            <h2 class="demo-title">Icon Size Variants</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <svg class="icon icon--xs">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Extra Small (12px)<br><code>.icon--xs</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--sm">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Small (16px)<br><code>.icon--sm</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--md">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Medium (20px)<br><code>.icon--md</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Large (24px)<br><code>.icon--lg</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--xl">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Extra Large (32px)<br><code>.icon--xl</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--2xl">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>2X Large (48px)<br><code>.icon--2xl</code></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Icon Colors Demo -->
+        <div class="demo-section">
+            <h2 class="demo-title">Icon Color Variants</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-info-circle"></use>
+                    </svg>
+                    <p>Primary<br><code>.icon--primary</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--success">
+                        <use href="/icons/svg-sprite.svg#icon-check-circle"></use>
+                    </svg>
+                    <p>Success<br><code>.icon--success</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--warning">
+                        <use href="/icons/svg-sprite.svg#icon-exclamation-triangle"></use>
+                    </svg>
+                    <p>Warning<br><code>.icon--warning</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--danger">
+                        <use href="/icons/svg-sprite.svg#icon-x-circle"></use>
+                    </svg>
+                    <p>Danger<br><code>.icon--danger</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--secondary">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Secondary<br><code>.icon--secondary</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--muted">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Muted<br><code>.icon--muted</code></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Action Buttons -->
+        <div class="demo-section">
+            <h2 class="demo-title">User Management Action Buttons</h2>
+            
+            <h3>Primary Actions</h3>
+            <div class="demo-buttons">
+                <button class="btn btn--primary">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-plus"></use>
+                    </svg>
+                    Add User
+                </button>
+                
+                <button class="btn btn--success">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-check-circle"></use>
+                    </svg>
+                    Activate
+                </button>
+                
+                <button class="btn btn--secondary">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-download"></use>
+                    </svg>
+                    Export
+                </button>
+            </div>
+
+            <h3>User-Specific Actions</h3>
+            <div class="demo-buttons">
+                <button class="btn btn--sm btn--secondary" aria-label="Edit user">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-pencil"></use>
+                    </svg>
+                    Edit
+                </button>
+                
+                <button class="btn btn--sm btn--secondary" aria-label="Reset password">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-key"></use>
+                    </svg>
+                    Reset
+                </button>
+                
+                <button class="btn btn--sm btn--warning" aria-label="Deactivate user">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-pause"></use>
+                    </svg>
+                    Deactivate
+                </button>
+                
+                <button class="btn btn--sm btn--danger" aria-label="Delete user">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-trash"></use>
+                    </svg>
+                    Delete
+                </button>
+            </div>
+
+            <h3>Icon-Only Buttons</h3>
+            <div class="demo-buttons">
+                <button class="btn btn--icon-only btn--secondary" aria-label="Edit user">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-pencil"></use>
+                    </svg>
+                </button>
+                
+                <button class="btn btn--icon-only btn--secondary" aria-label="Reset password">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-key"></use>
+                    </svg>
+                </button>
+                
+                <button class="btn btn--icon-only btn--warning" aria-label="Deactivate user">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-pause"></use>
+                    </svg>
+                </button>
+                
+                <button class="btn btn--icon-only btn--danger" aria-label="Delete user">
+                    <svg class="icon icon--sm" aria-hidden="true">
+                        <use href="/icons/svg-sprite.svg#icon-trash"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Indicators -->
+        <div class="demo-section">
+            <h2 class="demo-title">User Status Indicators</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <span class="status-indicator" role="status" aria-label="User account is active">
+                        <svg class="icon icon--xs icon--success" aria-hidden="true">
+                            <use href="/icons/svg-sprite.svg#icon-check-circle"></use>
+                        </svg>
+                        <span aria-hidden="true">Active</span>
+                    </span>
+                    <p>Active User</p>
+                </div>
+                
+                <div class="demo-item">
+                    <span class="status-indicator" role="status" aria-label="User account is inactive">
+                        <svg class="icon icon--xs icon--warning" aria-hidden="true">
+                            <use href="/icons/svg-sprite.svg#icon-pause"></use>
+                        </svg>
+                        <span aria-hidden="true">Inactive</span>
+                    </span>
+                    <p>Inactive User</p>
+                </div>
+                
+                <div class="demo-item">
+                    <span class="status-indicator" role="status" aria-label="User account is locked">
+                        <svg class="icon icon--xs icon--danger" aria-hidden="true">
+                            <use href="/icons/svg-sprite.svg#icon-lock"></use>
+                        </svg>
+                        <span aria-hidden="true">Locked</span>
+                    </span>
+                    <p>Locked User</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complete User Table Example -->
+        <div class="demo-section">
+            <h2 class="demo-title">Complete User Management Table</h2>
+            <div style="overflow-x: auto;">
+                <table class="demo-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" aria-label="Select all users">
+                            </th>
+                            <th>
+                                <svg class="icon icon--xs icon--muted" aria-hidden="true">
+                                    <use href="/icons/svg-sprite.svg#icon-user"></use>
+                                </svg>
+                                Username
+                                <svg class="icon icon--xs table__sort-icon" aria-hidden="true">
+                                    <use href="/icons/svg-sprite.svg#icon-chevron-down"></use>
+                                </svg>
+                            </th>
+                            <th>
+                                <svg class="icon icon--xs icon--muted" aria-hidden="true">
+                                    <use href="/icons/svg-sprite.svg#icon-mail"></use>
+                                </svg>
+                                Email
+                            </th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" aria-label="Select user admin"></td>
+                            <td>admin</td>
+                            <td>admin@company.com</td>
+                            <td><span class="role-badge role-admin">Admin</span></td>
+                            <td>
+                                <span class="status-indicator">
+                                    <svg class="icon icon--xs icon--success" aria-hidden="true">
+                                        <use href="/icons/svg-sprite.svg#icon-check-circle"></use>
+                                    </svg>
+                                    Active
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn--sm btn--secondary" aria-label="Edit user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-pencil"></use>
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn--sm btn--secondary" aria-label="Reset password">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-key"></use>
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn--sm btn--warning" aria-label="Deactivate user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-pause"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" aria-label="Select user john.doe"></td>
+                            <td>john.doe</td>
+                            <td>john@company.com</td>
+                            <td><span class="role-badge role-manager">Manager</span></td>
+                            <td>
+                                <span class="status-indicator">
+                                    <svg class="icon icon--xs icon--warning" aria-hidden="true">
+                                        <use href="/icons/svg-sprite.svg#icon-pause"></use>
+                                    </svg>
+                                    Inactive
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn--sm btn--secondary" aria-label="Edit user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-pencil"></use>
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn--sm btn--success" aria-label="Activate user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-check-circle"></use>
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn--sm btn--danger" aria-label="Delete user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-trash"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" aria-label="Select user jane.smith"></td>
+                            <td>jane.smith</td>
+                            <td>jane@company.com</td>
+                            <td><span class="role-badge role-driver">Driver</span></td>
+                            <td>
+                                <span class="status-indicator">
+                                    <svg class="icon icon--xs icon--danger" aria-hidden="true">
+                                        <use href="/icons/svg-sprite.svg#icon-lock"></use>
+                                    </svg>
+                                    Locked
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn--sm btn--secondary" aria-label="Edit user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-pencil"></use>
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn--sm btn--secondary" aria-label="Unlock user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-unlock"></use>
+                                        </svg>
+                                    </button>
+                                    <button class="btn btn--sm btn--danger" aria-label="Delete user">
+                                        <svg class="icon icon--sm" aria-hidden="true">
+                                            <use href="/icons/svg-sprite.svg#icon-trash"></use>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Navigation Icons -->
+        <div class="demo-section">
+            <h2 class="demo-title">Navigation Icons</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-chart-bar"></use>
+                    </svg>
+                    <p>Dashboard<br><code>icon-chart-bar</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-server"></use>
+                    </svg>
+                    <p>Devices<br><code>icon-server</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-truck"></use>
+                    </svg>
+                    <p>Routes<br><code>icon-truck</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-clipboard-list"></use>
+                    </svg>
+                    <p>Service Orders<br><code>icon-clipboard-list</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p>Users<br><code>icon-user</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--primary">
+                        <use href="/icons/svg-sprite.svg#icon-cog"></use>
+                    </svg>
+                    <p>Settings<br><code>icon-cog</code></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Examples -->
+        <div class="demo-section">
+            <h2 class="demo-title">Implementation Examples</h2>
+            
+            <h3>Basic Button with Icon</h3>
+            <div class="code-block">
+&lt;button class="btn btn--warning" aria-label="Deactivate user"&gt;
+    &lt;svg class="icon icon--sm" aria-hidden="true"&gt;
+        &lt;use href="/icons/svg-sprite.svg#icon-pause"&gt;&lt;/use&gt;
+    &lt;/svg&gt;
+    Deactivate
+&lt;/button&gt;
+            </div>
+
+            <h3>Status Indicator</h3>
+            <div class="code-block">
+&lt;span class="status-indicator" role="status" aria-label="User account is active"&gt;
+    &lt;svg class="icon icon--xs icon--success" aria-hidden="true"&gt;
+        &lt;use href="/icons/svg-sprite.svg#icon-check-circle"&gt;&lt;/use&gt;
+    &lt;/svg&gt;
+    &lt;span aria-hidden="true"&gt;Active&lt;/span&gt;
+&lt;/span&gt;
+            </div>
+
+            <h3>Table Header with Sort Icon</h3>
+            <div class="code-block">
+&lt;th class="sortable-header" data-column="username"&gt;
+    Username 
+    &lt;svg class="icon icon--xs table__sort-icon" aria-hidden="true"&gt;
+        &lt;use href="/icons/svg-sprite.svg#icon-chevron-down"&gt;&lt;/use&gt;
+    &lt;/svg&gt;
+&lt;/th&gt;
+            </div>
+
+            <h3>Including the SVG Sprite</h3>
+            <div class="code-block">
+&lt;!-- Include at the beginning of body tag --&gt;
+&lt;svg style="display: none;" aria-hidden="true"&gt;
+    &lt;use href="/icons/svg-sprite.svg"&gt;&lt;/use&gt;
+&lt;/svg&gt;
+            </div>
+        </div>
+
+        <!-- Available Icons Reference -->
+        <div class="demo-section">
+            <h2 class="demo-title">Complete Icon Reference</h2>
+            <div class="demo-grid">
+                <!-- User Management Icons -->
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-user"></use>
+                    </svg>
+                    <p><code>icon-user</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-pencil"></use>
+                    </svg>
+                    <p><code>icon-pencil</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-key"></use>
+                    </svg>
+                    <p><code>icon-key</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-pause"></use>
+                    </svg>
+                    <p><code>icon-pause</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-trash"></use>
+                    </svg>
+                    <p><code>icon-trash</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-lock"></use>
+                    </svg>
+                    <p><code>icon-lock</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-unlock"></use>
+                    </svg>
+                    <p><code>icon-unlock</code></p>
+                </div>
+                
+                <!-- Status Icons -->
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--success">
+                        <use href="/icons/svg-sprite.svg#icon-check-circle"></use>
+                    </svg>
+                    <p><code>icon-check-circle</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--warning">
+                        <use href="/icons/svg-sprite.svg#icon-exclamation-triangle"></use>
+                    </svg>
+                    <p><code>icon-exclamation-triangle</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg icon--danger">
+                        <use href="/icons/svg-sprite.svg#icon-x-circle"></use>
+                    </svg>
+                    <p><code>icon-x-circle</code></p>
+                </div>
+                
+                <!-- Action Icons -->
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-plus"></use>
+                    </svg>
+                    <p><code>icon-plus</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-search"></use>
+                    </svg>
+                    <p><code>icon-search</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-download"></use>
+                    </svg>
+                    <p><code>icon-download</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-refresh"></use>
+                    </svg>
+                    <p><code>icon-refresh</code></p>
+                </div>
+                
+                <!-- Navigation Icons -->
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-chevron-up"></use>
+                    </svg>
+                    <p><code>icon-chevron-up</code></p>
+                </div>
+                <div class="demo-item">
+                    <svg class="icon icon--lg">
+                        <use href="/icons/svg-sprite.svg#icon-chevron-down"></use>
+                    </svg>
+                    <p><code>icon-chevron-down</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Demo interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for demo buttons
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Button clicked:', this.textContent.trim() || this.getAttribute('aria-label'));
+                });
+            });
+
+            // Add hover effects demonstration
+            document.querySelectorAll('.demo-item').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

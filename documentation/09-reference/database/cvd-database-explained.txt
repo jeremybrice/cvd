@@ -1,0 +1,255 @@
+CVD Database Structure - Human-Readable Explanation
+==================================================
+
+OVERVIEW
+--------
+The CVD (Vision Device Configuration) database is designed to manage a vending machine operation system. It tracks physical vending machines, their configurations, product inventory, sales data, service routes, and data from DEX files (industry-standard vending machine data exchange format).
+
+The database uses SQLite and follows a relational design with 18 interconnected tables organized into logical groups.
+
+CORE ENTITY RELATIONSHIPS
+-------------------------
+
+1. PHYSICAL DEVICE HIERARCHY
+   - A DEVICE represents a physical vending machine in the field
+   - Each device has one or more CABINET CONFIGURATIONS (compartments within the machine)
+   - Each cabinet has a PLANOGRAM (the layout/map of product slots)
+   - Each planogram contains multiple SLOTS where products are placed
+
+2. ORGANIZATIONAL STRUCTURE
+   - LOCATIONS define where devices are physically placed
+   - ROUTES organize devices for service and restocking visits
+   - DEVICE TYPES categorize machines by their capabilities
+   - CABINET TYPES define standard cabinet configurations
+
+TABLE DETAILS
+=============
+
+DEVICES TABLE
+-------------
+Purpose: Master record for each physical vending machine
+Key Fields:
+- asset: Unique identifier (like a serial number)
+- cooler: Another identifier field
+- model: The machine model name
+- location_id: Where the device is located
+- device_type_id: What type of vending machine it is
+- route_id: Which service route it belongs to
+- deleted_at/deleted_by: Soft deletion support (machines aren't really deleted, just marked as removed)
+
+Business Logic: This is the central table. Every other table either describes this device or relates to its operations.
+
+CABINET_CONFIGURATIONS TABLE
+----------------------------
+Purpose: Defines the internal structure of vending machines
+Key Fields:
+- device_id: Which device this cabinet belongs to
+- cabinet_type_id: What type of cabinet (cooler, freezer, etc.)
+- model_name: Specific cabinet model
+- is_parent: Whether this is the main cabinet
+- cabinet_index: Order/position within the device
+- rows/columns: Physical dimensions (how many slots)
+
+Business Logic: Modern vending machines can have multiple compartments. A PicoVision machine might have a cooler section, freezer section, and ambient temperature section.
+
+PLANOGRAMS TABLE
+---------------
+Purpose: Links cabinets to their product layout configurations
+Key Fields:
+- cabinet_id: Which cabinet this planogram describes
+- planogram_key: Unique identifier for this layout
+- updated_at: When the layout was last changed
+
+Business Logic: A planogram is like a map showing which products go in which slots. Each cabinet gets its own planogram.
+
+PLANOGRAM_SLOTS TABLE
+--------------------
+Purpose: Individual product slots within each cabinet
+Key Fields:
+- planogram_id: Which planogram layout this slot belongs to
+- slot_position: Physical location (like "A1", "B3")
+- product_id: What product is currently assigned to this slot
+- quantity: How many units are currently in the slot
+- capacity: Maximum units the slot can hold
+- par_level: Minimum stock level before restocking needed
+- price: Selling price for this slot
+- cleared_at/cleared_by: Audit trail for when slots are emptied
+
+Business Logic: This is where the rubber meets the road - actual inventory tracking at the slot level.
+
+PRODUCTS TABLE
+-------------
+Purpose: Master catalog of all products that can be sold
+Key Fields:
+- name: Product name
+- category: Product classification (beverages, snacks, etc.)
+- price: Standard selling price
+- image: Product photo
+- is_system: Whether this is a built-in system product
+
+Business Logic: Centralized product catalog. Products can be assigned to any slot in any machine.
+
+SALES TABLE
+----------
+Purpose: Transaction records for every sale
+Key Fields:
+- device_id: Which machine made the sale
+- product_id: What product was sold
+- sale_units: How many units were sold
+- sale_cash: How much money was collected
+- created_at: When the sale occurred
+
+Business Logic: This drives all revenue reporting and restocking decisions.
+
+LOCATION AND ROUTING TABLES
+---------------------------
+
+LOCATIONS TABLE
+- Simple master list of where devices can be placed
+- Fields: id, name, timestamps
+
+ROUTES TABLE  
+- Service routes for organizing devices
+- Fields: id, name, route_number, timestamps
+
+DEVICE_ROUTES TABLE
+- Many-to-many relationship: devices can be on multiple routes
+- Fields: device_id, route_id (composite primary key)
+
+Business Logic: Routes help organize service visits. A technician follows a route to restock multiple machines efficiently.
+
+SERVICE AND METRICS TABLES
+--------------------------
+
+SERVICE_VISITS TABLE
+Purpose: Track when machines are serviced
+Key Fields:
+- device_id: Which machine was serviced
+- service_date: When service occurred
+- units_restocked: How many products were added
+- service_type: routine/emergency/maintenance
+- technician_id: Who did the work
+- duration_minutes: How long it took
+
+DEVICE_METRICS TABLE
+Purpose: Cached calculations for performance
+Key Fields:
+- device_id: Which device (primary key)
+- sold_out_count: How many slots are empty
+- days_remaining_inventory: Predictive restocking metric
+- product_level_percent: Overall fullness percentage
+- units_to_par: How many units needed to reach optimal levels
+
+Business Logic: These metrics are expensive to calculate, so they're cached here and refreshed periodically.
+
+SLOT_METRICS TABLE
+Purpose: Detailed metrics for individual slots
+Key Fields:
+- planogram_slot_id: Which specific slot
+- is_sold_out: Whether the slot is empty
+- sales_28_day/sales_all_time: Sales velocity tracking
+- daily_velocity: Average sales per day
+- last_calculated: When metrics were computed
+
+Business Logic: Enables slot-level analysis for optimal product placement and restocking.
+
+SERVICE ORDER MANAGEMENT
+------------------------
+
+SERVICE_ORDERS TABLE
+Purpose: Work orders for technician visits
+Key Fields:
+- route_id: Which route this order covers
+- status: pending/in_progress/completed/cancelled
+- total_units: How many products need restocking
+- estimated_duration_minutes: Time planning
+
+SERVICE_ORDER_ITEMS TABLE
+Purpose: Specific items within each service order
+Key Fields:
+- service_order_id: Which order this belongs to
+- device_id: Specific machine
+- cabinet_index: Which cabinet within the machine
+- product_id: What product is needed
+- quantity_needed: How many units to restock
+
+Business Logic: This creates detailed work instructions for technicians.
+
+DEX FILE PROCESSING TABLES
+--------------------------
+(DEX = Data Exchange - industry standard for vending machine data)
+
+DEX_READS TABLE
+Purpose: Track uploaded DEX files from machines
+Key Fields:
+- filename: Original file name
+- machine_serial: Which machine generated the file
+- raw_content: Complete file contents
+- parsed_successfully: Whether processing worked
+- error_message/error_line: Debugging information
+
+DEX_RECORDS TABLE
+Purpose: Individual records within DEX files
+Key Fields:
+- dex_read_id: Which file upload this came from
+- record_type: Type of data record
+- line_number: Position in original file
+- raw_record: Original data line
+- parsed_data: Processed/cleaned data
+
+DEX_PA_RECORDS TABLE
+Purpose: Product Audit records (sales/inventory data from machines)
+Key Fields:
+- dex_read_id: Which file upload
+- selection_number: Machine's internal slot identifier
+- price_cents/units_sold/revenue_cents: Sales data
+- cash_sales/cashless_sales: Payment method breakdowns
+- row/column: Grid position (populated by pattern analysis)
+
+Business Logic: DEX files contain rich operational data from the machines themselves. The system automatically analyzes selection number patterns to determine the physical grid layout.
+
+CONFIGURATION TABLE
+-------------------
+
+ROUTE_PLANNING_CONFIG TABLE
+Purpose: System-wide settings for route optimization
+Key Fields:
+- critical_dri_threshold: Days remaining inventory for critical status
+- warning_dri_threshold: Warning level threshold
+- auto_select_critical: Whether to automatically select critical devices
+- metrics_cache_ttl_minutes: How long to cache expensive calculations
+
+DESIGN PATTERNS AND FEATURES
+============================
+
+1. SOFT DELETES
+   - Devices aren't actually deleted, just marked with deleted_at timestamp
+   - Preserves historical data while hiding inactive devices
+   - Allows for recovery if deletion was accidental
+
+2. AUDIT TRAILS
+   - Most tables include created_at/updated_at timestamps
+   - Slot clearing tracks who and when (cleared_by, cleared_at)
+   - Service visits maintain complete history
+
+3. FOREIGN KEY RELATIONSHIPS
+   - Strict referential integrity with appropriate CASCADE/SET NULL rules
+   - Prevents orphaned records while allowing safe deletions
+   - Maintains data consistency across related tables
+
+4. PERFORMANCE OPTIMIZATION
+   - 23+ indexes on frequently queried columns
+   - Cached metrics tables to avoid expensive real-time calculations
+   - Composite indexes for common query patterns
+
+5. FLEXIBLE ARCHITECTURE
+   - Supports multi-cabinet devices through cabinet_configurations
+   - Configurable thresholds via route_planning_config
+   - Extensible product categorization system
+
+6. INTEGRATION READY
+   - DEX file processing for real machine data
+   - Grid pattern analysis for automatic slot mapping
+   - API-friendly camelCase property naming
+
+This database design supports a complete vending machine operation from device deployment through daily operations, maintenance, and business intelligence reporting.

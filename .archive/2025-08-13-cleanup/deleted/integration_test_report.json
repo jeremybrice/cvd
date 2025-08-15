@@ -1,0 +1,193 @@
+{
+  "test_run": {
+    "timestamp": "2025-08-12T08:20:59.540361",
+    "total_tests": 26,
+    "passed_tests": 26,
+    "failed_tests": 0,
+    "success_rate": 100.0
+  },
+  "results": [
+    {
+      "test_name": "Multiple Admin Sessions",
+      "success": true,
+      "message": "All 5 admin sessions hide admin user",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:55.995677"
+    },
+    {
+      "test_name": "Role Session manager",
+      "success": true,
+      "message": "Correctly blocked from user endpoints",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.482157"
+    },
+    {
+      "test_name": "Role Session driver",
+      "success": true,
+      "message": "Correctly blocked from user endpoints",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.636188"
+    },
+    {
+      "test_name": "Role Session viewer",
+      "success": true,
+      "message": "Correctly blocked from user endpoints",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.735851"
+    },
+    {
+      "test_name": "Large Pagination",
+      "success": true,
+      "message": "Large pagination request hides admin (10 users)",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.901227"
+    },
+    {
+      "test_name": "Special Search 'admin%'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.903750"
+    },
+    {
+      "test_name": "Special Search 'admin*'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.906150"
+    },
+    {
+      "test_name": "Special Search 'admin_'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.908582"
+    },
+    {
+      "test_name": "Special Search 'ADMIN'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.910868"
+    },
+    {
+      "test_name": "Special Search 'Admin'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.913302"
+    },
+    {
+      "test_name": "Special Search 'aDmIn'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.915818"
+    },
+    {
+      "test_name": "Special Search '%admin%'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.918279"
+    },
+    {
+      "test_name": "Special Search '*admin*'",
+      "success": true,
+      "message": "Admin hidden in special character search",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.920523"
+    },
+    {
+      "test_name": "Filter Combo (role=admin, status=active)",
+      "success": true,
+      "message": "Admin hidden in combined filters",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.922826"
+    },
+    {
+      "test_name": "Filter Combo (role=admin, search=admin)",
+      "success": true,
+      "message": "Admin hidden in combined filters",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.925356"
+    },
+    {
+      "test_name": "Filter Combo (status=active, search=admin)",
+      "success": true,
+      "message": "Admin hidden in combined filters",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.927775"
+    },
+    {
+      "test_name": "Filter Combo (role=admin, status=active, search=admin)",
+      "success": true,
+      "message": "Admin hidden in combined filters",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:56.930047"
+    },
+    {
+      "test_name": "Persistence Initial Load",
+      "success": true,
+      "message": "Admin hidden after Initial Load",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.083002"
+    },
+    {
+      "test_name": "Persistence Search Operation",
+      "success": true,
+      "message": "Admin hidden after Search Operation",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.085544"
+    },
+    {
+      "test_name": "Persistence Filter Operation",
+      "success": true,
+      "message": "Admin hidden after Filter Operation",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.087973"
+    },
+    {
+      "test_name": "Persistence Pagination",
+      "success": true,
+      "message": "Admin hidden after Pagination",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.090527"
+    },
+    {
+      "test_name": "Persistence After User Creation",
+      "success": true,
+      "message": "Admin hidden after After User Creation",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.185889"
+    },
+    {
+      "test_name": "Persistence Final Check",
+      "success": true,
+      "message": "Admin hidden after Final Check",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.188258"
+    },
+    {
+      "test_name": "Overall Persistence",
+      "success": true,
+      "message": "Admin hiding persists across all session operations",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:57.188265"
+    },
+    {
+      "test_name": "Rapid Requests",
+      "success": true,
+      "message": "Admin hidden during 20 rapid successive requests",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:59.402815"
+    },
+    {
+      "test_name": "Concurrent Requests",
+      "success": true,
+      "message": "Admin hidden during 10 concurrent requests",
+      "details": {},
+      "timestamp": "2025-08-12T08:20:59.540340"
+    }
+  ]
+}

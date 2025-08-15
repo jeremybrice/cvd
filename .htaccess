@@ -1,0 +1,8 @@
+# Set correct MIME type for manifest.json
+<Files "manifest.json">
+    Header set Content-Type "application/manifest+json"
+</Files>
+
+# Set correct MIME types for PWA files
+AddType application/manifest+json .json
+AddType text/cache-manifest .appcache

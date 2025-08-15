@@ -1,0 +1,455 @@
+{
+  "analysis_date": "2025-08-08T14:51:31.902192",
+  "database": {
+    "file_size_mb": 5.54,
+    "table_count": 34,
+    "total_rows": 16312
+  },
+  "tables": {
+    "activity_alerts": {
+      "row_count": 24,
+      "columns": 13,
+      "foreign_keys": 3,
+      "indexes": 3,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 4,
+        "last_7_days": 24,
+        "last_30_days": 24,
+        "first_record": "2025-08-06 22:00:14",
+        "last_record": "2025-08-08 18:15:32"
+      }
+    },
+    "activity_summary_daily": {
+      "row_count": 2,
+      "columns": 12,
+      "foreign_keys": 0,
+      "indexes": 2,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 1,
+        "last_7_days": 2,
+        "last_30_days": 2,
+        "first_record": "2025-08-07 04:00:02",
+        "last_record": "2025-08-08 11:58:00"
+      }
+    },
+    "audit_log": {
+      "row_count": 2350,
+      "columns": 8,
+      "foreign_keys": 1,
+      "indexes": 2,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 777,
+        "last_7_days": 2345,
+        "last_30_days": 2350,
+        "first_record": "2025-08-01 17:43:33",
+        "last_record": "2025-08-08 18:15:23"
+      }
+    },
+    "cabinet_configurations": {
+      "row_count": 44,
+      "columns": 8,
+      "foreign_keys": 2,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "cabinet_types": {
+      "row_count": 6,
+      "columns": 6,
+      "foreign_keys": 0,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "device_metrics": {
+      "row_count": 14,
+      "columns": 7,
+      "foreign_keys": 1,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "device_routes": {
+      "row_count": 7,
+      "columns": 2,
+      "foreign_keys": 2,
+      "indexes": 2,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "device_types": {
+      "row_count": 3,
+      "columns": 4,
+      "foreign_keys": 0,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "devices": {
+      "row_count": 20,
+      "columns": 11,
+      "foreign_keys": 3,
+      "indexes": 3,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 1,
+        "last_30_days": 3,
+        "first_record": "2025-07-06 02:21:49",
+        "last_record": "2025-08-05 21:27:56"
+      }
+    },
+    "dex_pa_records": {
+      "row_count": 603,
+      "columns": 20,
+      "foreign_keys": 1,
+      "indexes": 5,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 341,
+        "last_30_days": 603,
+        "first_record": "2025-07-11 15:36:12",
+        "last_record": "2025-08-06 20:00:33"
+      }
+    },
+    "dex_reads": {
+      "row_count": 23,
+      "columns": 12,
+      "foreign_keys": 0,
+      "indexes": 2,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "dex_records": {
+      "row_count": 1682,
+      "columns": 8,
+      "foreign_keys": 1,
+      "indexes": 2,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 901,
+        "last_30_days": 1682,
+        "first_record": "2025-07-11 15:36:12",
+        "last_record": "2025-08-06 20:00:33"
+      }
+    },
+    "driver_routes": {
+      "row_count": 0,
+      "columns": 3,
+      "foreign_keys": 2,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "knowledge_base_articles": {
+      "row_count": 9,
+      "columns": 14,
+      "foreign_keys": 0,
+      "indexes": 5,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "knowledge_base_categories": {
+      "row_count": 5,
+      "columns": 5,
+      "foreign_keys": 0,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "locations": {
+      "row_count": 10,
+      "columns": 7,
+      "foreign_keys": 0,
+      "indexes": 0,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 1,
+        "last_30_days": 1,
+        "first_record": "2025-07-06 01:36:06",
+        "last_record": "2025-08-05 21:08:42"
+      }
+    },
+    "migrations": {
+      "row_count": 1,
+      "columns": 3,
+      "foreign_keys": 0,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "planogram_slots": {
+      "row_count": 1658,
+      "columns": 12,
+      "foreign_keys": 2,
+      "indexes": 3,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "planograms": {
+      "row_count": 44,
+      "columns": 4,
+      "foreign_keys": 1,
+      "indexes": 2,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "products": {
+      "row_count": 32,
+      "columns": 7,
+      "foreign_keys": 0,
+      "indexes": 1,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 0,
+        "last_30_days": 0,
+        "first_record": "2025-07-02 18:08:37",
+        "last_record": "2025-07-06 23:42:34"
+      }
+    },
+    "route_planning_config": {
+      "row_count": 1,
+      "columns": 6,
+      "foreign_keys": 0,
+      "indexes": 0,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "routes": {
+      "row_count": 3,
+      "columns": 6,
+      "foreign_keys": 1,
+      "indexes": 1,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 1,
+        "last_30_days": 1,
+        "first_record": "2025-07-06 03:02:33",
+        "last_record": "2025-08-07 00:25:35"
+      }
+    },
+    "sales": {
+      "row_count": 2731,
+      "columns": 7,
+      "foreign_keys": 2,
+      "indexes": 4,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 204,
+        "last_30_days": 383,
+        "first_record": "2024-12-15 07:05:00",
+        "last_record": "2025-08-05 22:45:00"
+      }
+    },
+    "service_order_cabinet_items": {
+      "row_count": 170,
+      "columns": 5,
+      "foreign_keys": 2,
+      "indexes": 2,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 102,
+        "last_30_days": 170,
+        "first_record": "2025-07-24 22:27:53",
+        "last_record": "2025-08-07 12:00:27"
+      }
+    },
+    "service_order_cabinets": {
+      "row_count": 34,
+      "columns": 8,
+      "foreign_keys": 3,
+      "indexes": 2,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 20,
+        "last_30_days": 34,
+        "first_record": "2025-07-24 22:27:53",
+        "last_record": "2025-08-07 12:00:27"
+      }
+    },
+    "service_order_photos": {
+      "row_count": 0,
+      "columns": 7,
+      "foreign_keys": 2,
+      "indexes": 0,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "service_orders": {
+      "row_count": 9,
+      "columns": 10,
+      "foreign_keys": 2,
+      "indexes": 1,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 5,
+        "last_30_days": 9,
+        "first_record": "2025-07-24 22:27:53",
+        "last_record": "2025-08-07 12:00:27"
+      }
+    },
+    "service_visit_items": {
+      "row_count": 10,
+      "columns": 5,
+      "foreign_keys": 2,
+      "indexes": 2,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 10,
+        "last_30_days": 10,
+        "first_record": "2025-08-05 17:53:08",
+        "last_record": "2025-08-05 17:56:45"
+      }
+    },
+    "service_visits": {
+      "row_count": 2,
+      "columns": 10,
+      "foreign_keys": 3,
+      "indexes": 3,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "sessions": {
+      "row_count": 1,
+      "columns": 11,
+      "foreign_keys": 1,
+      "indexes": 5,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 1,
+        "last_7_days": 1,
+        "last_30_days": 1,
+        "first_record": "2025-08-08 16:15:22",
+        "last_record": "2025-08-08 16:15:22"
+      }
+    },
+    "slot_metrics": {
+      "row_count": 1146,
+      "columns": 12,
+      "foreign_keys": 1,
+      "indexes": 3,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "system_config": {
+      "row_count": 9,
+      "columns": 4,
+      "foreign_keys": 0,
+      "indexes": 1,
+      "has_timestamps": false,
+      "growth": {}
+    },
+    "user_activity_log": {
+      "row_count": 5653,
+      "columns": 13,
+      "foreign_keys": 2,
+      "indexes": 5,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 1750,
+        "last_7_days": 5653,
+        "last_30_days": 5653,
+        "first_record": "2025-08-06 22:00:14",
+        "last_record": "2025-08-08 18:15:53"
+      }
+    },
+    "users": {
+      "row_count": 6,
+      "columns": 11,
+      "foreign_keys": 0,
+      "indexes": 4,
+      "has_timestamps": true,
+      "growth": {
+        "last_24_hours": 0,
+        "last_7_days": 3,
+        "last_30_days": 6,
+        "first_record": "2025-08-01 16:26:25.537214",
+        "last_record": "2025-08-07 07:48:44.048684"
+      }
+    }
+  },
+  "quality_issues": [
+    "HIGH: 1 products with invalid prices"
+  ],
+  "high_volume_tables": [
+    {
+      "name": "user_activity_log",
+      "rows": 5653
+    },
+    {
+      "name": "sales",
+      "rows": 2731
+    },
+    {
+      "name": "audit_log",
+      "rows": 2350
+    },
+    {
+      "name": "dex_records",
+      "rows": 1682
+    },
+    {
+      "name": "planogram_slots",
+      "rows": 1658
+    },
+    {
+      "name": "slot_metrics",
+      "rows": 1146
+    },
+    {
+      "name": "dex_pa_records",
+      "rows": 603
+    },
+    {
+      "name": "service_order_cabinet_items",
+      "rows": 170
+    },
+    {
+      "name": "cabinet_configurations",
+      "rows": 44
+    },
+    {
+      "name": "planograms",
+      "rows": 44
+    }
+  ],
+  "high_growth_tables": [
+    {
+      "name": "audit_log",
+      "last_30_days": 2350
+    },
+    {
+      "name": "dex_pa_records",
+      "last_30_days": 603
+    },
+    {
+      "name": "dex_records",
+      "last_30_days": 1682
+    },
+    {
+      "name": "sales",
+      "last_30_days": 383
+    },
+    {
+      "name": "service_order_cabinet_items",
+      "last_30_days": 170
+    },
+    {
+      "name": "user_activity_log",
+      "last_30_days": 5653
+    }
+  ]
+}

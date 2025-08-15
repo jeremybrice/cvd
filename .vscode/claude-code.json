@@ -1,0 +1,82 @@
+{
+  "claudeCode": {
+    "projectType": "flask-spa-pwa",
+    "primaryLanguages": ["python", "javascript", "html"],
+    "contextPriority": {
+      "always": [
+        "CLAUDE.md",
+        ".claude/MEMORY.md",
+        "docs/CONTEXT.md"
+      ],
+      "frequent": [
+        "app.py",
+        "api.js",
+        "index.html"
+      ],
+      "module_specific": {
+        "service_orders": [
+          "service_order_service.py",
+          "pages/service-orders.html"
+        ],
+        "planogram": [
+          "planogram_optimizer.py",
+          "pages/NSPT.html"
+        ],
+        "dex": [
+          "dex_parser.py",
+          "grid_pattern_analyzer.py"
+        ],
+        "pwa": [
+          "pages/driver-app/index.html",
+          "pages/driver-app/service-worker.js"
+        ]
+      }
+    },
+    "customCommands": {
+      "cvd-service-order": "Service order workflows",
+      "cvd-planogram": "Planogram optimization",
+      "cvd-dex-parse": "DEX file processing",
+      "cvd-route-optimize": "Route optimization"
+    },
+    "agents": {
+      "primary": [
+        "backend-engineer",
+        "frontend-engineer",
+        "merchandising-analyst"
+      ],
+      "support": [
+        "qa-test-engineer",
+        "security-analyst",
+        "deployment-engineer"
+      ],
+      "specialized": [
+        "system-architect",
+        "product-manager",
+        "designer",
+        "documentation-specialist",
+        "debugger",
+        "claude-expert"
+      ]
+    },
+    "workflowPatterns": {
+      "newFeature": [
+        "product-manager: Define requirements",
+        "system-architect: Design solution",
+        "backend-engineer: Implement API",
+        "frontend-engineer: Build UI",
+        "qa-test-engineer: Test implementation",
+        "documentation-specialist: Update docs"
+      ],
+      "bugFix": [
+        "debugger: Analyze issue",
+        "backend-engineer OR frontend-engineer: Fix bug",
+        "qa-test-engineer: Verify fix"
+      ],
+      "optimization": [
+        "merchandising-analyst: Analyze performance",
+        "system-architect: Design improvements",
+        "backend-engineer: Optimize code"
+      ]
+    },
+  }
+}

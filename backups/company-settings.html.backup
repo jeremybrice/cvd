@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Settings - Vision Device Configuration Tool</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .page-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e1e5e8;
+            padding: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0 0 16px 0;
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #006dfe;
+        }
+        
+        /* Tab System */
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #dee2e6;
+            margin: 0 -20px;
+            padding: 0 20px;
+        }
+        
+        .tab {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #555;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .tab:hover {
+            color: #006dfe;
+            background: rgba(0, 109, 254, 0.05);
+        }
+        
+        .tab.active {
+            color: #006dfe;
+            border-bottom-color: #006dfe;
+        }
+        
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .action-bar h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #333;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-primary {
+            background-color: #006dfe;
+            color: white;
+            border: 1px solid #006dfe;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056cc;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f5f5f5;
+            border-color: #ccc;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+            border-color: #bd2130;
+        }
+        
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover:not(.filter-row) {
+            background: #f8f9fa;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 16px;
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            background: #f8f9fa;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #006dfe;
+            box-shadow: 0 0 0 3px rgba(0, 109, 254, 0.1);
+        }
+        
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #006dfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Error State */
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Success State */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        /* Filter Row */
+        .filter-row td {
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .filter-input:focus {
+            outline: 2px solid #006dfe;
+            outline-offset: -1px;
+            border-color: #006dfe;
+        }
+        
+        /* Alternating Row Colors */
+        .table tbody tr:nth-child(even):not(.filter-row) {
+            background: #f9f9f9;
+        }
+        
+        /* Row Hover Effect */
+        .table tbody tr:hover:not(.filter-row) {
+            background: #f0f4ff;
+        }
+        
+        /* Image Preview */
+        .image-preview {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .image-placeholder {
+            width: 40px;
+            height: 40px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            font-size: 12px;
+        }
+        
+        /* Confirmation Dialog */
+        .confirm-dialog {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .confirm-dialog h3 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .confirm-dialog p {
+            margin: 0 0 20px 0;
+            color: #666;
+        }
+        
+        .confirm-dialog .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <div class="header">
+            <h1>Company Settings</h1>
+            <div class="tabs">
+                <button class="tab active" data-tab="locations">Locations</button>
+                <button class="tab" data-tab="routes">Routes</button>
+                <button class="tab" data-tab="products">Products</button>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Locations Tab -->
+            <div id="locations" class="tab-content active">
+                <div class="action-bar">
+                    <h2>Manage Locations</h2>
+                    <button class="btn btn-primary" onclick="openModal('location')">
+                        + Create New Location
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="locationsLoading" class="loading">
+                        <div class="spinner"></div>
+                        Loading locations...
+                    </div>
+                    <table id="locationsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="180">Created Date</th>
+                                <th width="150">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="locationsTableBody">
+                            <tr class="filter-row">
+                                <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter..."></td>
+                                <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter..."></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="locationsEmpty" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon">📍</div>
+                        <p>No locations found</p>
+                        <p>Click "Create New Location" to add your first location</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Routes Tab -->
+            <div id="routes" class="tab-content">
+                <div class="action-bar">
+                    <h2>Manage Routes</h2>
+                    <button class="btn btn-primary" onclick="openModal('route')">
+                        + Create New Route
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="routesLoading" class="loading">
+                        <div class="spinner"></div>
+                        Loading routes...
+                    </div>
+                    <table id="routesTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th width="150">Route Number</th>
+                                <th width="180">Created Date</th>
+                                <th width="150">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="routesTableBody">
+                            <tr class="filter-row">
+                                <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter..."></td>
+                                <td><input type="text" class="filter-input" data-filter="route_number" placeholder="Filter..."></td>
+                                <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter..."></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="routesEmpty" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon">🚛</div>
+                        <p>No routes found</p>
+                        <p>Click "Create New Route" to add your first route</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Tab -->
+            <div id="products" class="tab-content">
+                <div class="action-bar">
+                    <h2>Manage Products</h2>
+                    <button class="btn btn-primary" onclick="openModal('product')">
+                        + Create New Product
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="productsLoading" class="loading">
+                        <div class="spinner"></div>
+                        Loading products...
+                    </div>
+                    <table id="productsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th width="60">Image</th>
+                                <th>Name</th>
+                                <th width="150">Category</th>
+                                <th width="100">Price</th>
+                                <th width="180">Created Date</th>
+                                <th width="150">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr class="filter-row">
+                                <td></td>
+                                <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter..."></td>
+                                <td><input type="text" class="filter-input" data-filter="category" placeholder="Filter..."></td>
+                                <td><input type="text" class="filter-input" data-filter="price" placeholder="Filter..."></td>
+                                <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter..."></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="productsEmpty" class="empty-state" style="display: none;">
+                        <div class="empty-state-icon">📦</div>
+                        <p>No products found</p>
+                        <p>Click "Create New Product" to add your first product</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Location Modal -->
+    <div id="locationModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header" id="locationModalTitle">Create New Location</div>
+            <div class="modal-body">
+                <form id="locationForm">
+                    <input type="hidden" id="locationId" name="id">
+                    <div class="form-group">
+                        <label for="locationName">Location Name *</label>
+                        <input type="text" id="locationName" name="name" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('location')">Cancel</button>
+                <button class="btn btn-primary" id="locationSaveBtn" onclick="saveLocation()">Save Location</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Route Modal -->
+    <div id="routeModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header" id="routeModalTitle">Create New Route</div>
+            <div class="modal-body">
+                <form id="routeForm">
+                    <input type="hidden" id="routeId" name="id">
+                    <div class="form-group">
+                        <label for="routeName">Route Name *</label>
+                        <input type="text" id="routeName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="routeNumber">Route Number</label>
+                        <input type="number" id="routeNumber" name="routeNumber">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('route')">Cancel</button>
+                <button class="btn btn-primary" id="routeSaveBtn" onclick="saveRoute()">Save Route</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Modal -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header" id="productModalTitle">Create New Product</div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <input type="hidden" id="productId" name="id">
+                    <div class="form-group">
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productCategory">Category *</label>
+                        <select id="productCategory" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="water">Water</option>
+                            <option value="soda">Soda</option>
+                            <option value="juice">Juice</option>
+                            <option value="sports">Sports Drinks</option>
+                            <option value="energy">Energy Drinks</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productPrice">Price *</label>
+                        <input type="number" id="productPrice" name="price" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productImage">Image URL</label>
+                        <input type="text" id="productImage" name="image" placeholder="https://example.com/image.png">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('product')">Cancel</button>
+                <button class="btn btn-primary" id="productSaveBtn" onclick="saveProduct()">Save Product</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="confirm-dialog">
+            <h3 id="confirmTitle">Confirm Delete</h3>
+            <p id="confirmMessage">Are you sure you want to delete this item?</p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/api.js"></script>
+    <script>
+        // Initialize API client
+        const api = new CVDApi();
+        
+        // State management
+        const state = {
+            currentTab: 'locations',
+            locations: [],
+            routes: [],
+            products: [],
+            editingId: null,
+            deleteCallback: null
+        };
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setupTabHandlers();
+            setupFilterHandlers();
+            loadTabData('locations');
+        });
+        
+        // Tab switching
+        function setupTabHandlers() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const tabName = this.dataset.tab;
+                    document.getElementById(tabName).classList.add('active');
+                    
+                    state.currentTab = tabName;
+                    loadTabData(tabName);
+                });
+            });
+        }
+        
+        // Load data for current tab
+        async function loadTabData(tabName) {
+            switch(tabName) {
+                case 'locations':
+                    await loadLocations();
+                    break;
+                case 'routes':
+                    await loadRoutes();
+                    break;
+                case 'products':
+                    await loadProducts();
+                    break;
+            }
+        }
+        
+        // Load locations
+        async function loadLocations() {
+            const loading = document.getElementById('locationsLoading');
+            const table = document.getElementById('locationsTable');
+            const empty = document.getElementById('locationsEmpty');
+            const tbody = document.getElementById('locationsTableBody');
+            
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            
+            try {
+                const locations = await api.getLocations();
+                state.locations = locations;
+                
+                loading.style.display = 'none';
+                
+                if (locations.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    table.style.display = 'table';
+                    renderLocationsTable(locations);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Failed to load locations: ' + error.message);
+            }
+        }
+        
+        // Load routes
+        async function loadRoutes() {
+            const loading = document.getElementById('routesLoading');
+            const table = document.getElementById('routesTable');
+            const empty = document.getElementById('routesEmpty');
+            const tbody = document.getElementById('routesTableBody');
+            
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            
+            try {
+                const routes = await api.getRoutes();
+                state.routes = routes;
+                
+                loading.style.display = 'none';
+                
+                if (routes.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    table.style.display = 'table';
+                    renderRoutesTable(routes);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Failed to load routes: ' + error.message);
+            }
+        }
+        
+        // Load products
+        async function loadProducts() {
+            const loading = document.getElementById('productsLoading');
+            const table = document.getElementById('productsTable');
+            const empty = document.getElementById('productsEmpty');
+            const tbody = document.getElementById('productsTableBody');
+            
+            loading.style.display = 'flex';
+            table.style.display = 'none';
+            empty.style.display = 'none';
+            
+            try {
+                const products = await api.getProducts();
+                state.products = products;
+                
+                loading.style.display = 'none';
+                
+                if (products.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    table.style.display = 'table';
+                    renderProductsTable(products);
+                }
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Failed to load products: ' + error.message);
+            }
+        }
+        
+        // Modal functions
+        function openModal(type) {
+            const modal = document.getElementById(`${type}Modal`);
+            modal.classList.add('active');
+            
+            // Reset form and set to create mode
+            const form = document.getElementById(`${type}Form`);
+            form.reset();
+            state.editingId = null;
+            
+            // Update modal title and button text
+            document.getElementById(`${type}ModalTitle`).textContent = `Create New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            document.getElementById(`${type}SaveBtn`).textContent = `Save ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+        }
+        
+        function closeModal(type) {
+            const modal = document.getElementById(`${type}Modal`);
+            modal.classList.remove('active');
+            state.editingId = null;
+        }
+        
+        // Edit functions
+        function editLocation(id, name) {
+            state.editingId = id;
+            document.getElementById('locationId').value = id;
+            document.getElementById('locationName').value = name;
+            document.getElementById('locationModalTitle').textContent = 'Edit Location';
+            document.getElementById('locationSaveBtn').textContent = 'Update Location';
+            document.getElementById('locationModal').classList.add('active');
+        }
+        
+        function editRoute(id, name, routeNumber) {
+            state.editingId = id;
+            document.getElementById('routeId').value = id;
+            document.getElementById('routeName').value = name;
+            document.getElementById('routeNumber').value = routeNumber || '';
+            document.getElementById('routeModalTitle').textContent = 'Edit Route';
+            document.getElementById('routeSaveBtn').textContent = 'Update Route';
+            document.getElementById('routeModal').classList.add('active');
+        }
+        
+        function editProduct(id, name, category, price, image) {
+            state.editingId = id;
+            document.getElementById('productId').value = id;
+            document.getElementById('productName').value = name;
+            document.getElementById('productCategory').value = category;
+            document.getElementById('productPrice').value = price;
+            document.getElementById('productImage').value = image || '';
+            document.getElementById('productModalTitle').textContent = 'Edit Product';
+            document.getElementById('productSaveBtn').textContent = 'Update Product';
+            document.getElementById('productModal').classList.add('active');
+        }
+        
+        // Delete functions
+        function deleteLocation(id, name) {
+            showConfirmDialog(
+                'Delete Location',
+                `Are you sure you want to delete "${name}"?`,
+                async () => {
+                    try {
+                        await api.deleteLocation(id);
+                        showSuccess('Location deleted successfully');
+                        loadLocations();
+                    } catch (error) {
+                        showError('Failed to delete location: ' + error.message);
+                    }
+                }
+            );
+        }
+        
+        function deleteRoute(id, name) {
+            showConfirmDialog(
+                'Delete Route',
+                `Are you sure you want to delete "${name}"?`,
+                async () => {
+                    try {
+                        await api.deleteRoute(id);
+                        showSuccess('Route deleted successfully');
+                        loadRoutes();
+                    } catch (error) {
+                        showError('Failed to delete route: ' + error.message);
+                    }
+                }
+            );
+        }
+        
+        function deleteProduct(id, name) {
+            showConfirmDialog(
+                'Delete Product',
+                `Are you sure you want to delete "${name}"?`,
+                async () => {
+                    try {
+                        await api.deleteProduct(id);
+                        showSuccess('Product deleted successfully');
+                        loadProducts();
+                    } catch (error) {
+                        showError('Failed to delete product: ' + error.message);
+                    }
+                }
+            );
+        }
+        
+        // Confirmation dialog
+        function showConfirmDialog(title, message, callback) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            state.deleteCallback = callback;
+            document.getElementById('confirmModal').classList.add('active');
+            
+            // Set up delete button handler
+            document.getElementById('confirmDeleteBtn').onclick = async () => {
+                closeConfirmModal();
+                if (state.deleteCallback) {
+                    await state.deleteCallback();
+                }
+            };
+        }
+        
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+            state.deleteCallback = null;
+        }
+        
+        // Save functions
+        async function saveLocation() {
+            const nameInput = document.getElementById('locationName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                showError('Please enter a location name');
+                return;
+            }
+            
+            try {
+                if (state.editingId) {
+                    await api.updateLocation(state.editingId, { name });
+                    showSuccess('Location updated successfully');
+                } else {
+                    await api.createLocation({ name });
+                    showSuccess('Location created successfully');
+                }
+                closeModal('location');
+                loadLocations();
+            } catch (error) {
+                showError('Failed to save location: ' + error.message);
+            }
+        }
+        
+        async function saveRoute() {
+            const nameInput = document.getElementById('routeName');
+            const numberInput = document.getElementById('routeNumber');
+            
+            const name = nameInput.value.trim();
+            const routeNumber = numberInput.value ? parseInt(numberInput.value) : null;
+            
+            if (!name) {
+                showError('Please enter a route name');
+                return;
+            }
+            
+            try {
+                if (state.editingId) {
+                    await api.updateRoute(state.editingId, { name, routeNumber });
+                    showSuccess('Route updated successfully');
+                } else {
+                    await api.createRoute({ name, routeNumber });
+                    showSuccess('Route created successfully');
+                }
+                closeModal('route');
+                loadRoutes();
+            } catch (error) {
+                showError('Failed to save route: ' + error.message);
+            }
+        }
+        
+        async function saveProduct() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
+            
+            const product = {
+                name: formData.get('name').trim(),
+                category: formData.get('category'),
+                price: parseFloat(formData.get('price')),
+                image: formData.get('image').trim() || null
+            };
+            
+            if (!product.name || !product.category || isNaN(product.price)) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            
+            try {
+                if (state.editingId) {
+                    await api.updateProduct(state.editingId, product);
+                    showSuccess('Product updated successfully');
+                } else {
+                    await api.createProduct(product);
+                    showSuccess('Product created successfully');
+                }
+                closeModal('product');
+                loadProducts();
+            } catch (error) {
+                showError('Failed to save product: ' + error.message);
+            }
+        }
+        
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showError(message) {
+            // Simple alert for now - could be enhanced with a toast notification
+            alert('Error: ' + message);
+        }
+        
+        function showSuccess(message) {
+            // Simple alert for now - could be enhanced with a toast notification
+            alert(message);
+        }
+        
+        // API extensions
+        if (!api.getRoutes) {
+            api.getRoutes = async function() {
+                const response = await fetch(`${this.baseUrl}/routes`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.createRoute) {
+            api.createRoute = async function(route) {
+                const response = await fetch(`${this.baseUrl}/routes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(route)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.updateRoute) {
+            api.updateRoute = async function(id, route) {
+                const response = await fetch(`${this.baseUrl}/routes/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(route)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.deleteRoute) {
+            api.deleteRoute = async function(id) {
+                const response = await fetch(`${this.baseUrl}/routes/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.getLocations) {
+            api.getLocations = async function() {
+                const response = await fetch(`${this.baseUrl}/locations`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.createLocation) {
+            api.createLocation = async function(location) {
+                const response = await fetch(`${this.baseUrl}/locations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(location)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.updateLocation) {
+            api.updateLocation = async function(id, location) {
+                const response = await fetch(`${this.baseUrl}/locations/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(location)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.deleteLocation) {
+            api.deleteLocation = async function(id) {
+                const response = await fetch(`${this.baseUrl}/locations/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.createProduct) {
+            api.createProduct = async function(product) {
+                const response = await fetch(`${this.baseUrl}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.updateProduct) {
+            api.updateProduct = async function(id, product) {
+                const response = await fetch(`${this.baseUrl}/products/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(product)
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        if (!api.deleteProduct) {
+            api.deleteProduct = async function(id) {
+                const response = await fetch(`${this.baseUrl}/products/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || `HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            };
+        }
+        
+        // Filter functionality
+        function setupFilterHandlers() {
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('filter-input')) {
+                    const filterKey = e.target.dataset.filter;
+                    const filterValue = e.target.value.toLowerCase();
+                    
+                    if (!state.activeFilters[state.currentTab]) {
+                        state.activeFilters[state.currentTab] = {};
+                    }
+                    
+                    state.activeFilters[state.currentTab][filterKey] = filterValue;
+                    applyFilters();
+                }
+            });
+        }
+        
+        function applyFilters() {
+            const currentFilters = state.activeFilters[state.currentTab] || {};
+            let dataToFilter = [];
+            
+            switch(state.currentTab) {
+                case 'locations':
+                    dataToFilter = state.locations;
+                    break;
+                case 'routes':
+                    dataToFilter = state.routes;
+                    break;
+                case 'products':
+                    dataToFilter = state.products;
+                    break;
+            }
+            
+            if (!dataToFilter.length) return;
+            
+            const filteredData = dataToFilter.filter(item => {
+                for (const [key, value] of Object.entries(currentFilters)) {
+                    if (!value || value.trim() === '') continue;
+                    
+                    let itemValue = '';
+                    switch(key) {
+                        case 'name':
+                            itemValue = item.name || '';
+                            break;
+                        case 'category':
+                            itemValue = item.category || '';
+                            break;
+                        case 'price':
+                            itemValue = item.price ? `$${item.price.toFixed(2)}` : '';
+                            break;
+                        case 'route_number':
+                            itemValue = item.route_number ? item.route_number.toString() : '';
+                            break;
+                        case 'created_at':
+                            itemValue = formatDate(item.created_at);
+                            break;
+                    }
+                    
+                    if (!itemValue.toLowerCase().includes(value.toLowerCase())) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            
+            renderFilteredData(filteredData);
+        }
+        
+        function renderFilteredData(data) {
+            switch(state.currentTab) {
+                case 'locations':
+                    renderLocationsTable(data);
+                    break;
+                case 'routes':
+                    renderRoutesTable(data);
+                    break;
+                case 'products':
+                    renderProductsTable(data);
+                    break;
+            }
+        }
+        
+        function renderLocationsTable(data) {
+            const tbody = document.getElementById('locationsTableBody');
+            const filterRow = `
+                <tr class="filter-row">
+                    <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter..."></td>
+                    <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter..."></td>
+                    <td></td>
+                </tr>
+            `;
+            const dataRows = data.map(location => `
+                <tr>
+                    <td>${escapeHtml(location.name)}</td>
+                    <td>${formatDate(location.created_at)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editLocation(${location.id}, '${escapeHtml(location.name).replace(/'/g, '\\\'')}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteLocation(${location.id}, '${escapeHtml(location.name).replace(/'/g, '\\\'')}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            tbody.innerHTML = filterRow + dataRows;
+        }
+        
+        function renderRoutesTable(data) {
+            const tbody = document.getElementById('routesTableBody');
+            const filterRow = `
+                <tr class="filter-row">
+                    <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter..."></td>
+                    <td><input type="text" class="filter-input" data-filter="route_number" placeholder="Filter..."></td>
+                    <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter..."></td>
+                    <td></td>
+                </tr>
+            `;
+            const dataRows = data.map(route => `
+                <tr>
+                    <td>${escapeHtml(route.name)}</td>
+                    <td>${route.route_number || '-'}</td>
+                    <td>${formatDate(route.created_at)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editRoute(${route.id}, '${escapeHtml(route.name).replace(/'/g, '\\\'')}, ${route.route_number || 'null'}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteRoute(${route.id}, '${escapeHtml(route.name).replace(/'/g, '\\\'')}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            tbody.innerHTML = filterRow + dataRows;
+        }
+        
+        function renderProductsTable(data) {
+            const tbody = document.getElementById('productsTableBody');
+            const filterRow = `
+                <tr class="filter-row">
+                    <td></td>
+                    <td><input type="text" class="filter-input" data-filter="name" placeholder="Filter..."></td>
+                    <td><input type="text" class="filter-input" data-filter="category" placeholder="Filter..."></td>
+                    <td><input type="text" class="filter-input" data-filter="price" placeholder="Filter..."></td>
+                    <td><input type="text" class="filter-input" data-filter="created_at" placeholder="Filter..."></td>
+                    <td></td>
+                </tr>
+            `;
+            const dataRows = data.map(product => `
+                <tr>
+                    <td>
+                        ${product.image 
+                            ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="image-preview" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                               <div class="image-placeholder" style="display:none;">No Image</div>`
+                            : '<div class="image-placeholder">No Image</div>'}
+                    </td>
+                    <td>${escapeHtml(product.name)}</td>
+                    <td>${escapeHtml(product.category)}</td>
+                    <td>$${product.price.toFixed(2)}</td>
+                    <td>${formatDate(product.created_at)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary btn-sm" onclick="editProduct(${product.id}, '${escapeHtml(product.name).replace(/'/g, '\\\'')}, '${product.category}', ${product.price}, '${escapeHtml(product.image || '').replace(/'/g, '\\\'')}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id}, '${escapeHtml(product.name).replace(/'/g, '\\\'')}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            tbody.innerHTML = filterRow + dataRows;
+        }
+    </script>
+</body>
+</html>

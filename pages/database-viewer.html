@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CVD Database Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+            border-bottom: 2px solid #006dfe;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            background: #f0f0f0;
+        }
+        
+        .tab.active {
+            background: #006dfe;
+            color: white;
+        }
+        
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 1px solid #dee2e6;
+            position: relative;
+            user-select: none;
+        }
+        
+        td {
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tbody tr:nth-child(even):not(.filter-row) {
+            background: #f9f9f9;
+        }
+        
+        tbody tr:hover:not(.filter-row) {
+            background: #f0f4ff;
+        }
+        
+        .sortable-header {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .sortable-header:hover {
+            background: #e9ecef;
+        }
+        
+        .sort-indicator {
+            margin-left: 4px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .sortable-header.active .sort-indicator {
+            color: #006dfe;
+        }
+        
+        .filter-row td {
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .filter-input:focus {
+            outline: 2px solid #006dfe;
+            outline-offset: -1px;
+            border-color: #006dfe;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 16px;
+            display: none;
+        }
+        
+        .table-loading {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #006dfe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .table-error {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .json-data {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            max-width: 300px;
+            overflow: auto;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        
+        .refresh-btn, .export-btn {
+            float: right;
+            padding: 8px 16px;
+            background: #006dfe;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .refresh-btn:hover, .export-btn:hover {
+            background: #0056d3;
+        }
+        
+        .export-btn {
+            background: #28a745;
+        }
+        
+        .export-btn:hover {
+            background: #218838;
+        }
+        
+        .global-filter-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .global-filter-input:focus {
+            outline: 2px solid #006dfe;
+            outline-offset: -1px;
+            border-color: #006dfe;
+        }
+        
+        .cabinet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .cabinet-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .cabinet-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .cabinet-card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .parent-badge {
+            display: inline-block;
+            background: #006dfe;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CVD Database Viewer</h1>
+    
+    <div class="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="devices">Devices</button>
+        <button class="tab" data-tab="cabinets">Cabinets</button>
+        <button class="tab" data-tab="planograms">Planograms</button>
+        <button class="tab" data-tab="metrics">Tools</button>
+        <button class="tab" data-tab="raw">Raw Query</button>
+    </div>
+    
+    <div class="content">
+        <button class="refresh-btn" onclick="refreshData()">Refresh</button>
+        
+        <div id="overview" class="tab-content">
+            <h2>Database Overview</h2>
+            <div class="stats" id="statsContainer">
+                <div class="loading">Loading statistics...</div>
+            </div>
+        </div>
+        
+        <div id="devices" class="tab-content" style="display: none;">
+            <button class="export-btn" onclick="exportDevicesToCSV()">Export CSV</button>
+            <h2>Devices</h2>
+            <input type="text" class="global-filter-input" placeholder="Global filter for devices..." onkeyup="filterTable('devicesTable', this.value)">
+            <div id="devicesContainer">
+                <div class="loading">Loading devices...</div>
+            </div>
+        </div>
+        
+        <div id="cabinets" class="tab-content" style="display: none;">
+            <button class="export-btn" onclick="exportCabinetsToCSV()">Export CSV</button>
+            <h2>Cabinet Configurations</h2>
+            <input type="text" class="global-filter-input" placeholder="Filter by device asset..." onkeyup="filterCabinets(this.value)">
+            <div id="cabinetsContainer">
+                <div class="loading">Loading cabinets...</div>
+            </div>
+        </div>
+        
+        <div id="planograms" class="tab-content" style="display: none;">
+            <button class="export-btn" onclick="exportPlanogramsToCSV()">Export CSV</button>
+            <h2>Planograms</h2>
+            <input type="text" class="global-filter-input" placeholder="Global filter for planograms..." onkeyup="filterTable('planogramsTable', this.value)">
+            <div id="planogramsContainer">
+                <div class="loading">Loading planograms...</div>
+            </div>
+        </div>
+        
+        <div id="metrics" class="tab-content" style="display: none;">
+            <h2>Slot Metrics Calculation</h2>
+            <div class="metrics-info">
+                <p>Calculate inventory metrics for all devices based on 28-day sales history.</p>
+                <p>Metrics calculated: Sold Out Count (SO), Days Remaining Inventory (DRI), Product Level (PL), and Units to Par (UTP).</p>
+                <p>Last calculation: <span id="last-calc-time" style="font-weight: bold;">Never</span></p>
+            </div>
+            <button class="btn btn-primary" onclick="calculateMetrics()" style="
+                background: #006dfe;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 4px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                margin-top: 20px;
+            ">Calculate All Metrics</button>
+            <div id="calc-status" style="margin-top: 20px;"></div>
+            
+            <hr style="margin: 40px 0; border: none; border-top: 2px solid #ddd;">
+            
+            <h2>Generate Sales Data</h2>
+            <div class="metrics-info">
+                <p>Generates data on the "Sales" table: device_id, product_id, sale_units, sale_cash</p>
+                <p>Creates sample sales transactions for testing and demo purposes.</p>
+                <p>Last generation: <span id="last-generation-time" style="font-weight: bold;">Never</span></p>
+            </div>
+            <div style="margin-top: 20px; margin-bottom: 20px;">
+                <label for="date-from" style="display: inline-block; width: 100px; font-weight: 500;">From Date:</label>
+                <input type="date" id="date-from" style="
+                    padding: 8px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    margin-right: 20px;
+                ">
+                <label for="date-to" style="display: inline-block; width: 100px; font-weight: 500;">To Date:</label>
+                <input type="date" id="date-to" style="
+                    padding: 8px 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 14px;
+                ">
+            </div>
+            <button class="btn btn-primary" onclick="generateSalesData()" style="
+                background: #28a745;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 4px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                margin-top: 20px;
+            ">Generate Sales Data</button>
+            <div id="sales-generation-status" style="margin-top: 20px;"></div>
+        </div>
+        
+        <div id="raw" class="tab-content" style="display: none;">
+            <h2>Raw SQL Query</h2>
+            <p>Execute custom SQL queries (SELECT only for safety):</p>
+            <textarea id="sqlQuery" style="width: 100%; height: 100px; font-family: monospace;" placeholder="SELECT * FROM devices LIMIT 10;">SELECT * FROM devices LIMIT 10;</textarea>
+            <button class="refresh-btn" onclick="executeQuery()">Execute Query</button>
+            <div id="queryResults" style="margin-top: 20px;">
+                <p style="color: #666;">Enter a query and click Execute</p>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <!-- Include API module -->
+    <script src="/api.js"></script>
+    <script src="/auth-check.js"></script>
+    
+    <script>
+        let allDevices = [];
+        let allCabinets = [];
+        
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+                
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).style.display = 'block';
+            });
+        });
+        
+        // Load all data
+        async function loadData() {
+            await loadStats();
+            await loadDevices();
+            await loadCabinets();
+            await loadPlanograms();
+        }
+        
+        // Load statistics
+        async function loadStats() {
+            try {
+                const devices = await cvdApi.getDevices();
+                const planograms = await cvdApi.exportPlanograms();
+                
+                // Count cabinets
+                let totalCabinets = 0;
+                devices.forEach(device => {
+                    totalCabinets += (device.cabinetConfiguration || []).length;
+                });
+                
+                // Count filled slots
+                let filledSlots = planograms.reduce((sum, p) => sum + (p.filled_slots || 0), 0);
+                
+                document.getElementById('statsContainer').innerHTML = `
+                    <div class="stat-card">
+                        <h3>Total Devices</h3>
+                        <div class="value">${devices.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Cabinets</h3>
+                        <div class="value">${totalCabinets}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Planograms</h3>
+                        <div class="value">${planograms.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Filled Slots</h3>
+                        <div class="value">${filledSlots}</div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('statsContainer').innerHTML = `
+                    <div class="error">Failed to load statistics: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // State for devices table
+        let devicesSortConfig = { column: 'id', direction: 'asc' };
+        let devicesFilters = {};
+        
+        // Load devices
+        async function loadDevices() {
+            try {
+                allDevices = await cvdApi.getDevices();
+                renderDevicesTable();
+            } catch (error) {
+                document.getElementById('devicesContainer').innerHTML = `
+                    <div class="table-error">Failed to load devices: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Render devices table with sorting and filtering
+        function renderDevicesTable() {
+            const filteredDevices = filterDevices(allDevices);
+            const sortedDevices = sortDevices(filteredDevices);
+            
+            let html = '<div class="table-container"><table id="devicesTable"><thead><tr>';
+            html += '<th class="sortable-header" data-column="id">ID <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="asset">Asset <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="cooler">Name <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="location">Location <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="model">Model <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="type">Type <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="cabinets">Cabinets <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="created">Created <span class="sort-indicator">↑</span></th>';
+            html += '</tr></thead><tbody>';
+            
+            // Filter row
+            html += '<tr class="filter-row">';
+            html += '<td><input type="text" class="filter-input" data-filter="id" placeholder="ID..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="asset" placeholder="Asset..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="cooler" placeholder="Name..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="location" placeholder="Location..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="model" placeholder="Model..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="type" placeholder="Type..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="cabinets" placeholder="Count..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="created" placeholder="Date..."></td>';
+            html += '</tr>';
+            
+            if (sortedDevices.length === 0) {
+                html += '</tbody></table><div class="no-results">No devices found</div></div>';
+            } else {
+                sortedDevices.forEach(device => {
+                    const cabCount = (device.cabinetConfiguration || []).length;
+                    html += `<tr>
+                        <td>${device.id}</td>
+                        <td>${device.asset}</td>
+                        <td>${device.cooler}</td>
+                        <td>${device.location}</td>
+                        <td>${device.model}</td>
+                        <td>${device.device_type || device.deviceType}</td>
+                        <td>${cabCount}</td>
+                        <td>${new Date(device.created_at).toLocaleDateString()}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+            }
+            
+            document.getElementById('devicesContainer').innerHTML = html;
+            updateDevicesSortIndicators();
+            initializeDevicesFilters();
+        }
+        
+        // Filter devices based on current filters
+        function filterDevices(devices) {
+            return devices.filter(device => {
+                for (const [column, filterValue] of Object.entries(devicesFilters)) {
+                    if (!filterValue) continue;
+                    
+                    let value = '';
+                    switch(column) {
+                        case 'id': value = device.id.toString(); break;
+                        case 'asset': value = device.asset || ''; break;
+                        case 'cooler': value = device.cooler || ''; break;
+                        case 'location': value = device.location || ''; break;
+                        case 'model': value = device.model || ''; break;
+                        case 'type': value = device.device_type || device.deviceType || ''; break;
+                        case 'cabinets': value = (device.cabinetConfiguration || []).length.toString(); break;
+                        case 'created': value = new Date(device.created_at).toLocaleDateString(); break;
+                    }
+                    
+                    if (!value.toLowerCase().includes(filterValue.toLowerCase())) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+        
+        // Sort devices based on current sort config
+        function sortDevices(devices) {
+            return [...devices].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(devicesSortConfig.column) {
+                    case 'id': aValue = a.id; bValue = b.id; break;
+                    case 'asset': aValue = a.asset || ''; bValue = b.asset || ''; break;
+                    case 'cooler': aValue = a.cooler || ''; bValue = b.cooler || ''; break;
+                    case 'location': aValue = a.location || ''; bValue = b.location || ''; break;
+                    case 'model': aValue = a.model || ''; bValue = b.model || ''; break;
+                    case 'type': aValue = a.device_type || a.deviceType || ''; bValue = b.device_type || b.deviceType || ''; break;
+                    case 'cabinets': aValue = (a.cabinetConfiguration || []).length; bValue = (b.cabinetConfiguration || []).length; break;
+                    case 'created': aValue = new Date(a.created_at); bValue = new Date(b.created_at); break;
+                    default: return 0;
+                }
+                
+                if (typeof aValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+                
+                if (aValue < bValue) return devicesSortConfig.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return devicesSortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        
+        // Update sort indicators for devices table
+        function updateDevicesSortIndicators() {
+            document.querySelectorAll('#devicesTable .sortable-header').forEach(header => {
+                const indicator = header.querySelector('.sort-indicator');
+                const column = header.dataset.column;
+                
+                header.classList.remove('active');
+                
+                if (column === devicesSortConfig.column) {
+                    header.classList.add('active');
+                    indicator.textContent = devicesSortConfig.direction === 'asc' ? '↑' : '↓';
+                } else {
+                    indicator.textContent = '↑';
+                }
+            });
+        }
+        
+        // Initialize devices table filters
+        function initializeDevicesFilters() {
+            document.querySelectorAll('#devicesTable .filter-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const column = this.dataset.filter;
+                    devicesFilters[column] = this.value;
+                    renderDevicesTable();
+                });
+            });
+            
+            // Initialize sort headers
+            document.querySelectorAll('#devicesTable .sortable-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.dataset.column;
+                    if (devicesSortConfig.column === column) {
+                        devicesSortConfig.direction = devicesSortConfig.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        devicesSortConfig.column = column;
+                        devicesSortConfig.direction = 'asc';
+                    }
+                    renderDevicesTable();
+                });
+            });
+        }
+        
+        // Load cabinets
+        async function loadCabinets() {
+            try {
+                const devices = await cvdApi.getDevices();
+                allCabinets = [];
+                
+                devices.forEach(device => {
+                    (device.cabinetConfiguration || []).forEach((cabinet, index) => {
+                        allCabinets.push({
+                            ...cabinet,
+                            deviceId: device.id,
+                            deviceAsset: device.asset,
+                            deviceName: device.cooler
+                        });
+                    });
+                });
+                
+                renderCabinets();
+            } catch (error) {
+                document.getElementById('cabinetsContainer').innerHTML = `
+                    <div class="error">Failed to load cabinets: ${error.message}</div>
+                `;
+            }
+        }
+        
+        function renderCabinets(filter = '') {
+            const filtered = filter ? 
+                allCabinets.filter(c => c.deviceAsset.toLowerCase().includes(filter.toLowerCase())) : 
+                allCabinets;
+                
+            let html = '<div class="cabinet-grid">';
+            
+            filtered.forEach(cabinet => {
+                html += `<div class="cabinet-card">
+                    <h4>${cabinet.cabinet_type || cabinet.modelName}
+                        ${cabinet.is_parent ? '<span class="parent-badge">Parent</span>' : ''}
+                    </h4>
+                    <p><strong>Device:</strong> ${cabinet.deviceAsset} - ${cabinet.deviceName}</p>
+                    <p><strong>Layout:</strong> ${cabinet.rows} × ${cabinet.columns}</p>
+                    <p><strong>Index:</strong> ${cabinet.cabinet_index}</p>
+                </div>`;
+            });
+            
+            html += '</div>';
+            
+            if (filtered.length === 0) {
+                html = '<p style="text-align: center; color: #666;">No cabinets found</p>';
+            }
+            
+            document.getElementById('cabinetsContainer').innerHTML = html;
+        }
+        
+        // State for planograms table
+        let planogramsSortConfig = { column: 'planogram_key', direction: 'asc' };
+        let planogramsFilters = {};
+        let allPlanograms = [];
+        
+        // Load planograms
+        async function loadPlanograms() {
+            try {
+                allPlanograms = await cvdApi.exportPlanograms();
+                renderPlanogramsTable();
+            } catch (error) {
+                document.getElementById('planogramsContainer').innerHTML = `
+                    <div class="table-error">Failed to load planograms: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Render planograms table with sorting and filtering
+        function renderPlanogramsTable() {
+            const filteredPlanograms = filterPlanograms(allPlanograms);
+            const sortedPlanograms = sortPlanograms(filteredPlanograms);
+            
+            let html = '<div class="table-container"><table id="planogramsTable"><thead><tr>';
+            html += '<th class="sortable-header" data-column="planogram_key">Key <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="asset">Asset <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="cooler">Device <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="cabinet_type">Cabinet <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="slot_count">Total Slots <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="filled_slots">Filled <span class="sort-indicator">↑</span></th>';
+            html += '<th class="sortable-header" data-column="updated_at">Updated <span class="sort-indicator">↑</span></th>';
+            html += '</tr></thead><tbody>';
+            
+            // Filter row
+            html += '<tr class="filter-row">';
+            html += '<td><input type="text" class="filter-input" data-filter="planogram_key" placeholder="Key..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="asset" placeholder="Asset..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="cooler" placeholder="Device..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="cabinet_type" placeholder="Cabinet..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="slot_count" placeholder="Slots..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="filled_slots" placeholder="Filled..."></td>';
+            html += '<td><input type="text" class="filter-input" data-filter="updated_at" placeholder="Date..."></td>';
+            html += '</tr>';
+            
+            if (sortedPlanograms.length === 0) {
+                html += '</tbody></table><div class="no-results">No planograms found</div></div>';
+            } else {
+                sortedPlanograms.forEach(planogram => {
+                    const fillRate = planogram.slot_count > 0 ? 
+                        Math.round((planogram.filled_slots / planogram.slot_count) * 100) : 0;
+                    
+                    html += `<tr>
+                        <td style="font-family: monospace; font-size: 12px;">${planogram.planogram_key}</td>
+                        <td>${planogram.asset}</td>
+                        <td>${planogram.cooler}</td>
+                        <td>${planogram.cabinet_type}</td>
+                        <td>${planogram.slot_count}</td>
+                        <td>${planogram.filled_slots} (${fillRate}%)</td>
+                        <td>${planogram.updated_at ? new Date(planogram.updated_at).toLocaleString() : '-'}</td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+            }
+            
+            document.getElementById('planogramsContainer').innerHTML = html;
+            updatePlanogramsSortIndicators();
+            initializePlanogramsFilters();
+        }
+        
+        // Filter planograms based on current filters
+        function filterPlanograms(planograms) {
+            return planograms.filter(planogram => {
+                for (const [column, filterValue] of Object.entries(planogramsFilters)) {
+                    if (!filterValue) continue;
+                    
+                    let value = '';
+                    switch(column) {
+                        case 'planogram_key': value = planogram.planogram_key || ''; break;
+                        case 'asset': value = planogram.asset || ''; break;
+                        case 'cooler': value = planogram.cooler || ''; break;
+                        case 'cabinet_type': value = planogram.cabinet_type || ''; break;
+                        case 'slot_count': value = planogram.slot_count.toString(); break;
+                        case 'filled_slots': value = planogram.filled_slots.toString(); break;
+                        case 'updated_at': value = planogram.updated_at ? new Date(planogram.updated_at).toLocaleString() : '-'; break;
+                    }
+                    
+                    if (!value.toLowerCase().includes(filterValue.toLowerCase())) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+        
+        // Sort planograms based on current sort config
+        function sortPlanograms(planograms) {
+            return [...planograms].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(planogramsSortConfig.column) {
+                    case 'planogram_key': aValue = a.planogram_key || ''; bValue = b.planogram_key || ''; break;
+                    case 'asset': aValue = a.asset || ''; bValue = b.asset || ''; break;
+                    case 'cooler': aValue = a.cooler || ''; bValue = b.cooler || ''; break;
+                    case 'cabinet_type': aValue = a.cabinet_type || ''; bValue = b.cabinet_type || ''; break;
+                    case 'slot_count': aValue = a.slot_count; bValue = b.slot_count; break;
+                    case 'filled_slots': aValue = a.filled_slots; bValue = b.filled_slots; break;
+                    case 'updated_at': aValue = a.updated_at ? new Date(a.updated_at) : new Date(0); bValue = b.updated_at ? new Date(b.updated_at) : new Date(0); break;
+                    default: return 0;
+                }
+                
+                if (typeof aValue === 'string') {
+                    aValue = aValue.toLowerCase();
+                    bValue = bValue.toLowerCase();
+                }
+                
+                if (aValue < bValue) return planogramsSortConfig.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return planogramsSortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        
+        // Update sort indicators for planograms table
+        function updatePlanogramsSortIndicators() {
+            document.querySelectorAll('#planogramsTable .sortable-header').forEach(header => {
+                const indicator = header.querySelector('.sort-indicator');
+                const column = header.dataset.column;
+                
+                header.classList.remove('active');
+                
+                if (column === planogramsSortConfig.column) {
+                    header.classList.add('active');
+                    indicator.textContent = planogramsSortConfig.direction === 'asc' ? '↑' : '↓';
+                } else {
+                    indicator.textContent = '↑';
+                }
+            });
+        }
+        
+        // Initialize planograms table filters
+        function initializePlanogramsFilters() {
+            document.querySelectorAll('#planogramsTable .filter-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const column = this.dataset.filter;
+                    planogramsFilters[column] = this.value;
+                    renderPlanogramsTable();
+                });
+            });
+            
+            // Initialize sort headers
+            document.querySelectorAll('#planogramsTable .sortable-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const column = this.dataset.column;
+                    if (planogramsSortConfig.column === column) {
+                        planogramsSortConfig.direction = planogramsSortConfig.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        planogramsSortConfig.column = column;
+                        planogramsSortConfig.direction = 'asc';
+                    }
+                    renderPlanogramsTable();
+                });
+            });
+        }
+        
+        // Legacy filter function for global filters (simplified)
+        function filterTable(tableId, filter) {
+            // This function is now deprecated in favor of the new table-specific filtering
+            // Keeping for backward compatibility with global filter inputs
+            if (tableId === 'devicesTable') {
+                // Apply global filter to all device columns
+                devicesFilters = {};
+                if (filter) {
+                    devicesFilters.asset = filter;
+                }
+                renderDevicesTable();
+            } else if (tableId === 'planogramsTable') {
+                // Apply global filter to all planogram columns
+                planogramsFilters = {};
+                if (filter) {
+                    planogramsFilters.asset = filter;
+                }
+                renderPlanogramsTable();
+            }
+        }
+        
+        // Filter cabinets
+        function filterCabinets(filter) {
+            renderCabinets(filter);
+        }
+        
+        // Execute raw query
+        async function executeQuery() {
+            const query = document.getElementById('sqlQuery').value.trim();
+            
+            if (!query.toLowerCase().startsWith('select')) {
+                document.getElementById('queryResults').innerHTML = `
+                    <div class="error">Only SELECT queries are allowed for safety</div>
+                `;
+                return;
+            }
+            
+            try {
+                const result = await cvdApi.executeQuery(query);
+                
+                // Display results in a table
+                let html = `<p>Found ${result.count} rows</p>`;
+                
+                if (result.count > 0) {
+                    html += '<table><thead><tr>';
+                    result.columns.forEach(col => {
+                        html += `<th>${col}</th>`;
+                    });
+                    html += '</tr></thead><tbody>';
+                    
+                    result.rows.forEach(row => {
+                        html += '<tr>';
+                        result.columns.forEach(col => {
+                            let value = row[col];
+                            if (value === null) value = '<em>null</em>';
+                            else if (typeof value === 'object') value = JSON.stringify(value);
+                            html += `<td>${value}</td>`;
+                        });
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+                
+                document.getElementById('queryResults').innerHTML = html;
+            } catch (error) {
+                document.getElementById('queryResults').innerHTML = `
+                    <div class="error">Query failed: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Refresh all data
+        function refreshData() {
+            loadData();
+        }
+        
+        // CSV Export Functions
+        function downloadCSV(filename, csvContent) {
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function exportDevicesToCSV() {
+            if (allDevices.length === 0) {
+                alert('No devices to export');
+                return;
+            }
+            
+            // CSV headers
+            let csv = 'ID,Asset,Name,Location,Model,Type,Cabinets,Created\n';
+            
+            // Add device rows
+            allDevices.forEach(device => {
+                const cabCount = (device.cabinetConfiguration || []).length;
+                const created = new Date(device.created_at).toLocaleDateString();
+                csv += `${device.id},"${device.asset}","${device.cooler}","${device.location}","${device.model}","${device.device_type || device.deviceType}",${cabCount},"${created}"\n`;
+            });
+            
+            downloadCSV(`devices_${new Date().toISOString().split('T')[0]}.csv`, csv);
+        }
+        
+        function exportCabinetsToCSV() {
+            if (allCabinets.length === 0) {
+                alert('No cabinets to export');
+                return;
+            }
+            
+            // CSV headers
+            let csv = 'Device Asset,Device Name,Cabinet Type,Is Parent,Layout,Index\n';
+            
+            // Add cabinet rows
+            allCabinets.forEach(cabinet => {
+                const isParent = cabinet.is_parent ? 'Yes' : 'No';
+                const layout = `${cabinet.rows}x${cabinet.columns}`;
+                csv += `"${cabinet.deviceAsset}","${cabinet.deviceName}","${cabinet.cabinet_type || cabinet.modelName}","${isParent}","${layout}",${cabinet.cabinet_index}\n`;
+            });
+            
+            downloadCSV(`cabinets_${new Date().toISOString().split('T')[0]}.csv`, csv);
+        }
+        
+        async function exportPlanogramsToCSV() {
+            try {
+                const planograms = await cvdApi.exportPlanograms();
+                
+                if (planograms.length === 0) {
+                    alert('No planograms to export');
+                    return;
+                }
+                
+                // CSV headers
+                let csv = 'Planogram Key,Asset,Device,Cabinet,Total Slots,Filled Slots,Fill Rate,Last Updated\n';
+                
+                // Add planogram rows
+                planograms.forEach(planogram => {
+                    const fillRate = planogram.slot_count > 0 ? 
+                        Math.round((planogram.filled_slots / planogram.slot_count) * 100) : 0;
+                    const updated = planogram.updated_at ? 
+                        new Date(planogram.updated_at).toLocaleString() : '';
+                    
+                    csv += `"${planogram.planogram_key}","${planogram.asset}","${planogram.cooler}","${planogram.cabinet_type}",${planogram.slot_count},${planogram.filled_slots},${fillRate}%,"${updated}"\n`;
+                });
+                
+                downloadCSV(`planograms_${new Date().toISOString().split('T')[0]}.csv`, csv);
+            } catch (error) {
+                alert('Failed to export planograms: ' + error.message);
+            }
+        }
+        
+        // Calculate metrics function
+        async function calculateMetrics() {
+            const statusEl = document.getElementById('calc-status');
+            const btn = event.target;
+            
+            btn.disabled = true;
+            btn.textContent = 'Calculating...';
+            statusEl.innerHTML = '<p style="color: #666;">Processing all planogram slots...</p>';
+            
+            try {
+                const result = await cvdApi.calculateMetrics({});
+                
+                if (result.success) {
+                    statusEl.innerHTML = `
+                        <div style="
+                            padding: 20px;
+                            background: #d4edda;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            color: #155724;
+                        ">
+                            <strong>✓ Success!</strong><br>
+                            Calculated metrics for ${result.processed} planogram slots.<br>
+                            Timestamp: ${new Date(result.timestamp).toLocaleString()}
+                        </div>
+                    `;
+                    document.getElementById('last-calc-time').textContent = 
+                        new Date(result.timestamp).toLocaleString();
+                    
+                    // Store last calculation time in localStorage
+                    localStorage.setItem('cvd_metrics_last_calc', result.timestamp);
+                } else {
+                    statusEl.innerHTML = `
+                        <div style="
+                            padding: 20px;
+                            background: #f8d7da;
+                            border: 1px solid #f5c6cb;
+                            border-radius: 4px;
+                            color: #721c24;
+                        ">
+                            <strong>✗ Error:</strong> ${result.error || 'Unknown error occurred'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusEl.innerHTML = `
+                    <div style="
+                        padding: 20px;
+                        background: #f8d7da;
+                        border: 1px solid #f5c6cb;
+                        border-radius: 4px;
+                        color: #721c24;
+                    ">
+                        <strong>✗ Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Calculate All Metrics';
+            }
+        }
+        
+        // Load last calculation time on page load
+        function loadLastCalcTime() {
+            const lastCalc = localStorage.getItem('cvd_metrics_last_calc');
+            if (lastCalc) {
+                document.getElementById('last-calc-time').textContent = 
+                    new Date(lastCalc).toLocaleString();
+            }
+        }
+        
+        // Initialize date inputs with today's date
+        function initializeDateInputs() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-from').value = today;
+            document.getElementById('date-to').value = today;
+        }
+        
+        // Load last generation time
+        function loadLastGenerationTime() {
+            const lastGeneration = localStorage.getItem('cvd_sales_last_generation');
+            if (lastGeneration) {
+                document.getElementById('last-generation-time').textContent = 
+                    new Date(lastGeneration).toLocaleString();
+            }
+        }
+        
+        // Generate sales data function
+        async function generateSalesData() {
+            const dateFrom = document.getElementById('date-from').value;
+            const dateTo = document.getElementById('date-to').value;
+            const statusEl = document.getElementById('sales-generation-status');
+            const btn = event.target;
+            
+            // Validate dates
+            if (!dateFrom || !dateTo) {
+                statusEl.innerHTML = `
+                    <div style="
+                        padding: 20px;
+                        background: #f8d7da;
+                        border: 1px solid #f5c6cb;
+                        border-radius: 4px;
+                        color: #721c24;
+                    ">
+                        <strong>✗ Error:</strong> Please select both from and to dates.
+                    </div>
+                `;
+                return;
+            }
+            
+            if (new Date(dateFrom) > new Date(dateTo)) {
+                statusEl.innerHTML = `
+                    <div style="
+                        padding: 20px;
+                        background: #f8d7da;
+                        border: 1px solid #f5c6cb;
+                        border-radius: 4px;
+                        color: #721c24;
+                    ">
+                        <strong>✗ Error:</strong> From date must be less than or equal to To date.
+                    </div>
+                `;
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            statusEl.innerHTML = '<p style="color: #666;">Generating sales data...</p>';
+            
+            try {
+                const response = await fetch(`${cvdApi.baseUrl}/sales/generate-demo-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date_from: dateFrom,
+                        date_to: dateTo
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    const timestamp = new Date().toISOString();
+                    statusEl.innerHTML = `
+                        <div style="
+                            padding: 20px;
+                            background: #d4edda;
+                            border: 1px solid #c3e6cb;
+                            border-radius: 4px;
+                            color: #155724;
+                        ">
+                            <strong>✓ Success!</strong><br>
+                            Generated ${result.count || 0} sales records for the date range.<br>
+                            Date range: ${dateFrom} to ${dateTo}<br>
+                            Timestamp: ${new Date(timestamp).toLocaleString()}
+                        </div>
+                    `;
+                    document.getElementById('last-generation-time').textContent = 
+                        new Date(timestamp).toLocaleString();
+                    
+                    // Store last generation time in localStorage
+                    localStorage.setItem('cvd_sales_last_generation', timestamp);
+                } else {
+                    statusEl.innerHTML = `
+                        <div style="
+                            padding: 20px;
+                            background: #f8d7da;
+                            border: 1px solid #f5c6cb;
+                            border-radius: 4px;
+                            color: #721c24;
+                        ">
+                            <strong>✗ Error:</strong> ${result.error || 'Unknown error occurred'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusEl.innerHTML = `
+                    <div style="
+                        padding: 20px;
+                        background: #f8d7da;
+                        border: 1px solid #f5c6cb;
+                        border-radius: 4px;
+                        color: #721c24;
+                    ">
+                        <strong>✗ Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Generate Sales Data';
+            }
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            loadLastCalcTime();
+            initializeDateInputs();
+            loadLastGenerationTime();
+        });
+    </script>
+</body>
+</html>

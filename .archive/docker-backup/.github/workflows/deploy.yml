@@ -1,0 +1,381 @@
+name: Deploy Pipeline
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    
+    - name: Pull and tag image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+        docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG $ECR_REGISTRY/cvd-app:staging-$IMAGE_TAG
+        docker push $ECR_REGISTRY/cvd-app:staging-$IMAGE_TAG
+    
+    - name: Create database backup
+      run: |
+        aws rds create-db-snapshot \
+          --db-instance-identifier cvd-staging \
+          --db-snapshot-identifier cvd-staging-backup-${{ github.sha }}
+    
+    - name: Deploy to ECS
+      run: |
+        # Update task definition
+        aws ecs register-task-definition \
+          --family cvd-app-staging \
+          --network-mode awsvpc \
+          --requires-compatibilities FARGATE \
+          --cpu 1024 \
+          --memory 2048 \
+          --task-role-arn ${{ secrets.ECS_TASK_ROLE_ARN }} \
+          --execution-role-arn ${{ secrets.ECS_EXECUTION_ROLE_ARN }} \
+          --container-definitions '[
+            {
+              "name": "cvd-app",
+              "image": "'${{ steps.login-ecr.outputs.registry }}'/cvd-app:staging-'${{ github.sha }}'",
+              "portMappings": [{"containerPort": 5000}],
+              "environment": [
+                {"name": "FLASK_ENV", "value": "staging"},
+                {"name": "DATABASE_URL", "value": "'${{ secrets.STAGING_DATABASE_URL }}'"},
+                {"name": "REDIS_URL", "value": "'${{ secrets.STAGING_REDIS_URL }}'"}
+              ],
+              "secrets": [
+                {"name": "ANTHROPIC_API_KEY", "valueFrom": "'${{ secrets.ANTHROPIC_API_KEY_ARN }}'"},
+                {"name": "SESSION_SECRET", "valueFrom": "'${{ secrets.SESSION_SECRET_ARN }}'"}
+              ],
+              "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                  "awslogs-group": "/ecs/cvd-app-staging",
+                  "awslogs-region": "us-east-1",
+                  "awslogs-stream-prefix": "ecs"
+                }
+              }
+            }
+          ]'
+        
+        # Update service
+        aws ecs update-service \
+          --cluster cvd-staging \
+          --service cvd-app \
+          --task-definition cvd-app-staging \
+          --force-new-deployment
+        
+        # Wait for deployment to complete
+        aws ecs wait services-stable \
+          --cluster cvd-staging \
+          --services cvd-app
+    
+    - name: Run smoke tests
+      run: |
+        chmod +x ./scripts/smoke-test.sh
+        ./scripts/smoke-test.sh https://staging.cvd.example.com
+    
+    - name: Update staging DNS
+      run: |
+        # Get the load balancer DNS
+        LB_DNS=$(aws elbv2 describe-load-balancers \
+          --names cvd-staging-alb \
+          --query 'LoadBalancers[0].DNSName' \
+          --output text)
+        
+        # Update Route53
+        aws route53 change-resource-record-sets \
+          --hosted-zone-id ${{ secrets.HOSTED_ZONE_ID }} \
+          --change-batch '{
+            "Changes": [{
+              "Action": "UPSERT",
+              "ResourceRecordSet": {
+                "Name": "staging.cvd.example.com",
+                "Type": "CNAME",
+                "TTL": 300,
+                "ResourceRecords": [{"Value": "'$LB_DNS'"}]
+              }
+            }]
+          }'
+    
+    - name: Notify Slack
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: |
+          Staging Deployment ${{ job.status }}
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  deploy-production:
+    name: Deploy to Production
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    
+    - name: Pull and tag image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+        docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG $ECR_REGISTRY/cvd-app:prod-$IMAGE_TAG
+        docker tag $ECR_REGISTRY/cvd-app:prod-$IMAGE_TAG $ECR_REGISTRY/cvd-app:latest
+        docker push $ECR_REGISTRY/cvd-app:prod-$IMAGE_TAG
+        docker push $ECR_REGISTRY/cvd-app:latest
+    
+    - name: Create production backup
+      run: |
+        # Create RDS snapshot
+        aws rds create-db-snapshot \
+          --db-instance-identifier cvd-production \
+          --db-snapshot-identifier cvd-prod-backup-${{ github.sha }}
+        
+        # Export to S3 for long-term storage
+        aws rds start-export-task \
+          --export-task-identifier cvd-prod-export-${{ github.sha }} \
+          --source-arn arn:aws:rds:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:snapshot:cvd-prod-backup-${{ github.sha }} \
+          --s3-bucket-name cvd-backups \
+          --s3-prefix production/${{ github.sha }} \
+          --iam-role-arn ${{ secrets.RDS_EXPORT_ROLE_ARN }}
+    
+    - name: Deploy to Production (Blue/Green)
+      run: |
+        # Deploy to green environment first
+        aws ecs register-task-definition \
+          --family cvd-app-prod-green \
+          --network-mode awsvpc \
+          --requires-compatibilities FARGATE \
+          --cpu 2048 \
+          --memory 4096 \
+          --task-role-arn ${{ secrets.ECS_TASK_ROLE_ARN }} \
+          --execution-role-arn ${{ secrets.ECS_EXECUTION_ROLE_ARN }} \
+          --container-definitions '[
+            {
+              "name": "cvd-app",
+              "image": "'${{ steps.login-ecr.outputs.registry }}'/cvd-app:prod-'${{ github.sha }}'",
+              "portMappings": [{"containerPort": 5000}],
+              "environment": [
+                {"name": "FLASK_ENV", "value": "production"},
+                {"name": "DATABASE_URL", "value": "'${{ secrets.PROD_DATABASE_URL }}'"},
+                {"name": "REDIS_URL", "value": "'${{ secrets.PROD_REDIS_URL }}'"}
+              ],
+              "secrets": [
+                {"name": "ANTHROPIC_API_KEY", "valueFrom": "'${{ secrets.ANTHROPIC_API_KEY_ARN }}'"},
+                {"name": "SESSION_SECRET", "valueFrom": "'${{ secrets.SESSION_SECRET_ARN }}'"}
+              ],
+              "healthCheck": {
+                "command": ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"],
+                "interval": 30,
+                "timeout": 10,
+                "retries": 3,
+                "startPeriod": 60
+              },
+              "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                  "awslogs-group": "/ecs/cvd-app-production",
+                  "awslogs-region": "us-east-1",
+                  "awslogs-stream-prefix": "ecs"
+                }
+              }
+            }
+          ]'
+        
+        # Update green service
+        aws ecs update-service \
+          --cluster cvd-production \
+          --service cvd-app-green \
+          --task-definition cvd-app-prod-green \
+          --force-new-deployment
+        
+        # Wait for green deployment
+        aws ecs wait services-stable \
+          --cluster cvd-production \
+          --services cvd-app-green
+        
+        # Run health checks on green
+        GREEN_URL=$(aws elbv2 describe-target-health \
+          --target-group-arn ${{ secrets.GREEN_TARGET_GROUP_ARN }} \
+          --query 'TargetHealthDescriptions[0].Target.Id' \
+          --output text)
+        
+        curl -f http://$GREEN_URL:5000/health || exit 1
+        
+        # Switch traffic to green (update ALB listener)
+        aws elbv2 modify-listener \
+          --listener-arn ${{ secrets.PROD_LISTENER_ARN }} \
+          --default-actions Type=forward,TargetGroupArn=${{ secrets.GREEN_TARGET_GROUP_ARN }}
+        
+        # Wait for traffic switch
+        sleep 30
+        
+        # Update blue service with new version
+        aws ecs update-service \
+          --cluster cvd-production \
+          --service cvd-app-blue \
+          --task-definition cvd-app-prod-green \
+          --force-new-deployment
+    
+    - name: Run production tests
+      run: |
+        chmod +x ./scripts/prod-test.sh
+        ./scripts/prod-test.sh https://api.cvd.example.com
+    
+    - name: Monitor deployment
+      run: |
+        # Check CloudWatch metrics
+        aws cloudwatch get-metric-statistics \
+          --namespace AWS/ECS \
+          --metric-name CPUUtilization \
+          --dimensions Name=ServiceName,Value=cvd-app-green Name=ClusterName,Value=cvd-production \
+          --start-time $(date -u -d '5 minutes ago' +%Y-%m-%dT%H:%M:%S) \
+          --end-time $(date -u +%Y-%m-%dT%H:%M:%S) \
+          --period 60 \
+          --statistics Average \
+          --output json
+        
+        # Check error rates
+        aws logs filter-log-events \
+          --log-group-name /ecs/cvd-app-production \
+          --start-time $(date -d '5 minutes ago' +%s000) \
+          --filter-pattern "ERROR" \
+          --max-items 10
+    
+    - name: Create release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: |
+          ## AI Planogram Enhancement System Release
+          
+          ### Changes
+          - See [CHANGELOG](CHANGELOG.md) for details
+          
+          ### Docker Image
+          - `${{ steps.login-ecr.outputs.registry }}/cvd-app:prod-${{ github.sha }}`
+          
+          ### Deployment Status
+          - Staging: ✅ Deployed
+          - Production: ✅ Deployed
+        draft: false
+        prerelease: false
+    
+    - name: Notify team
+      if: always()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        text: |
+          🚀 Production Deployment ${{ job.status }}
+          Version: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Author: ${{ github.actor }}
+          Environment: Production
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  rollback:
+    name: Rollback Deployment
+    if: failure()
+    needs: [deploy-staging, deploy-production]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    
+    - name: Rollback ECS service
+      run: |
+        # Get previous task definition
+        PREVIOUS_TASK_DEF=$(aws ecs describe-services \
+          --cluster cvd-production \
+          --services cvd-app-blue \
+          --query 'services[0].deployments[1].taskDefinition' \
+          --output text)
+        
+        # Update service with previous version
+        aws ecs update-service \
+          --cluster cvd-production \
+          --service cvd-app-blue \
+          --task-definition $PREVIOUS_TASK_DEF \
+          --force-new-deployment
+        
+        # Switch traffic back to blue
+        aws elbv2 modify-listener \
+          --listener-arn ${{ secrets.PROD_LISTENER_ARN }} \
+          --default-actions Type=forward,TargetGroupArn=${{ secrets.BLUE_TARGET_GROUP_ARN }}
+    
+    - name: Notify rollback
+      uses: 8398a7/action-slack@v3
+      with:
+        status: custom
+        custom_payload: |
+          {
+            text: "⚠️ Production deployment rolled back",
+            attachments: [{
+              color: 'warning',
+              text: 'Automatic rollback triggered due to deployment failure'
+            }]
+          }
+        webhook_url: ${{ secrets.SLACK_WEBHOOK }}

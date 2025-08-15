@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Placeholder Icon</title>
+</head>
+<body>
+    <h1>Placeholder Icon Generator</h1>
+    <p>This creates a simple placeholder icon for testing PWA installation.</p>
+    
+    <canvas id="canvas" width="512" height="512"></canvas>
+    <br>
+    <button onclick="downloadIcon(192)">Download 192x192</button>
+    <button onclick="downloadIcon(512)">Download 512x512</button>
+    
+    <script>
+        // Draw icon
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = '#006dfe';
+        ctx.fillRect(0, 0, 512, 512);
+        
+        // Text
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 200px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🚚', 256, 256);
+        
+        // Download function
+        function downloadIcon(size) {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            // Scale and draw
+            tempCtx.drawImage(canvas, 0, 0, size, size);
+            
+            // Download
+            tempCanvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `icon-${size}x${size}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+    </script>
+</body>
+</html>

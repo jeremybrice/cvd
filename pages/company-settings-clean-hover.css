@@ -1,0 +1,35 @@
+/* Alternative Clean Hover Style - No Vertical Bars */
+/* You can replace the existing hover styles (lines 396-427) with this simpler version */
+
+tr:hover:not(.filter-row) {
+    background: linear-gradient(90deg, 
+        rgba(0, 109, 254, 0.04) 0%, 
+        rgba(0, 109, 254, 0.06) 50%, 
+        rgba(0, 109, 254, 0.04) 100%) !important;
+    transition: background 0.2s ease;
+}
+
+/* Optional: Add a subtle left border instead of pseudo-element */
+tr:hover:not(.filter-row) {
+    border-left: 3px solid #006dfe;
+    animation: borderFadeIn 0.3s forwards;
+}
+
+@keyframes borderFadeIn {
+    from {
+        border-left-color: transparent;
+    }
+    to {
+        border-left-color: #006dfe;
+    }
+}
+
+/* Alternative 2: Use box-shadow for accent without layout shift */
+tr:hover:not(.filter-row) {
+    background: linear-gradient(90deg, 
+        rgba(0, 109, 254, 0.04) 0%, 
+        rgba(0, 109, 254, 0.06) 50%, 
+        rgba(0, 109, 254, 0.04) 100%) !important;
+    box-shadow: inset 3px 0 0 #006dfe;
+    transition: all 0.2s ease;
+}
