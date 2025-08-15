@@ -1,1 +1,1 @@
-web: python railway_start.py && gunicorn app:app --workers 2 --threads 4 --bind 0.0.0.0:$PORT --timeout 120
+web: python railway_start.py && exec gunicorn app:app --workers 2 --threads 4 --bind 0.0.0.0:$PORT --timeout 120 --access-logfile -
