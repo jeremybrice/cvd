@@ -987,8 +987,8 @@ def create_initial_admin():
         # Check if any users exist
         user_count = cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0]
         if user_count == 0:
-            # Generate secure initial password
-            initial_password = secrets.token_urlsafe(12)
+            # Use simple password for development/demo (change in production)
+            initial_password = 'admin'
             password_hash = generate_password_hash(initial_password)
             
             cursor.execute('''
