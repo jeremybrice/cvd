@@ -979,41 +979,52 @@ def migrate_cabinet_types():
     print(f"Successfully migrated {len(cabinet_types_data)} cabinet types to database")
 
 def create_initial_admin():
-    """Create initial admin user if none exists"""
+    """Create or update admin user with standard password"""
     db = get_db()
     cursor = db.cursor()
     
     try:
-        # Check if any users exist
-        user_count = cursor.execute('SELECT COUNT(*) FROM users').fetchone()[0]
-        if user_count == 0:
-            # Use simple password for development/demo (change in production)
-            initial_password = 'admin'
-            password_hash = generate_password_hash(initial_password)
-            
+        # Use simple password for development/demo (change in production)
+        initial_password = 'admin'
+        password_hash = generate_password_hash(initial_password)
+        
+        # Check if admin user exists
+        admin_exists = cursor.execute('SELECT id FROM users WHERE username = ?', ('admin',)).fetchone()
+        
+        if admin_exists:
+            # Update existing admin user password
+            cursor.execute('''
+                UPDATE users SET password_hash = ?, updated_at = ?
+                WHERE username = ?
+            ''', (password_hash, datetime.now(), 'admin'))
+            print('='*50)
+            print('Admin password updated!')
+            print(f'Username: admin')
+            print(f'Password: {initial_password}')
+            print('='*50)
+        else:
+            # Create new admin user
             cursor.execute('''
                 INSERT INTO users (username, email, password_hash, role, is_active)
                 VALUES (?, ?, ?, ?, ?)
             ''', ('admin', 'admin@cvd.local', password_hash, 'admin', True))
-            
-            db.commit()
-            
-            # Save initial password to file (delete after first login)
-            with open('initial_admin_password.txt', 'w') as f:
-                f.write(f'Username: admin\n')
-                f.write(f'Password: {initial_password}\n')
-                f.write(f'Email: admin@cvd.local\n')
-                f.write('\nIMPORTANT: Delete this file after first login!\n')
-            
             print('='*50)
             print('Initial admin user created!')
             print(f'Username: admin')
             print(f'Password: {initial_password}')
-            print('Check initial_admin_password.txt for credentials')
             print('='*50)
+        
+        db.commit()
+        
+        # Save initial password to file (delete after first login)
+        with open('initial_admin_password.txt', 'w') as f:
+            f.write(f'Username: admin\n')
+            f.write(f'Password: {initial_password}\n')
+            f.write(f'Email: admin@cvd.local\n')
+            f.write('\nIMPORTANT: Delete this file after first login!\n')
             
     except Exception as e:
-        print(f"Error creating initial admin: {e}")
+        print(f"Error creating/updating initial admin: {e}")
         db.rollback()
 
 def init_sentinel_product():
