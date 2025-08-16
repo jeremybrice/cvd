@@ -5,7 +5,7 @@ Provides RESTful API endpoints for device and planogram management
 with SQLite database storage.
 """
 
-from flask import Flask, jsonify, request, g, session, send_from_directory
+from flask import Flask, jsonify, request, g, session, send_from_directory, abort
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 import sqlite3
@@ -8160,6 +8160,10 @@ def serve_pages(filename):
 @app.route('/<path:filename>')
 def serve_static(filename):
     """Serve other static files (CSS, JS, images, etc.)"""
+    # Fix: Exclude API routes from static file serving
+    if filename.startswith('api/'):
+        abort(404)  # Let Flask find the actual API route
+    
     try:
         # Try to serve from root directory
         return send_from_directory('.', filename)
