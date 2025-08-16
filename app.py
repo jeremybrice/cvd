@@ -51,7 +51,18 @@ CORS(app, origins=cors_origins,
      methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
      supports_credentials=True)
 
+# Try multiple database locations for Railway compatibility
 DATABASE = os.environ.get('DATABASE_PATH', 'cvd.db')
+if not os.path.exists(DATABASE):
+    # Try Railway persistent volume path
+    if os.path.exists('/app/data/cvd.db'):
+        DATABASE = '/app/data/cvd.db'
+        print(f"📍 Using Railway persistent volume database: {DATABASE}")
+    elif os.path.exists('./cvd.db'):
+        DATABASE = './cvd.db'
+        print(f"📍 Using local database: {DATABASE}")
+    else:
+        print(f"⚠️  Database not found at any location, will use: {DATABASE}")
 app.config['DATABASE'] = DATABASE
 app.config['get_db'] = lambda: get_db()
 

@@ -42,6 +42,15 @@ def main():
     except Exception as e:
         print(f"❌ Database verification failed: {e}")
 
+    # Create symlink in app directory as fallback for Flask
+    app_db_path = './cvd.db'
+    if os.path.exists(db_path) and not os.path.exists(app_db_path):
+        try:
+            os.symlink(db_path, app_db_path)
+            print(f"✓ Created symlink from {app_db_path} to {db_path}")
+        except Exception as e:
+            print(f"⚠️  Could not create symlink: {e}")
+    
     print(f"🎯 Final database location: {db_path}")
     print("🚂 Railway startup complete!")
 
