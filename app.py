@@ -66,7 +66,14 @@ def get_db():
     """Get database connection for current request context"""
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        # Ensure we use the correct database path
+        db_path = app.config['DATABASE']
+        if not os.path.exists(db_path):
+            app.logger.error(f"Database not found at {db_path}")
+            app.logger.error(f"Current working directory: {os.getcwd()}")
+            app.logger.error(f"Directory contents: {os.listdir('.')}")
+            raise FileNotFoundError(f"Database not found: {db_path}")
+        db = g._database = sqlite3.connect(db_path)
         db.row_factory = sqlite3.Row
     return db
 
@@ -8145,6 +8152,24 @@ def get_all_dex_records(read_id):
             'success': False,
             'error': {'message': f'Server error: {str(e)}'}
         }), 500
+
+# Error handlers for API routes - return JSON instead of HTML
+@app.errorhandler(500)
+def handle_internal_error(e):
+    """Return JSON for API errors, HTML for others"""
+    if request.path.startswith('/api/'):
+        app.logger.error(f"API 500 error on {request.path}: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+    # Default HTML error page for non-API routes
+    return f"<h1>500 Internal Server Error</h1><p>{str(e)}</p>", 500
+
+@app.errorhandler(404)
+def handle_not_found(e):
+    """Return JSON for API 404s, HTML for others"""
+    if request.path.startswith('/api/'):
+        return jsonify({'error': 'API endpoint not found'}), 404
+    # Default HTML error page for non-API routes
+    return "<h1>404 Not Found</h1>", 404
 
 # Static file serving routes for frontend compatibility
 @app.route('/')
